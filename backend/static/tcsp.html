@@ -163,6 +163,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .theme-toggle:active{transform:scale(.9)}
 .phone{transition:background .25s}
 .card,.btn,.input,.svc,.msg-item,.tabbar,.capsule{transition:background .25s,border-color .25s,color .25s}
+
+/* ── Splash · 整页渠道入口（酷炫背景）── */
+.splash{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;overflow:hidden;background:#0B0B14;color:#fff}
+.splash.on{display:flex}
+.splash-bg{position:absolute;inset:0;background:
+  radial-gradient(55% 45% at 18% 12%,rgba(79,70,229,.62),transparent 60%),
+  radial-gradient(50% 40% at 88% 22%,rgba(13,148,136,.45),transparent 60%),
+  radial-gradient(65% 55% at 62% 100%,rgba(124,115,240,.5),transparent 62%),
+  linear-gradient(160deg,#0B0B14,#14132099 60%,#0B0B14);}
+.splash-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:radial-gradient(circle at 50% 32%,#000,transparent 78%);mask-image:radial-gradient(circle at 50% 32%,#000,transparent 78%)}
+.splash-blob{position:absolute;border-radius:50%;filter:blur(46px);opacity:.5;mix-blend-mode:screen;animation:blob 10s ease-in-out infinite}
+@keyframes blob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(18px,-30px) scale(1.18)}}
+.splash-inner{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:64px 30px 30px}
+.splash-logo{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(79,70,229,.5)}
+.glass-input{width:100%;padding:16px 16px;border-radius:13px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);backdrop-filter:blur(10px);color:#fff;font-size:24px;letter-spacing:8px;text-align:center;font-weight:700;font-family:inherit;outline:none;text-transform:uppercase}
+.glass-input::placeholder{color:rgba(255,255,255,.35);letter-spacing:4px;font-weight:500}
+.glass-input:focus{border-color:rgba(124,115,240,.9);box-shadow:0 0 0 4px rgba(124,115,240,.2)}
+.splash-btn{width:100%;padding:15px;border:none;border-radius:13px;background:#fff;color:#1A1A1A;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.splash-btn:active{opacity:.85}
+.splash-skip{width:100%;padding:13px;border:1px solid rgba(255,255,255,.25);border-radius:13px;background:transparent;color:rgba(255,255,255,.9);font-size:14px;cursor:pointer;font-family:inherit;margin-top:10px}
+
+/* ── 订单 > 服务 > 账单 层级 ── */
+.order-card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.order-head{padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.svc-line{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.svc-line:last-child{border-bottom:none}
+.svc-dot{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+.bill-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -189,11 +217,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="hero-d">持牌 TCSP · KYC 合规尽调 · 核名注册 · 法定秘书<br>年审变更全托管 · 符合 AMLO / 公司条例</div>
         </div>
 
-        <!-- Channel code entry -->
-        <div class="card" onclick="go('s-channel')" style="cursor:pointer">
+        <!-- 已绑定渠道 -->
+        <div class="card" style="cursor:pointer" onclick="openSplash()">
           <div class="cell" style="border:none">
-            <div class="cell-ic" style="background:var(--orange)"><i class="ti ti-ticket"></i></div>
-            <div class="cell-main"><div class="cell-t">输入渠道码</div><div class="cell-d">有合作伙伴推荐码？输入享专属价</div></div>
+            <div class="cell-ic" style="background:var(--green)"><i class="ti ti-ticket"></i></div>
+            <div class="cell-main"><div class="cell-t">渠道码 <span id="home-ch" style="color:var(--green-d)">LEX888</span> 已绑定</div><div class="cell-d" id="home-ch-d">星投资本 · 享渠道专属价格</div></div>
             <span class="cell-arrow"><i class="ti ti-chevron-right"></i></span>
           </div>
         </div>
@@ -219,8 +247,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
 
         <!-- In-progress order -->
-        <div class="sec-t">进行中的订单</div>
-        <div class="card card-pad" onclick="go('s-mycompany')" style="cursor:pointer">
+        <div class="sec-t" style="display:flex;justify-content:space-between"><span>进行中的订单</span><span style="color:var(--accent);font-weight:500;cursor:pointer" onclick="go('s-orders')">全部订单 ›</span></div>
+        <div class="card card-pad" onclick="go('s-orderdetail')" style="cursor:pointer">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="font-weight:600;font-size:14.5px">星辰科技有限公司</div>
             <span class="tag t-orange">注册进行中</span>
@@ -264,8 +292,122 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       </div>
     </div>
 
-    <!-- ════════ SERVICES ════════ -->
-    <div class="screen" id="s-services" data-title="服务大厅" data-tab="services">
+    <!-- ════════ 订单 TAB（订单 > 服务 > 账单 层级）════════ -->
+    <div class="screen" id="s-orders" data-title="订单服务" data-tab="orders">
+      <div class="body-pad">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn" style="padding:11px" onclick="go('s-services')"><i class="ti ti-plus" style="font-size:14px"></i> 新建订单</button>
+        </div>
+
+        <div class="sec-t">进行中</div>
+        <!-- 订单 1 -->
+        <div class="order-card">
+          <div class="order-head" onclick="go('s-orderdetail')">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700;font-size:14.5px">星辰科技有限公司</div>
+              <span class="tag t-orange">进行中</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--text3);margin-top:3px">订单 ORD-2026-0188 · 新公司注册套餐 · 含 3 项服务 · 渠道 LEX888</div>
+          </div>
+          <!-- 服务（每个服务 1:1 绑定一张账单）-->
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--green)"><i class="ti ti-building-plus"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">新公司注册</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0188-1 · 首付款</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 2,800</div><span class="bill-chip t-blue">待确认</span></div>
+          </div>
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--teal)"><i class="ti ti-shield-check"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">法定秘书（首年）</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0188-2 · 内嵌</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 0</div><span class="bill-chip t-green">已含</span></div>
+          </div>
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--orange)"><i class="ti ti-stamp"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">公司印章套装</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0188-3 · 尾款时合并</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 480</div><span class="bill-chip t-gray">待生成</span></div>
+          </div>
+          <div style="padding:10px 14px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;color:var(--text3)">订单合计 HKD 3,280 · 已生成账单 1 / 3</span>
+            <button class="btn ghost" style="width:auto;padding:6px 12px;font-size:12px" onclick="go('s-services')"><i class="ti ti-plus" style="font-size:12px"></i>新增服务</button>
+          </div>
+        </div>
+
+        <div class="sec-t">已完成</div>
+        <!-- 订单 2 -->
+        <div class="order-card">
+          <div class="order-head" onclick="toast('查看订单 ORD-2026-0142 详情')">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700;font-size:14.5px">恒丰贸易有限公司</div>
+              <span class="tag t-green">已完成</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--text3);margin-top:3px">订单 ORD-2026-0142 · 含 2 项服务 · 渠道 LEX888</div>
+          </div>
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">2025 公司年审</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0142-1</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 1,500</div><span class="bill-chip t-green">已到账</span></div>
+          </div>
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--orange)"><i class="ti ti-user-edit"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">董事变更</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0142-2</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 800</div><span class="bill-chip t-green">已到账</span></div>
+          </div>
+        </div>
+
+        <div class="card card-pad" style="background:var(--bg2)">
+          <div class="note"><b>层级说明：</b>订单 > 服务 > 账单。一个订单（如套餐）含多个服务；每个服务一一绑定一张账单（1:1）；现有订单下可随时「新增服务」。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 订单详情 ════════ -->
+    <div class="screen" id="s-orderdetail" data-title="订单详情" data-back="s-orders">
+      <div class="body-pad">
+        <div class="card card-pad">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:700;font-size:15.5px">星辰科技有限公司</div>
+            <span class="tag t-orange">注册进行中</span>
+          </div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">ORD-2026-0188 · 新公司注册套餐 · 渠道 LEX888</div>
+          <div class="prog" style="margin-top:11px">
+            <div class="prog-d done"></div><div class="prog-l done"></div>
+            <div class="prog-d done"></div><div class="prog-l done"></div>
+            <div class="prog-d act"></div><div class="prog-l"></div>
+            <div class="prog-d"></div><div class="prog-l"></div><div class="prog-d"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text4);margin-top:5px">
+            <span>KYC</span><span>核名</span><span style="color:var(--accent);font-weight:700">签约</span><span>支付</span><span>交付</span>
+          </div>
+        </div>
+
+        <div class="sec-t">本订单服务（服务 ↔ 账单 一一对应）</div>
+        <div class="order-card">
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--green)"><i class="ti ti-building-plus"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">新公司注册</div><div style="font-size:10.5px;color:var(--text3)">由 Leapex 直接交付</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 2,800</div><span class="bill-chip t-blue" onclick="go('s-bill')" style="cursor:pointer">查看账单 ›</span></div>
+          </div>
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--teal)"><i class="ti ti-shield-check"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">法定秘书（首年）</div><div style="font-size:10.5px;color:var(--text3)">内嵌服务</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 0</div><span class="bill-chip t-green">已含</span></div>
+          </div>
+          <div class="svc-line">
+            <div class="svc-dot" style="background:var(--orange)"><i class="ti ti-stamp"></i></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">公司印章套装</div><div style="font-size:10.5px;color:var(--text3)">由供应商「金印堂」交付</div></div>
+            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 480</div><span class="bill-chip t-gray">待生成</span></div>
+          </div>
+        </div>
+
+        <button class="btn ghost" onclick="go('s-services')"><i class="ti ti-plus" style="font-size:14px"></i> 在此订单新增服务</button>
+
+        <div class="card card-pad" style="background:var(--bg2);margin-top:12px">
+          <div class="note"><i class="ti ti-info-circle"></i> 「公司印章套装」由 Leapex 供应商交付，交付物与结算在后台管理；客户端仅展示服务进度与账单。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 服务大厅（选择服务）════════ -->
+    <div class="screen" id="s-services" data-title="选择服务" data-back="s-orders">
       <div class="body-pad">
         <div class="card card-pad" style="background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff;cursor:pointer" onclick="startReg()">
           <div style="display:flex;align-items:center;gap:13px">
@@ -629,9 +771,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   <!-- TabBar -->
   <div class="tabbar" id="tabbar">
     <div class="tab on" data-tab="home" onclick="go('s-home')"><i class="ti ti-home-2"></i><span>首页</span></div>
-    <div class="tab" data-tab="services" onclick="go('s-services')"><i class="ti ti-apps"></i><span>服务</span></div>
-    <div class="tab" data-tab="messages" onclick="go('s-messages')"><i class="ti ti-message-2"></i><span>消息</span></div>
+    <div class="tab" data-tab="orders" onclick="go('s-orders')"><i class="ti ti-clipboard-list"></i><span>订单服务</span></div>
+    <div class="tab" data-tab="messages" onclick="go('s-messages')"><i class="ti ti-bell"></i><span>消息通知</span></div>
     <div class="tab" data-tab="me2" onclick="go('s-me')"><i class="ti ti-user"></i><span>我的</span></div>
+  </div>
+
+  <!-- ════════ SPLASH · 整页渠道入口 ════════ -->
+  <div class="splash" id="splash">
+    <div class="splash-bg"></div>
+    <div class="splash-grid"></div>
+    <div class="splash-blob" style="width:160px;height:160px;background:#4F46E5;top:60px;left:-30px"></div>
+    <div class="splash-blob" style="width:130px;height:130px;background:#0D9488;bottom:140px;right:-20px;animation-delay:-3s"></div>
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <svg viewBox="0 0 16 16" width="24" height="24"><rect x="1" y="1" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#4F46E5"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#0D9488"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#1A1A1A"/></svg>
+      </div>
+      <div style="margin-top:26px">
+        <div style="font-size:13px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.6)">LEAPEX 利柏思商务</div>
+        <div style="font-size:27px;font-weight:800;line-height:1.25;margin-top:10px">香港公司秘书<br>线上一站办妥</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:12px;line-height:1.7">持牌 TCSP · KYC 合规尽调 · 核名注册<br>法定秘书 · 年审变更全托管</div>
+      </div>
+
+      <div style="flex:1"></div>
+
+      <div style="margin-bottom:8px">
+        <div style="font-size:12.5px;color:rgba(255,255,255,.75);margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-ticket"></i>输入合作伙伴渠道码，享专属价格</div>
+        <input class="glass-input" id="sp-input" maxlength="6" placeholder="如 LEX888" oninput="this.value=this.value.toUpperCase();spValidate()">
+        <div id="sp-hint" style="font-size:12px;margin:8px 2px 0;height:16px;color:rgba(255,255,255,.85)"></div>
+      </div>
+      <button class="splash-btn" onclick="spEnter()">输入渠道码 · 进入</button>
+      <button class="splash-skip" onclick="spSkip()">没有渠道码？跳过 · 以自然流量进入</button>
+      <div style="text-align:center;font-size:10.5px;color:rgba(255,255,255,.4);margin-top:14px">© 2026 Leapex · 持牌 TCSP · 符合 AMLO / PDPO</div>
+    </div>
   </div>
 
   <div class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换深色 / 浅色"><i class="ti ti-moon" id="theme-ic"></i></div>
@@ -642,7 +813,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
 <script>
 var histStack = [];
-var TAB_SCREENS = {home:'s-home', services:'s-services', messages:'s-messages', me2:'s-me'};
+var TAB_SCREENS = {home:'s-home', orders:'s-orders', messages:'s-messages', me2:'s-me'};
 
 /* Dark / Light Mode — 规范第九章 */
 function toggleTheme(){
@@ -710,6 +881,33 @@ function chConfirm(){
 }
 function chSkip(){ toast('已以自然流量进入'); setTimeout(function(){ go('s-kyc'); }, 600); }
 
+/* ── Splash · 整页渠道入口 ── */
+function spValidate(){
+  var v = document.getElementById('sp-input').value;
+  var hint = document.getElementById('sp-hint');
+  if(v.length===0){ hint.textContent=''; return; }
+  if(v.length<6){ hint.textContent='请输入 6 位渠道码'; hint.style.color='rgba(255,255,255,.6)'; return; }
+  if(v==='000000'){ hint.innerHTML='✗ 渠道码无效，请确认'; hint.style.color='#FCA5A5'; }
+  else { hint.innerHTML='✓ 有效渠道码 · 渠道合作伙伴：星投资本'; hint.style.color='#6EE7B7'; }
+}
+function _markRegistered(){ try{ localStorage.setItem('tcsp_registered','1'); }catch(e){} }
+function _hideSplash(){ document.getElementById('splash').classList.remove('on'); }
+function openSplash(){ document.getElementById('sp-input').value=''; document.getElementById('sp-hint').textContent=''; document.getElementById('splash').classList.add('on'); }
+function spEnter(){
+  var v = document.getElementById('sp-input').value;
+  if(v.length<6 || v==='000000'){ document.getElementById('sp-hint').innerHTML='✗ 请输入有效的 6 位渠道码'; document.getElementById('sp-hint').style.color='#FCA5A5'; return; }
+  document.getElementById('home-ch').textContent = v;
+  document.getElementById('home-ch-d').textContent = '星投资本 · 享渠道专属价格';
+  _markRegistered(); _hideSplash();
+  toast('渠道码 '+v+' 已绑定');
+}
+function spSkip(){
+  document.getElementById('home-ch').textContent = '自然流量';
+  document.getElementById('home-ch-d').textContent = 'Leapex 直营 · 标准价格';
+  _markRegistered(); _hideSplash();
+  toast('已以自然流量进入');
+}
+
 /* New registration entry → KYC first */
 function startReg(){ go('s-kyc'); }
 
@@ -764,6 +962,13 @@ function proofSubmit(){
   toast('回单已提交，等待运营核对到账');
   setTimeout(function(){ go('s-mycompany'); }, 1200);
 }
+
+/* ── Boot：新用户先看整页渠道入口；已注册直接进入 ── */
+(function boot(){
+  var registered = false;
+  try{ registered = localStorage.getItem('tcsp_registered')==='1'; }catch(e){}
+  if(!registered){ document.getElementById('splash').classList.add('on'); }
+})();
 </script>
 </body>
 </html>
