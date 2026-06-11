@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Leapex TCSP 公司秘书 · 小程序原型</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  /* Claude design system · Light Mode — 极简黑白灰 + 靛蓝强调 */
+  --accent:#4F46E5; --accent-d:#4338CA; --accent-bg:#EEF0FB;
+  --primary:#1A1A1A; --primary-d:#000000; --on-primary:#FFFFFF;
+  --green:#0E9F6E; --green-d:#057A55; --green-bg:#E7F6EF;
+  --blue:#4F46E5; --orange:#B45309; --red:#DC2626; --red-bg:#FDECEC;
+  --amber:#B45309; --yellow-bg:#FBF6E9;
+  --text:#1A1A1A; --text2:#666666; --text3:#999999; --text4:#B2B2B2;
+  --bg:#F5F5F5; --bg2:#FAFAFA; --card:#FFFFFF; --line:#E8E8E8; --line2:#E0E0E0;
+  --shadow:0 1px 3px rgba(0,0,0,.07);
+}
+[data-theme="dark"]{
+  /* Dark Mode — 规范第九章 */
+  --accent:#7C73F0; --accent-d:#6D63E8; --accent-bg:#23223A;
+  --primary:#FFFFFF; --primary-d:#EDEDED; --on-primary:#1A1A1A;
+  --green:#34D399; --green-d:#34D399; --green-bg:#13291F;
+  --blue:#7C73F0; --orange:#F0A848; --red:#F87171; --red-bg:#2A1515;
+  --amber:#F0C040; --yellow-bg:#2A2310;
+  --text:#FFFFFF; --text2:#A8A8A8; --text3:#7E7E7E; --text4:#5A5A5A;
+  --bg:#0F0F0F; --bg2:#242424; --card:#1A1A1A; --line:#2C2C2C; --line2:#363636;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;
+  background:#3a3a3a;color:var(--text);font-size:15px;line-height:1.5;
+  display:flex;align-items:center;justify-content:center;min-height:100vh;padding:18px;gap:24px;flex-wrap:wrap}
+
+/* Phone frame */
+.phone{width:390px;height:790px;background:var(--bg);color:var(--text);border-radius:44px;position:relative;
+  box-shadow:0 0 0 11px #1c1c1e,0 0 0 13px #2c2c2e,0 24px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:148px;height:30px;background:#1c1c1e;border-radius:0 0 18px 18px;z-index:50}
+
+/* Mini-program chrome */
+.statusbar{height:44px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 5px;font-size:14px;font-weight:600;color:var(--text);position:relative;z-index:40;background:transparent}
+.statusbar .right{display:flex;gap:5px;align-items:center;font-size:13px}
+.mp-bar{height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:relative;z-index:30}
+.mp-title{font-size:16px;font-weight:600;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
+.mp-back{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text);cursor:pointer}
+.capsule{width:87px;height:32px;border:1px solid var(--line);border-radius:16px;background:var(--card);display:flex;align-items:center;justify-content:space-around}
+.capsule i{font-size:17px;color:var(--text)}
+.capsule .div{width:1px;height:16px;background:rgba(0,0,0,.12)}
+
+/* Screen area */
+.screens{flex:1;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+.screen.on{display:block}
+.screen::-webkit-scrollbar{width:0}
+.body-pad{padding:12px 14px 24px}
+.has-tabbar .body-pad{padding-bottom:76px}
+
+/* TabBar */
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:58px;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:35;padding-bottom:4px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--text4)}
+.tab.on{color:var(--accent)}
+.tab i{font-size:23px}
+.tab span{font-size:10.5px;font-weight:500}
+
+/* Components */
+.card{background:var(--card);border-radius:8px;overflow:hidden;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.card-pad{padding:14px}
+.cell{display:flex;align-items:center;gap:11px;padding:14px;border-bottom:1px solid var(--line);cursor:pointer}
+.cell:last-child{border-bottom:none}
+.cell-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#fff}
+.cell-main{flex:1;min-width:0}
+.cell-t{font-size:14.5px;font-weight:500}
+.cell-d{font-size:12px;color:var(--text3);margin-top:1px}
+.cell-arrow{color:var(--text4);font-size:17px}
+.sec-t{font-size:13px;color:var(--text3);font-weight:600;padding:4px 4px 9px}
+.btn{display:block;width:100%;padding:13px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:15px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;transition:opacity .18s,background .18s}
+.btn:active{opacity:.82}
+.btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--line2)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.gray{background:var(--bg2);color:var(--text2);border-color:var(--line2)}
+.btn:disabled{background:var(--line2);border-color:var(--line2);color:var(--text4);cursor:not-allowed}
+.btn-sm{padding:8px 16px;font-size:13px;width:auto;display:inline-block;border-radius:18px}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:600}
+.t-green{background:var(--green-bg);color:var(--green-d)}
+.t-blue{background:#EAF0FB;color:var(--blue)}
+.t-orange{background:#FFF0E0;color:var(--orange)}
+.t-red{background:var(--red-bg);color:var(--red)}
+.t-yellow{background:var(--yellow-bg);color:#B8860B}
+.t-gray{background:#F0F0F0;color:var(--text3)}
+.input{width:100%;padding:12px 13px;border:1px solid var(--line2);border-radius:8px;font-size:15px;font-family:inherit;background:var(--card);color:var(--text);outline:none;transition:border-color .18s,box-shadow .18s}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.field{margin-bottom:14px}
+.field-l{font-size:13px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.fixed-foot{position:sticky;bottom:0;background:var(--card);padding:11px 14px;border-top:1px solid var(--line);margin:0 -14px -24px}
+
+/* Steps indicator */
+.steps{display:flex;align-items:center;padding:14px 6px 18px}
+.step-i{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0}
+.step-dot{width:26px;height:26px;border-radius:50%;background:var(--line2);color:var(--card);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.step-i.done .step-dot{background:var(--accent);color:#fff}
+.step-i.act .step-dot{background:var(--accent);color:#fff;box-shadow:0 0 0 4px var(--accent-bg)}
+.step-lab{font-size:9.5px;color:var(--text4);white-space:nowrap}
+.step-i.act .step-lab,.step-i.done .step-lab{color:var(--accent);font-weight:600}
+.step-line{flex:1;height:2px;background:var(--line2);margin:0 2px;margin-bottom:18px}
+.step-line.done{background:var(--accent)}
+
+/* hero */
+.hero{background:linear-gradient(135deg,#1A1A1A 0%,#2D2D2D 100%);border-radius:10px;padding:20px;color:#fff;margin-bottom:12px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-36px;top:-36px;width:140px;height:140px;background:radial-gradient(circle,rgba(79,70,229,.55),transparent 70%);border-radius:50%}
+.hero::before{content:'';position:absolute;right:18px;bottom:-30px;width:80px;height:80px;border:1px solid rgba(255,255,255,.12);border-radius:50%}
+.hero-t{font-size:18px;font-weight:700;margin-bottom:4px}
+.hero-d{font-size:12px;opacity:.92;line-height:1.6}
+
+/* progress order card */
+.prog{display:flex;align-items:center;gap:5px;margin-top:11px}
+.prog-d{width:9px;height:9px;border-radius:50%;background:var(--line2);flex-shrink:0}
+.prog-d.done{background:var(--accent)}
+.prog-d.act{background:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.prog-l{flex:1;height:2px;background:var(--line2)}
+.prog-l.done{background:var(--accent)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svc{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;padding:15px 12px;text-align:center;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s}
+.svc:active{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.svc i{font-size:27px}
+.svc-t{font-size:13px;font-weight:600;margin-top:7px}
+.svc-d{font-size:10.5px;color:var(--text3);margin-top:2px}
+
+.radio-card{border:1.5px solid var(--line2);border-radius:11px;padding:13px;margin-bottom:10px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
+.radio-card.on{border-color:var(--accent);background:var(--accent-bg)}
+.radio-dot{width:19px;height:19px;border-radius:50%;border:2px solid var(--line2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.radio-card.on .radio-dot{border-color:var(--accent)}
+.radio-card.on .radio-dot::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--accent)}
+
+.uz{border:1.5px dashed var(--line2);border-radius:8px;padding:24px;text-align:center;cursor:pointer;background:var(--bg2);margin-bottom:12px}
+.uz i{font-size:30px;color:var(--text4)}
+
+.toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:rgba(0,0,0,.8);color:#fff;padding:14px 20px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;z-index:99;pointer-events:none;max-width:78%;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.check-big{width:64px;height:64px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:24px auto 16px}
+.check-big i{font-size:36px;color:var(--green)}
+
+.amount{font-size:30px;font-weight:700;letter-spacing:-.5px}
+.divider-or{display:flex;align-items:center;gap:10px;color:var(--text4);font-size:12px;margin:14px 0}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--line2)}
+.aml-box{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7;max-height:230px;overflow-y:auto;margin-bottom:14px}
+.check-row{display:flex;gap:9px;align-items:flex-start;cursor:pointer;padding:6px 2px}
+.cbox{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--line2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.cbox.on{background:var(--accent);border-color:var(--accent)}
+.cbox.on i{color:#fff;font-size:13px}
+.msg-item{display:flex;gap:11px;padding:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;margin-bottom:10px}
+.msg-ic{width:40px;height:40px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.deliv-row{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line)}
+.deliv-row:last-child{border-bottom:none}
+.deliv-ic{width:34px;height:34px;border-radius:8px;background:#FDEEE2;color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.note{font-size:11.5px;color:var(--text3);line-height:1.6}
+.label-line{display:flex;justify-content:space-between;padding:9px 0;font-size:13.5px;border-bottom:1px solid var(--line)}
+.label-line:last-child{border:none}
+.risk-card{border-radius:13px;padding:18px;color:#fff;margin-bottom:14px;text-align:center}
+.frame-cap{position:fixed;bottom:14px;left:0;right:0;text-align:center;color:#bbb;font-size:12px;pointer-events:none}
+.theme-toggle{position:absolute;right:12px;bottom:70px;width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);box-shadow:0 2px 12px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--text);z-index:45;cursor:pointer;transition:transform .2s}
+.theme-toggle:active{transform:scale(.9)}
+.phone{transition:background .25s}
+.card,.btn,.input,.svc,.msg-item,.tabbar,.capsule{transition:background .25s,border-color .25s,color .25s}
+</style>
+</head>
+<body>
+
+<div class="phone has-tabbar" id="phone">
+  <div class="notch"></div>
+  <div class="statusbar">
+    <span>9:41</span>
+    <span class="right"><i class="ti ti-signal-4g"></i><i class="ti ti-wifi"></i><i class="ti ti-battery-3"></i></span>
+  </div>
+  <div class="mp-bar">
+    <div class="mp-back" id="navback" onclick="goBack()" style="visibility:hidden"><i class="ti ti-chevron-left"></i></div>
+    <div class="mp-title" id="navtitle">Leapex 公司秘书</div>
+    <div class="capsule"><i class="ti ti-dots"></i><div class="div"></div><i class="ti ti-circle"></i></div>
+  </div>
+
+  <div class="screens" id="screens">
+
+    <!-- ════════ HOME ════════ -->
+    <div class="screen on" id="s-home" data-title="Leapex 公司秘书" data-tab="home">
+      <div class="body-pad">
+        <div class="hero">
+          <div class="hero-t">香港公司，线上一站办妥</div>
+          <div class="hero-d">持牌 TCSP · KYC 合规尽调 · 核名注册 · 法定秘书<br>年审变更全托管 · 符合 AMLO / 公司条例</div>
+        </div>
+
+        <!-- Channel code entry -->
+        <div class="card" onclick="go('s-channel')" style="cursor:pointer">
+          <div class="cell" style="border:none">
+            <div class="cell-ic" style="background:var(--orange)"><i class="ti ti-ticket"></i></div>
+            <div class="cell-main"><div class="cell-t">输入渠道码</div><div class="cell-d">有合作伙伴推荐码？输入享专属价</div></div>
+            <span class="cell-arrow"><i class="ti ti-chevron-right"></i></span>
+          </div>
+        </div>
+
+        <div class="sec-t">核心服务</div>
+        <div class="grid2" style="margin-bottom:12px">
+          <div class="svc" onclick="startReg()">
+            <i class="ti ti-building-plus" style="color:var(--green)"></i>
+            <div class="svc-t">新公司注册</div><div class="svc-d">KYC→核名→注册</div>
+          </div>
+          <div class="svc" onclick="go('s-services')">
+            <i class="ti ti-calendar-check" style="color:var(--blue)"></i>
+            <div class="svc-t">公司年审</div><div class="svc-d">NAR1 周年申报</div>
+          </div>
+          <div class="svc" onclick="go('s-services')">
+            <i class="ti ti-user-edit" style="color:var(--orange)"></i>
+            <div class="svc-t">董事/秘书变更</div><div class="svc-d">ND2A / ND2B</div>
+          </div>
+          <div class="svc" onclick="go('s-services')">
+            <i class="ti ti-arrows-exchange" style="color:#9C27B0"></i>
+            <div class="svc-t">股份转让</div><div class="svc-d">含印花税</div>
+          </div>
+        </div>
+
+        <!-- In-progress order -->
+        <div class="sec-t">进行中的订单</div>
+        <div class="card card-pad" onclick="go('s-mycompany')" style="cursor:pointer">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:600;font-size:14.5px">星辰科技有限公司</div>
+            <span class="tag t-orange">注册进行中</span>
+          </div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">订单号 ORD-2026-0188 · 渠道码 LEX888</div>
+          <div class="prog">
+            <div class="prog-d done"></div><div class="prog-l done"></div>
+            <div class="prog-d done"></div><div class="prog-l done"></div>
+            <div class="prog-d act"></div><div class="prog-l"></div>
+            <div class="prog-d"></div><div class="prog-l"></div>
+            <div class="prog-d"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text4);margin-top:5px">
+            <span>KYC</span><span>核名</span><span style="color:var(--green);font-weight:700">签约</span><span>支付</span><span>交付</span>
+          </div>
+        </div>
+
+        <div class="card card-pad" style="background:var(--yellow-bg);display:flex;gap:10px;align-items:flex-start">
+          <i class="ti ti-shield-check" style="color:#B8860B;font-size:20px;flex-shrink:0;margin-top:1px"></i>
+          <div class="note" style="color:#8a6d00">本平台为香港持牌 TCSP，所有客户资料依 AMLO 加密保存 7 年，仅用于公司秘书服务尽职调查。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ CHANNEL CODE ════════ -->
+    <div class="screen" id="s-channel" data-title="输入渠道码" data-back="s-home">
+      <div class="body-pad">
+        <div style="text-align:center;padding:20px 0 8px">
+          <div style="width:64px;height:64px;border-radius:16px;background:var(--orange);display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><i class="ti ti-ticket" style="font-size:32px;color:#fff"></i></div>
+          <div style="font-size:17px;font-weight:700">渠道合作码</div>
+          <div class="note" style="margin-top:5px">输入 6 位合作伙伴推荐码，享渠道专属价格</div>
+        </div>
+        <div class="field">
+          <input class="input" id="ch-input" maxlength="6" placeholder="例如 LEX888" style="text-align:center;font-size:22px;letter-spacing:6px;font-weight:700;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();chValidate()">
+          <div id="ch-hint" style="text-align:center;font-size:12.5px;margin-top:8px;height:18px"></div>
+        </div>
+        <button class="btn" id="ch-btn" onclick="chConfirm()">确认渠道码</button>
+        <div class="divider-or">或</div>
+        <button class="btn ghost" onclick="chSkip()">跳过 · 以自然流量进入</button>
+        <div class="note" style="text-align:center;margin-top:14px">跳过后订单归属 Leapex 直营</div>
+      </div>
+    </div>
+
+    <!-- ════════ SERVICES ════════ -->
+    <div class="screen" id="s-services" data-title="服务大厅" data-tab="services">
+      <div class="body-pad">
+        <div class="card card-pad" style="background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff;cursor:pointer" onclick="startReg()">
+          <div style="display:flex;align-items:center;gap:13px">
+            <i class="ti ti-building-plus" style="font-size:34px"></i>
+            <div style="flex:1"><div style="font-size:16px;font-weight:700">新公司注册</div><div style="font-size:12px;opacity:.92;margin-top:2px">KYC 尽调 → 核名 → NNC1 注册 → 交付 19 项文件</div></div>
+            <i class="ti ti-chevron-right" style="font-size:20px"></i>
+          </div>
+        </div>
+        <div class="sec-t">公司存续期服务</div>
+        <div class="grid2">
+          <div class="svc" onclick="toast('年审 · 7 项交付物')"><i class="ti ti-calendar-check" style="color:var(--blue)"></i><div class="svc-t">公司年审</div><div class="svc-d">NAR1 · 7 项</div></div>
+          <div class="svc" onclick="toast('董事变更 · 5 项交付物')"><i class="ti ti-user-edit" style="color:var(--orange)"></i><div class="svc-t">董事变更</div><div class="svc-d">ND2A · 5 项</div></div>
+          <div class="svc" onclick="toast('秘书变更/转入 · 5 项')"><i class="ti ti-user-cog" style="color:#00897B"></i><div class="svc-t">秘书变更</div><div class="svc-d">ND2B · 5 项</div></div>
+          <div class="svc" onclick="toast('注册地址变更 · 4 项')"><i class="ti ti-map-pin" style="color:#E53935"></i><div class="svc-t">地址变更</div><div class="svc-d">NR1 · 4 项</div></div>
+          <div class="svc" onclick="toast('股份转让 · 6 项 · 含印花税')"><i class="ti ti-arrows-exchange" style="color:#9C27B0"></i><div class="svc-t">股份转让</div><div class="svc-d">含印花税 · 6 项</div></div>
+          <div class="svc" onclick="startReg()"><i class="ti ti-forms" style="color:var(--green)"></i><div class="svc-t">名称变更</div><div class="svc-d">需重核名 · 9 项</div></div>
+          <div class="svc" onclick="toast('股份配发 · 6 项交付物')"><i class="ti ti-chart-pie" style="color:#3949AB"></i><div class="svc-t">股份配发</div><div class="svc-d">AR2 · 6 项</div></div>
+          <div class="svc" onclick="toast('公司注销 · 6 项 · 约3-6月')"><i class="ti ti-building-off" style="color:var(--text3)"></i><div class="svc-t">公司注销</div><div class="svc-d">DR1 · 6 项</div></div>
+        </div>
+        <div class="card card-pad" style="margin-top:12px;background:var(--bg2)">
+          <div class="note">⏳ 公证认证 / 银行开户协助 / 减资 / 公司恢复 等服务即将上线</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ KYC WIZARD ════════ -->
+    <div class="screen" id="s-kyc" data-title="客户尽职调查 KYC" data-back="s-home">
+      <div class="body-pad">
+        <div class="steps" id="kyc-steps">
+          <div class="step-i act"><div class="step-dot">1</div><div class="step-lab">合规说明</div></div>
+          <div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">2</div><div class="step-lab">身份认证</div></div>
+          <div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">3</div><div class="step-lab">地址证明</div></div>
+          <div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">4</div><div class="step-lab">业务声明</div></div>
+          <div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">5</div><div class="step-lab">提交</div></div>
+        </div>
+
+        <!-- KYC Step 1 -->
+        <div class="kyc-pane" id="kyc-1">
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px">AML 合规说明</div>
+          <div class="note" style="margin-bottom:12px">依据香港《打击洗钱及恐怖分子资金筹集条例》(AMLO)，本平台作为持牌 TCSP，须于提供秘书服务前对您进行尽职调查。</div>
+          <div class="aml-box">
+            <b>一、尽职调查义务</b><br>本公司须核实您的身份、地址及业务性质，并进行政治公众人物 (PEP) 及制裁名单筛查。<br><br>
+            <b>二、PEP 审查范围</b><br>包括您本人及家庭成员（配偶、子女、父母、兄弟姐妹）。如命中 PEP，将进入增强尽职调查 (EDD)。<br><br>
+            <b>三、制裁名单筛查</b><br>对照联合国、欧盟及香港金管局制裁名单。命中将冻结流程并转人工审查。<br><br>
+            <b>四、数据用途与保存</b><br>所收集资料仅用于本次秘书服务尽调，依 AMLO 第 4 部加密保存至少 7 年。即使申请被拒，资料亦须依法留存。<br><br>
+            <b>五、您的权利</b><br>依《个人资料（私隐）条例》(PDPO)，您有权查阅及更正个人资料。
+          </div>
+          <div class="check-row" onclick="toggleCheck('kyc-agree')">
+            <div class="cbox" id="kyc-agree"><i class="ti ti-check"></i></div>
+            <div style="font-size:13px">我已阅读并同意以上 AML 合规说明及数据用途</div>
+          </div>
+          <div class="fixed-foot"><button class="btn" id="kyc-1-btn" disabled onclick="kycStep(2)">下一步</button></div>
+        </div>
+
+        <!-- KYC Step 2 -->
+        <div class="kyc-pane" id="kyc-2" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px">身份认证</div>
+          <div class="field">
+            <div class="field-l">证件类型</div>
+            <div style="display:flex;gap:8px">
+              <div class="tag t-green" style="padding:8px 14px;cursor:pointer">香港身份证</div>
+              <div class="tag t-gray" style="padding:8px 14px;cursor:pointer">内地身份证</div>
+              <div class="tag t-gray" style="padding:8px 14px;cursor:pointer">护照</div>
+            </div>
+          </div>
+          <div class="uz" onclick="toast('调用 wx.chooseMedia 拍摄/上传证件')">
+            <i class="ti ti-id"></i><div style="font-size:13px;margin-top:8px;font-weight:500">上传证件照片</div>
+            <div class="note">OCR 自动识别 + 人工复核</div>
+          </div>
+          <div class="card card-pad" style="background:var(--green-bg);margin-bottom:12px">
+            <div style="font-size:12px;color:var(--green-d)"><i class="ti ti-circle-check"></i> OCR 已识别：陳大文 CHAN TAI MAN · A123456(7)</div>
+          </div>
+          <div class="field"><div class="field-l">邮箱（用于接收通知，需验证）</div>
+            <div style="display:flex;gap:8px"><input class="input" placeholder="name@email.com" value="taiman@example.hk"><button class="btn-sm btn" style="flex-shrink:0;color:#fff" onclick="toast('验证码已发送至邮箱')">发送验证码</button></div>
+          </div>
+          <div class="field"><div class="field-l">PEP 自我声明</div>
+            <div class="note">您或家庭成员是否为政治公众人物？<span style="color:var(--green)">否</span> · 如是将进入 EDD 增强尽调</div>
+          </div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="kycStep(1)">上一步</button><button class="btn" onclick="kycStep(3)">下一步</button></div>
+        </div>
+
+        <!-- KYC Step 3 -->
+        <div class="kyc-pane" id="kyc-3" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px">地址证明</div>
+          <div class="note" style="margin-bottom:12px">请上传 3 个月内有效的地址证明（水/电/煤气/银行对账单）</div>
+          <div class="uz" onclick="toast('上传地址证明截图')"><i class="ti ti-file-text"></i><div style="font-size:13px;margin-top:8px;font-weight:500">上传地址证明</div><div class="note">支持电子账单截图</div></div>
+          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-file-check"></i></div><div class="cell-main"><div class="cell-t">HSBC 银行对账单.pdf</div><div class="cell-d">2026-05 · 已上传</div></div><span class="tag t-green">✓</span></div></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="kycStep(2)">上一步</button><button class="btn" onclick="kycStep(4)">下一步</button></div>
+        </div>
+
+        <!-- KYC Step 4 -->
+        <div class="kyc-pane" id="kyc-4" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px">业务声明</div>
+          <div class="field"><div class="field-l">业务性质</div><select class="input"><option>贸易 Trading</option><option>咨询服务 Consulting</option><option>投资控股 Investment Holding</option><option>电子商务 E-commerce</option><option>其他</option></select></div>
+          <div class="field"><div class="field-l">预期交易类型</div><select class="input"><option>本地交易为主</option><option>跨境贸易</option><option>跨境服务</option></select></div>
+          <div class="field"><div class="field-l">资金来源</div><select class="input"><option>营业收入</option><option>股东注资</option><option>银行贷款</option><option>投资收益</option></select></div>
+          <div class="field"><div class="field-l">补充说明（选填）</div><textarea class="input" rows="2" placeholder="如有特殊业务安排请说明"></textarea></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="kycStep(3)">上一步</button><button class="btn" onclick="kycStep(5)">下一步</button></div>
+        </div>
+
+        <!-- KYC Step 5 -->
+        <div class="kyc-pane" id="kyc-5" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px">提交审核</div>
+          <div class="card">
+            <div class="label-line" style="padding:11px 14px"><span style="color:var(--text3)">客户类型</span><span>个人客户</span></div>
+            <div class="label-line" style="padding:11px 14px"><span style="color:var(--text3)">证件</span><span>香港身份证 ✓</span></div>
+            <div class="label-line" style="padding:11px 14px"><span style="color:var(--text3)">邮箱</span><span>已验证 ✓</span></div>
+            <div class="label-line" style="padding:11px 14px"><span style="color:var(--text3)">地址证明</span><span>已上传 ✓</span></div>
+            <div class="label-line" style="padding:11px 14px"><span style="color:var(--text3)">PEP / 制裁筛查</span><span class="tag t-green">未命中</span></div>
+          </div>
+          <div class="card card-pad" style="background:var(--red-bg)"><div class="note" style="color:var(--red)"><i class="ti ti-alert-circle"></i> 提交后资料不可修改，将转后台合规审核（约 48 小时）。</div></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="kycStep(4)">上一步</button><button class="btn" onclick="kycSubmit()">提交审核</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ NAME CHECK ════════ -->
+    <div class="screen" id="s-namecheck" data-title="公司核名" data-back="s-home">
+      <div class="body-pad">
+        <div id="nc-input-pane">
+          <div class="note" style="margin-bottom:14px;background:var(--bg2);padding:12px;border-radius:10px">核名分三阶段：前端实时校验 → 智能预检（近似名 + IPD 商标）→ iCRIS 人工查册。通过后名称锁定 30 天。</div>
+          <div class="field"><div class="field-l">英文名称（须以 Limited 结尾，≤32 字符）</div><input class="input" id="nc-en" placeholder="Star Tech Limited" value="Star Tech Limited" oninput="ncCheck()"></div>
+          <div class="field"><div class="field-l">中文名称（须以"有限公司"结尾，≤8 字）</div><input class="input" id="nc-zh" placeholder="星辰科技有限公司" value="星辰科技有限公司" oninput="ncCheck()"></div>
+          <div class="card card-pad" id="nc-live" style="font-size:12.5px">
+            <div style="display:flex;align-items:center;gap:6px;color:var(--green-d);margin-bottom:5px"><i class="ti ti-circle-check"></i> 格式校验通过（后缀正确、长度合规）</div>
+            <div style="display:flex;align-items:center;gap:6px;color:var(--green-d)"><i class="ti ti-circle-check"></i> 敏感词检测通过（6 类敏感词未命中）</div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin:8px 4px">免费重查剩余 <b style="color:var(--green)">3</b> 次 · 超出后按次收费</div>
+          <button class="btn" style="margin-top:6px" onclick="ncRun()">开始智能预检 + 查册</button>
+        </div>
+
+        <div id="nc-result-pane" style="display:none">
+          <div class="risk-card" style="background:linear-gradient(135deg,#FFC300,#FA9D3B)">
+            <i class="ti ti-alert-triangle" style="font-size:34px"></i>
+            <div style="font-size:19px;font-weight:700;margin-top:6px">Yellow · 轻微近似</div>
+            <div style="font-size:12.5px;opacity:.95;margin-top:4px">检测到 1 个近似名称，风险较低</div>
+          </div>
+          <div class="card">
+            <div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">前端格式校验</span><span class="tag t-green">通过</span></div>
+            <div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">近似名检测</span><span class="tag t-yellow">1 个近似（编辑距离 2）</span></div>
+            <div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">IPD 商标查询</span><span class="tag t-green">无冲突</span></div>
+            <div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">iCRIS 人工查册</span><span class="tag t-green">可注册</span></div>
+          </div>
+          <div class="card card-pad" style="background:var(--yellow-bg)">
+            <div class="note" style="color:#B8860B">近似名：「Star Technology Limited」。Yellow 等级可由您确认后继续使用；如担心混淆可更换名称（免费重查）。</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="btn ghost" onclick="go('s-namecheck');location.reload" style="flex:1">更换名称</button>
+            <button class="btn" style="flex:1.4" onclick="ncAccept()">确认使用并锁定 30 天</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ REGISTRATION NNC1 ════════ -->
+    <div class="screen" id="s-reg" data-title="公司注册 · NNC1" data-back="s-home">
+      <div class="body-pad">
+        <div class="steps" id="reg-steps">
+          <div class="step-i act"><div class="step-dot">1</div><div class="step-lab">公司名称</div></div><div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">2</div><div class="step-lab">地址股本</div></div><div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">3</div><div class="step-lab">章程</div></div><div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">4</div><div class="step-lab">董事秘书</div></div><div class="step-line"></div>
+          <div class="step-i"><div class="step-dot">5</div><div class="step-lab">创办成员</div></div>
+        </div>
+
+        <div class="reg-pane" id="reg-1">
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px">Step 1 · 公司名称</div>
+          <div class="note" style="margin-bottom:12px">已核名通过的名称自动填充（锁定至 2026-07-11）</div>
+          <div class="card"><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">英文名</span><span style="font-weight:600">Star Tech Limited</span></div><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">中文名</span><span style="font-weight:600">星辰科技有限公司</span></div><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">核名状态</span><span class="tag t-green">已锁定 30 天</span></div></div>
+          <div class="fixed-foot"><button class="btn" onclick="regStep(2)">下一步</button></div>
+        </div>
+
+        <div class="reg-pane" id="reg-2" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 2 · 地址与股本</div>
+          <div class="field"><div class="field-l">注册地址</div>
+            <div class="radio-card on"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">Leapex 虚拟注册地址</div><div class="note">中环干诺道中 XX 号 · 含法定秘书服务</div></div></div>
+            <div class="radio-card"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">自有地址</div><div class="note">需提供地址证明</div></div></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><div class="field-l">股份总数</div><input class="input" value="10,000"></div>
+            <div class="field"><div class="field-l">每股面值</div><input class="input" value="HKD 1.00"></div>
+          </div>
+          <div class="field"><div class="field-l">总股本</div><input class="input" value="HKD 10,000" disabled></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(1)">上一步</button><button class="btn" onclick="regStep(3)">下一步</button></div>
+        </div>
+
+        <!-- Step 3 Articles -->
+        <div class="reg-pane" id="reg-3" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px">Step 3 · 确认公司章程</div>
+          <div class="note" style="margin-bottom:12px">根据您的单股东简单股本结构，<b style="color:var(--green)">智能推荐 Sample A 标准章程</b></div>
+          <div class="radio-card on" onclick="pickArt(this)"><div class="radio-dot"></div><div style="flex:1"><div style="display:flex;justify-content:space-between"><div style="font-weight:600;font-size:14px">标准章程 Sample A</div><span class="tag t-green">推荐</span></div><div class="note">基于《公司条例》附表 1，简单股权结构</div></div></div>
+          <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">增强版章程 Sample B</div><div class="note">含优先购买权、转让限制、董事权限细化</div></div></div>
+          <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">自定义章程</div><div class="note">复杂股权 / 特殊条款，由 Leapex 法务起草</div></div></div>
+          <div class="card" onclick="toast('打开 ZAA_Sample_A.pdf 全文预览')" style="cursor:pointer"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--red)"><i class="ti ti-file-type-pdf"></i></div><div class="cell-main"><div class="cell-t">预览章程全文</div><div class="cell-d">ZAA_Sample_A.pdf · v1.2</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div></div>
+          <div class="check-row" onclick="toggleCheck('art-agree')"><div class="cbox" id="art-agree"><i class="ti ti-check"></i></div><div style="font-size:13px">本人确认已阅读并同意以上章程细则</div></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(2)">上一步</button><button class="btn" id="reg-3-btn" disabled onclick="regStep(4)">下一步</button></div>
+        </div>
+
+        <div class="reg-pane" id="reg-4" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 4 · 董事与秘书</div>
+          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--green)"><i class="ti ti-user"></i></div><div class="cell-main"><div class="cell-t">陳大文（董事）</div><div class="cell-d">身份信息复用 KYC · 已认证</div></div><span class="tag t-green">✓</span></div></div>
+          <button class="btn ghost btn-sm" style="width:100%;margin-bottom:12px" onclick="toast('添加董事（至少 1 名自然人）')">+ 添加董事</button>
+          <div class="card card-pad" style="background:var(--green-bg)"><div style="font-size:13px;color:var(--green-d);font-weight:600"><i class="ti ti-shield-check"></i> 法定秘书：Leapex 利柏思（内嵌服务）</div><div class="note" style="color:var(--green-d);margin-top:3px">已含于注册套餐，自动担任公司法定秘书</div></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(3)">上一步</button><button class="btn" onclick="regStep(5)">下一步</button></div>
+        </div>
+
+        <div class="reg-pane" id="reg-5" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 5 · 创办成员（股东）</div>
+          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-user-star"></i></div><div class="cell-main"><div class="cell-t">陳大文</div><div class="cell-d">持股 10,000 股 · 100%</div></div><span class="tag t-green">✓</span></div></div>
+          <button class="btn ghost btn-sm" style="width:100%;margin-bottom:12px" onclick="toast('添加创办成员')">+ 添加创办成员</button>
+          <div class="card"><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">股份总数</span><span>10,000 股</span></div><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">已分配</span><span style="color:var(--green-d)">10,000 股（100%）</span></div></div>
+          <div class="card card-pad" style="background:var(--bg2)"><div class="note">提交后系统将依 NNC1 表格汇总信息，生成首付款账单。</div></div>
+          <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(4)">上一步</button><button class="btn" onclick="regSubmit()">提交并生成账单</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ BILL / PAYMENT ════════ -->
+    <div class="screen" id="s-bill" data-title="账单支付" data-back="s-home">
+      <div class="body-pad">
+        <div class="card card-pad" style="text-align:center">
+          <div class="note">账单号 LEA-2026-0188-1 · 首付款</div>
+          <div class="amount" style="margin:8px 0;color:var(--text)">HKD 2,800.00</div>
+          <span class="tag t-orange" id="bill-status">待支付</span>
+          <div class="note" style="margin-top:8px">7 天内有效 · 逾期自动作废</div>
+        </div>
+        <div class="sec-t">费用明细（逐项清结）</div>
+        <div class="card">
+          <div class="label-line" style="padding:12px 14px"><span>公司注册全套服务（首付 50%）</span><span style="font-weight:600">2,500.00</span></div>
+          <div class="label-line" style="padding:12px 14px"><span>政府注册费 + BR 费</span><span style="font-weight:600">300.00</span></div>
+          <div class="label-line" style="padding:12px 14px;font-weight:700"><span>首付款合计</span><span style="color:var(--green-d)">HKD 2,800.00</span></div>
+        </div>
+        <div class="card card-pad" style="background:var(--bg2)">
+          <div class="sec-t" style="padding:0 0 8px">线下转账 · Leapex 收款账户</div>
+          <div style="font-size:13px;line-height:2">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">收款人</span><span>Leapex Limited</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">银行</span><span>HSBC (004)</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">账号</span><span style="font-family:monospace">123-456789-001</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">FPS ID</span><span style="font-family:monospace">163088888</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">转账附言</span><span style="color:var(--red);font-weight:600">LEA-2026-0188-1</span></div>
+          </div>
+        </div>
+        <div class="note" style="text-align:center;margin:4px 0 12px">请线下转账后上传回单，运营核对到账后服务启动</div>
+        <button class="btn" onclick="go('s-proof')"><i class="ti ti-upload"></i> 上传汇款回单</button>
+        <div class="divider-or">未来支持</div>
+        <button class="btn gray" onclick="toast('微信支付 / 支付宝为后续迭代功能')">微信支付（即将上线）</button>
+      </div>
+    </div>
+
+    <!-- ════════ UPLOAD PROOF ════════ -->
+    <div class="screen" id="s-proof" data-title="上传汇款回单" data-back="s-bill">
+      <div class="body-pad">
+        <div class="uz" onclick="proofUploaded()" id="proof-uz"><i class="ti ti-receipt"></i><div style="font-size:13px;margin-top:8px;font-weight:500">上传银行汇款回单截图</div><div class="note">JPG / PNG / PDF</div></div>
+        <div class="field"><div class="field-l">实付金额 (HKD)</div><input class="input" value="2800.00"></div>
+        <div class="field"><div class="field-l">转账日期</div><input class="input" type="date" value="2026-06-11"></div>
+        <div class="field"><div class="field-l">付款银行</div><input class="input" placeholder="例：HSBC"></div>
+        <div class="field"><div class="field-l">转账参考号 / 附言</div><input class="input" value="LEA-2026-0188-1"></div>
+        <div class="card card-pad" style="background:var(--green-bg)"><div class="note" style="color:var(--green-d)">提交后账单变为「待确认」，运营在网银核对到账后为您勾销并启动服务。</div></div>
+        <button class="btn" onclick="proofSubmit()">提交回单</button>
+      </div>
+    </div>
+
+    <!-- ════════ MY COMPANY ════════ -->
+    <div class="screen" id="s-mycompany" data-title="我的公司" data-tab="me">
+      <div class="body-pad">
+        <div class="card" onclick="go('s-deliverables')" style="cursor:pointer">
+          <div class="card-pad" style="border-bottom:1px solid var(--line)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700;font-size:15.5px">星辰科技有限公司</div>
+              <span class="tag t-orange">注册进行中</span>
+            </div>
+            <div class="note" style="margin-top:3px">Star Tech Limited</div>
+          </div>
+          <div class="cell" style="border:none"><div class="cell-ic" style="background:var(--orange)"><i class="ti ti-files"></i></div><div class="cell-main"><div class="cell-t">交付物中心</div><div class="cell-d">17 项可见 · 6 项已就绪</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-pad" style="border-bottom:1px solid var(--line)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700;font-size:15.5px">恒丰贸易有限公司</div>
+              <span class="tag t-green">存续中</span>
+            </div>
+            <div class="note" style="margin-top:3px">CI: 78451236 · BR: 12345678 · 下次年审 2026-09-15</div>
+          </div>
+          <div class="cell" onclick="toast('年审即将到期，6 轮递进提醒中')"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div><div class="cell-main"><div class="cell-t">公司年审</div><div class="cell-d" style="color:var(--orange)">距到期 96 天 · 提醒中</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="go('s-deliverables')"><div class="cell-ic" style="background:var(--orange)"><i class="ti ti-files"></i></div><div class="cell-main"><div class="cell-t">公司文件</div><div class="cell-d">CI / BR / 章程 / 名册 / SCR</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ DELIVERABLES ════════ -->
+    <div class="screen" id="s-deliverables" data-title="交付物中心" data-back="s-mycompany">
+      <div class="body-pad">
+        <div class="card card-pad" style="background:linear-gradient(135deg,#312E81,#4338CA);color:#fff">
+          <div style="font-weight:700;font-size:15px">星辰科技有限公司</div>
+          <div style="font-size:12px;opacity:.9;margin-top:3px">交付进度 6 / 17 项就绪 · KYC 存档不对外</div>
+          <div style="background:rgba(255,255,255,.25);height:6px;border-radius:3px;margin-top:10px;overflow:hidden"><div style="background:#fff;height:100%;width:35%"></div></div>
+        </div>
+        <div class="sec-t">政府文件</div>
+        <div class="card">
+          <div class="deliv-row"><div class="deliv-ic"><i class="ti ti-certificate"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司注册证书 CI</div><div class="note">政府签发 · 等待中</div></div><span class="tag t-gray">待签发</span></div>
+          <div class="deliv-row"><div class="deliv-ic"><i class="ti ti-file-certificate"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">商业登记证 BR</div><div class="note">政府签发 · 等待中</div></div><span class="tag t-gray">待签发</span></div>
+        </div>
+        <div class="sec-t">自动生成文件（PDF）</div>
+        <div class="card">
+          <div class="deliv-row" onclick="toast('预览 公司章程.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司章程大纲及细则</div><div class="note">Sample A · 已生成</div></div><span class="tag t-green">可下载</span></div>
+          <div class="deliv-row" onclick="toast('预览 董事名册.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">董事名册</div><div class="note">Register of Directors</div></div><span class="tag t-green">可下载</span></div>
+          <div class="deliv-row" onclick="toast('预览 股东名册.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">股东名册</div><div class="note">Register of Members</div></div><span class="tag t-green">可下载</span></div>
+          <div class="deliv-row" onclick="toast('预览 公司秘书任命书.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司秘书任命书</div><div class="note">Leapex 担任法定秘书</div></div><span class="tag t-green">可下载</span></div>
+          <div class="deliv-row" onclick="toast('预览 股票证书.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">股票证书</div><div class="note">Share Certificate</div></div><span class="tag t-green">可下载</span></div>
+          <div style="padding:9px 14px;text-align:center;color:var(--text3);font-size:12px">共 12 项 PDF · 展开查看全部</div>
+        </div>
+        <div class="sec-t">实物（快递寄送）</div>
+        <div class="card">
+          <div class="deliv-row"><div class="deliv-ic" style="background:#FDE8E8;color:var(--red)"><i class="ti ti-stamp"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司圆章 + 签字章</div><div class="note">制作中 · 预计 2 个工作日</div></div><span class="tag t-orange">制作中</span></div>
+          <div class="deliv-row" onclick="toast('快递追踪：SF1234567890 运输中')"><div class="deliv-ic" style="background:#E8F0FE;color:var(--blue)"><i class="ti ti-package"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司文件册 Company Kit</div><div class="note">顺丰 SF1234567890</div></div><span class="tag t-blue">运输中</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ MESSAGES ════════ -->
+    <div class="screen" id="s-messages" data-title="消息中心" data-tab="messages">
+      <div class="body-pad">
+        <div class="sec-t">合规通知 · 不可关闭</div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--green)"><i class="ti ti-circle-check"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">KYC 审核已通过</div><div class="note" style="margin-top:2px">您的尽职调查已通过，可继续核名与注册流程</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 09:32</div></div></div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--amber)"><i class="ti ti-alert-triangle"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">核名结果：Yellow 轻微近似</div><div class="note" style="margin-top:2px">「星辰科技有限公司」可使用，请确认后锁定</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 10:15</div></div></div>
+        <div class="sec-t">流程通知</div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--orange)"><i class="ti ti-file-invoice"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">首付款账单已生成</div><div class="note" style="margin-top:2px">LEA-2026-0188-1 · HKD 2,800 · 7 天内有效</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 10:20</div></div></div>
+        <div class="sec-t">年审提醒 · 6 轮递进</div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--blue)"><i class="ti ti-calendar-due"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">恒丰贸易：年审到期前 60 天</div><div class="note" style="margin-top:2px">第 1 轮提醒 · 到期日 2026-09-15，请及时处理</div><div style="font-size:11px;color:var(--text4);margin-top:4px">昨天</div></div></div>
+      </div>
+    </div>
+
+    <!-- ════════ ME ════════ -->
+    <div class="screen" id="s-me" data-title="我的" data-tab="me2">
+      <div class="body-pad">
+        <div class="card card-pad" style="display:flex;align-items:center;gap:13px">
+          <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700">陳</div>
+          <div style="flex:1"><div style="font-size:16px;font-weight:700">陳大文 Andy Chan</div><div class="note" style="margin-top:2px">taiman@example.hk · 渠道 LEX888</div></div>
+          <span class="tag t-green">KYC 已认证</span>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <div class="cell" onclick="go('s-mycompany')"><div class="cell-ic" style="background:var(--green)"><i class="ti ti-building"></i></div><div class="cell-main"><div class="cell-t">我的公司</div></div><span style="color:var(--text3);font-size:13px">2 家</span><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="go('s-bill')"><div class="cell-ic" style="background:var(--orange)"><i class="ti ti-file-invoice"></i></div><div class="cell-main"><div class="cell-t">我的账单</div></div><span class="tag t-orange" style="margin-right:4px">1 待付</span><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('KYC 资料已加密保存')"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-shield-check"></i></div><div class="cell-main"><div class="cell-t">KYC 资料</div><div class="cell-d">已认证 · AMLO 保存 7 年</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+        </div>
+        <div class="card">
+          <div class="cell" onclick="toast('通知订阅设置')"><div class="cell-ic" style="background:#9C27B0"><i class="ti ti-bell"></i></div><div class="cell-main"><div class="cell-t">通知订阅</div><div class="cell-d">合规通知不可关闭</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('《个人资料（私隐）条例》PDPO 保障')"><div class="cell-ic" style="background:var(--text3)"><i class="ti ti-lock"></i></div><div class="cell-main"><div class="cell-t">隐私与数据</div><div class="cell-d">可查阅 / 更正个人资料</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('Leapex 利柏思商务 · 持牌 TCSP')"><div class="cell-ic" style="background:var(--green-d)"><i class="ti ti-info-circle"></i></div><div class="cell-main"><div class="cell-t">关于 Leapex</div><div class="cell-d">持牌 TCSP · 牌照号 TC0012XX</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- TabBar -->
+  <div class="tabbar" id="tabbar">
+    <div class="tab on" data-tab="home" onclick="go('s-home')"><i class="ti ti-home-2"></i><span>首页</span></div>
+    <div class="tab" data-tab="services" onclick="go('s-services')"><i class="ti ti-apps"></i><span>服务</span></div>
+    <div class="tab" data-tab="messages" onclick="go('s-messages')"><i class="ti ti-message-2"></i><span>消息</span></div>
+    <div class="tab" data-tab="me2" onclick="go('s-me')"><i class="ti ti-user"></i><span>我的</span></div>
+  </div>
+
+  <div class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换深色 / 浅色"><i class="ti ti-moon" id="theme-ic"></i></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<div class="frame-cap">Leapex TCSP 公司秘书 · 微信小程序原型 Demo（可点击交互）</div>
+
+<script>
+var histStack = [];
+var TAB_SCREENS = {home:'s-home', services:'s-services', messages:'s-messages', me2:'s-me'};
+
+/* Dark / Light Mode — 规范第九章 */
+function toggleTheme(){
+  var ph = document.getElementById('phone');
+  var dark = ph.getAttribute('data-theme') === 'dark';
+  ph.setAttribute('data-theme', dark ? 'light' : 'dark');
+  document.getElementById('theme-ic').className = 'ti ' + (dark ? 'ti-moon' : 'ti-sun');
+  toast(dark ? '已切换浅色模式' : '已切换深色模式');
+}
+
+function go(id, isBack){
+  var cur = document.querySelector('.screen.on');
+  var next = document.getElementById(id);
+  if(!next) return;
+  if(!isBack && cur && cur.id !== id) histStack.push(cur.id);
+  if(cur) cur.classList.remove('on');
+  next.classList.add('on');
+  next.scrollTop = 0;
+  // title
+  document.getElementById('navtitle').textContent = next.dataset.title || 'Leapex';
+  // back button: show if screen has data-back OR history exists and not a tab root
+  var isTabRoot = !!next.dataset.tab;
+  document.getElementById('navback').style.visibility = (next.dataset.back || (!isTabRoot && histStack.length)) ? 'visible' : 'hidden';
+  // tabbar state
+  var tabKey = next.dataset.tab;
+  document.getElementById('tabbar').style.display = tabKey ? 'flex' : 'flex';
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.tab===tabKey); });
+}
+function goBack(){
+  var cur = document.querySelector('.screen.on');
+  var backTo = cur.dataset.back;
+  if(backTo){ go(backTo, true); return; }
+  if(histStack.length){ var id = histStack.pop(); go(id, true); }
+  else go('s-home', true);
+}
+
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(function(){ t.classList.remove('show'); }, 1600);
+}
+
+function toggleCheck(id){
+  var el = document.getElementById(id);
+  el.classList.toggle('on');
+  if(id==='kyc-agree') document.getElementById('kyc-1-btn').disabled = !el.classList.contains('on');
+  if(id==='art-agree') document.getElementById('reg-3-btn').disabled = !el.classList.contains('on');
+}
+
+/* Channel code */
+function chValidate(){
+  var v = document.getElementById('ch-input').value;
+  var hint = document.getElementById('ch-hint');
+  if(v.length===0){ hint.textContent=''; return; }
+  if(v.length<6){ hint.textContent='请输入 6 位渠道码'; hint.style.color='var(--text3)'; return; }
+  // demo: any 6-char accepted except "000000"
+  if(v==='000000'){ hint.innerHTML='✗ 请确认渠道码'; hint.style.color='var(--red)'; }
+  else { hint.innerHTML='✓ 有效渠道码 · 渠道合作伙伴：星投资本'; hint.style.color='var(--green-d)'; }
+}
+function chConfirm(){
+  var v = document.getElementById('ch-input').value;
+  if(v.length<6 || v==='000000'){ toast('请确认渠道码'); return; }
+  toast('渠道码 '+v+' 已绑定');
+  setTimeout(function(){ go('s-kyc'); }, 700);
+}
+function chSkip(){ toast('已以自然流量进入'); setTimeout(function(){ go('s-kyc'); }, 600); }
+
+/* New registration entry → KYC first */
+function startReg(){ go('s-kyc'); }
+
+/* KYC wizard */
+function kycStep(n){
+  for(var i=1;i<=5;i++){ document.getElementById('kyc-'+i).style.display = (i===n)?'block':'none'; }
+  var items = document.querySelectorAll('#kyc-steps .step-i');
+  var lines = document.querySelectorAll('#kyc-steps .step-line');
+  items.forEach(function(it,idx){ it.classList.toggle('done', idx<n-1); it.classList.toggle('act', idx===n-1); });
+  lines.forEach(function(ln,idx){ ln.classList.toggle('done', idx<n-1); });
+  document.getElementById('s-kyc').scrollTop = 0;
+}
+function kycSubmit(){
+  toast('KYC 已提交，合规审核中…');
+  setTimeout(function(){ go('s-namecheck'); }, 1100);
+}
+
+/* Name check */
+function ncCheck(){ /* live validation is static-positive in demo */ }
+function ncRun(){
+  toast('智能预检 + iCRIS 查册中…');
+  setTimeout(function(){
+    document.getElementById('nc-input-pane').style.display='none';
+    document.getElementById('nc-result-pane').style.display='block';
+    document.getElementById('s-namecheck').scrollTop = 0;
+  }, 1200);
+}
+function ncAccept(){ toast('名称已锁定 30 天'); setTimeout(function(){ go('s-reg'); }, 800); }
+
+/* Registration */
+function regStep(n){
+  for(var i=1;i<=5;i++){ document.getElementById('reg-'+i).style.display = (i===n)?'block':'none'; }
+  var items = document.querySelectorAll('#reg-steps .step-i');
+  var lines = document.querySelectorAll('#reg-steps .step-line');
+  items.forEach(function(it,idx){ it.classList.toggle('done', idx<n-1); it.classList.toggle('act', idx===n-1); });
+  lines.forEach(function(ln,idx){ ln.classList.toggle('done', idx<n-1); });
+  document.getElementById('s-reg').scrollTop = 0;
+}
+function pickArt(el){
+  document.querySelectorAll('#reg-3 .radio-card').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on');
+}
+function regSubmit(){ toast('注册信息已提交，生成首付款账单'); setTimeout(function(){ go('s-bill'); }, 1000); }
+
+/* Payment proof */
+function proofUploaded(){
+  document.getElementById('proof-uz').innerHTML = '<i class="ti ti-circle-check" style="color:var(--green);font-size:30px"></i><div style="font-size:13px;margin-top:8px;font-weight:500;color:var(--green-d)">✓ 回单已选择：receipt.jpg</div>';
+}
+function proofSubmit(){
+  document.getElementById('bill-status').textContent='待确认';
+  document.getElementById('bill-status').className='tag t-blue';
+  toast('回单已提交，等待运营核对到账');
+  setTimeout(function(){ go('s-mycompany'); }, 1200);
+}
+</script>
+</body>
+</html>

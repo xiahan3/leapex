@@ -1,0 +1,31 @@
+# ── Secrets & credentials (NEVER commit) ──
+*.pem
+*.key
+.env
+.env.*
+secrets*.json
+SecretKey*.csv
+
+# ── Python ──
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# ── Database (runtime, auto-seeded) ──
+*.db
+*.sqlite
+*.sqlite3
+backend/leapex.db
+
+# ── OS / editor ──
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ── Logs ──
+*.log
