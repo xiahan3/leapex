@@ -191,6 +191,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .svc-line:last-child{border-bottom:none}
 .svc-dot{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
 .bill-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
+
+/* ── 电商：套餐报价卡 / 服务行 / 详情 ── */
+.pkg-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow);position:relative;transition:transform .15s,box-shadow .15s}
+.pkg-card:active{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.pkg-card.rec{border-color:var(--accent)}
+.pkg-badge{position:absolute;top:0;right:14px;transform:translateY(-50%);background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 9px;border-radius:9px}
+.price{color:var(--red);font-weight:800}
+.price-lg{font-size:20px}
+.price-old{color:var(--text4);font-size:12px;text-decoration:line-through;font-weight:500;margin-left:5px}
+.svc-row{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--card)}
+.svc-row:active{background:var(--bg2)}
+.incl{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:13px}
+.incl i{color:var(--accent);font-size:16px;flex-shrink:0;margin-top:1px}
+.buybar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:11px 14px;display:flex;align-items:center;gap:12px;z-index:36}
+.buybar .btn{width:auto;flex:1}
+.qty-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13.5px;border-bottom:1px dashed var(--line)}
+.qty-line:last-child{border-bottom:none}
+.success-ring{width:72px;height:72px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:28px auto 16px}
+.success-ring i{font-size:40px;color:var(--green)}
+.faq-q{padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.faq-a{font-size:12px;color:var(--text2);line-height:1.7;padding:0 0 12px;display:none}
+.faq-q.open + .faq-a{display:block}
+.mc{padding:5px 13px;border:1px solid var(--line2);border-radius:15px;font-size:12px;cursor:pointer;color:var(--text2);background:var(--card);white-space:nowrap;flex-shrink:0;user-select:none}
+.mc.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
 </style>
 </head>
 <body>
@@ -226,24 +250,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           </div>
         </div>
 
-        <div class="sec-t">核心服务</div>
-        <div class="grid2" style="margin-bottom:12px">
-          <div class="svc" onclick="startReg()">
-            <i class="ti ti-building-plus" style="color:var(--green)"></i>
-            <div class="svc-t">新公司注册</div><div class="svc-d">KYC→核名→注册</div>
-          </div>
-          <div class="svc" onclick="go('s-services')">
-            <i class="ti ti-calendar-check" style="color:var(--blue)"></i>
-            <div class="svc-t">公司年审</div><div class="svc-d">NAR1 周年申报</div>
-          </div>
-          <div class="svc" onclick="go('s-services')">
-            <i class="ti ti-user-edit" style="color:var(--orange)"></i>
-            <div class="svc-t">董事/秘书变更</div><div class="svc-d">ND2A / ND2B</div>
-          </div>
-          <div class="svc" onclick="go('s-services')">
-            <i class="ti ti-arrows-exchange" style="color:#9C27B0"></i>
-            <div class="svc-t">股份转让</div><div class="svc-d">含印花税</div>
-          </div>
+        <div class="sec-t" style="display:flex;justify-content:space-between"><span>核心服务</span><span style="color:var(--accent);font-weight:500;cursor:pointer" onclick="go('s-services')">全部服务 ›</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('reg')"><i class="ti ti-building-plus" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">新公司注册</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('annual')"><i class="ti ti-calendar-check" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">公司年审</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('director')"><i class="ti ti-user-edit" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">董事变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('secretary')"><i class="ti ti-user-cog" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">秘书变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('address')"><i class="ti ti-map-pin" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">地址变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('transfer')"><i class="ti ti-arrows-exchange" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">股份转让</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('rename')"><i class="ti ti-forms" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">名称变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="go('s-services')"><i class="ti ti-dots" style="font-size:24px;color:var(--text3)"></i><div class="svc-t" style="font-size:11.5px">更多</div></div>
         </div>
 
         <!-- In-progress order -->
@@ -293,69 +309,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     </div>
 
     <!-- ════════ 订单 TAB（订单 > 服务 > 账单 层级）════════ -->
-    <div class="screen" id="s-orders" data-title="订单服务" data-tab="orders">
+    <div class="screen" id="s-orders" data-title="订单" data-tab="orders">
       <div class="body-pad">
-        <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
           <button class="btn" style="padding:11px" onclick="go('s-services')"><i class="ti ti-plus" style="font-size:14px"></i> 新建订单</button>
         </div>
-
-        <div class="sec-t">进行中</div>
-        <!-- 订单 1 -->
-        <div class="order-card">
-          <div class="order-head" onclick="go('s-orderdetail')">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:700;font-size:14.5px">星辰科技有限公司</div>
-              <span class="tag t-orange">进行中</span>
-            </div>
-            <div style="font-size:11.5px;color:var(--text3);margin-top:3px">订单 ORD-2026-0188 · 新公司注册套餐 · 含 3 项服务 · 渠道 LEX888</div>
-          </div>
-          <!-- 服务（每个服务 1:1 绑定一张账单）-->
-          <div class="svc-line">
-            <div class="svc-dot" style="background:var(--green)"><i class="ti ti-building-plus"></i></div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">新公司注册</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0188-1 · 首付款</div></div>
-            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 2,800</div><span class="bill-chip t-blue">待确认</span></div>
-          </div>
-          <div class="svc-line">
-            <div class="svc-dot" style="background:var(--teal)"><i class="ti ti-shield-check"></i></div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">法定秘书（首年）</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0188-2 · 内嵌</div></div>
-            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 0</div><span class="bill-chip t-green">已含</span></div>
-          </div>
-          <div class="svc-line">
-            <div class="svc-dot" style="background:var(--orange)"><i class="ti ti-stamp"></i></div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">公司印章套装</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0188-3 · 尾款时合并</div></div>
-            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 480</div><span class="bill-chip t-gray">待生成</span></div>
-          </div>
-          <div style="padding:10px 14px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:11px;color:var(--text3)">订单合计 HKD 3,280 · 已生成账单 1 / 3</span>
-            <button class="btn ghost" style="width:auto;padding:6px 12px;font-size:12px" onclick="go('s-services')"><i class="ti ti-plus" style="font-size:12px"></i>新增服务</button>
-          </div>
+        <!-- 状态筛选 -->
+        <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto" id="ord-filter">
+          <span class="mc on" data-f="all" onclick="setOrdFilter(this,'all')">全部</span>
+          <span class="mc" data-f="待支付" onclick="setOrdFilter(this,'待支付')">待支付</span>
+          <span class="mc" data-f="服务中" onclick="setOrdFilter(this,'服务中')">服务中</span>
+          <span class="mc" data-f="已完成" onclick="setOrdFilter(this,'已完成')">已完成</span>
+          <span class="mc" data-f="已取消" onclick="setOrdFilter(this,'已取消')">已取消</span>
         </div>
-
-        <div class="sec-t">已完成</div>
-        <!-- 订单 2 -->
-        <div class="order-card">
-          <div class="order-head" onclick="toast('查看订单 ORD-2026-0142 详情')">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="font-weight:700;font-size:14.5px">恒丰贸易有限公司</div>
-              <span class="tag t-green">已完成</span>
-            </div>
-            <div style="font-size:11.5px;color:var(--text3);margin-top:3px">订单 ORD-2026-0142 · 含 2 项服务 · 渠道 LEX888</div>
-          </div>
-          <div class="svc-line">
-            <div class="svc-dot" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">2025 公司年审</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0142-1</div></div>
-            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 1,500</div><span class="bill-chip t-green">已到账</span></div>
-          </div>
-          <div class="svc-line">
-            <div class="svc-dot" style="background:var(--orange)"><i class="ti ti-user-edit"></i></div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">董事变更</div><div style="font-size:10.5px;color:var(--text3)">账单 LEA-2026-0142-2</div></div>
-            <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 800</div><span class="bill-chip t-green">已到账</span></div>
-          </div>
-        </div>
-
-        <div class="card card-pad" style="background:var(--bg2)">
-          <div class="note"><b>层级说明：</b>订单 > 服务 > 账单。一个订单（如套餐）含多个服务；每个服务一一绑定一张账单（1:1）；现有订单下可随时「新增服务」。</div>
-        </div>
+        <div id="orders-list"></div>
       </div>
     </div>
 
@@ -406,29 +373,158 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       </div>
     </div>
 
-    <!-- ════════ 服务大厅（选择服务）════════ -->
-    <div class="screen" id="s-services" data-title="选择服务" data-back="s-orders">
+    <!-- ════════ 服务目录（电商报价）════════ -->
+    <div class="screen" id="s-services" data-title="服务" data-tab="services">
       <div class="body-pad">
-        <div class="card card-pad" style="background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff;cursor:pointer" onclick="startReg()">
-          <div style="display:flex;align-items:center;gap:13px">
-            <i class="ti ti-building-plus" style="font-size:34px"></i>
-            <div style="flex:1"><div style="font-size:16px;font-weight:700">新公司注册</div><div style="font-size:12px;opacity:.92;margin-top:2px">KYC 尽调 → 核名 → NNC1 注册 → 交付 19 项文件</div></div>
-            <i class="ti ti-chevron-right" style="font-size:20px"></i>
+        <div class="sec-t"><i class="ti ti-building-plus" style="font-size:13px;margin-right:4px"></i>新注册套餐</div>
+        <div class="pkg-card" onclick="openSvc('pkg-basic')">
+          <div style="display:flex;align-items:flex-start;gap:11px">
+            <div class="svc-dot" style="background:var(--text2);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">基础注册套餐</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">注册 + 法定秘书 + 注册地址 + 商业登记证</div></div>
+            <div style="text-align:right"><div class="price price-lg">HKD 3,800</div></div>
           </div>
         </div>
-        <div class="sec-t">公司存续期服务</div>
-        <div class="grid2">
-          <div class="svc" onclick="toast('年审 · 7 项交付物')"><i class="ti ti-calendar-check" style="color:var(--blue)"></i><div class="svc-t">公司年审</div><div class="svc-d">NAR1 · 7 项</div></div>
-          <div class="svc" onclick="toast('董事变更 · 5 项交付物')"><i class="ti ti-user-edit" style="color:var(--orange)"></i><div class="svc-t">董事变更</div><div class="svc-d">ND2A · 5 项</div></div>
-          <div class="svc" onclick="toast('秘书变更/转入 · 5 项')"><i class="ti ti-user-cog" style="color:#00897B"></i><div class="svc-t">秘书变更</div><div class="svc-d">ND2B · 5 项</div></div>
-          <div class="svc" onclick="toast('注册地址变更 · 4 项')"><i class="ti ti-map-pin" style="color:#E53935"></i><div class="svc-t">地址变更</div><div class="svc-d">NR1 · 4 项</div></div>
-          <div class="svc" onclick="toast('股份转让 · 6 项 · 含印花税')"><i class="ti ti-arrows-exchange" style="color:#9C27B0"></i><div class="svc-t">股份转让</div><div class="svc-d">含印花税 · 6 项</div></div>
-          <div class="svc" onclick="startReg()"><i class="ti ti-forms" style="color:var(--green)"></i><div class="svc-t">名称变更</div><div class="svc-d">需重核名 · 9 项</div></div>
-          <div class="svc" onclick="toast('股份配发 · 6 项交付物')"><i class="ti ti-chart-pie" style="color:#3949AB"></i><div class="svc-t">股份配发</div><div class="svc-d">AR2 · 6 项</div></div>
-          <div class="svc" onclick="toast('公司注销 · 6 项 · 约3-6月')"><i class="ti ti-building-off" style="color:var(--text3)"></i><div class="svc-t">公司注销</div><div class="svc-d">DR1 · 6 项</div></div>
+        <div class="pkg-card rec" onclick="openSvc('pkg-std')">
+          <div class="pkg-badge">推荐</div>
+          <div style="display:flex;align-items:flex-start;gap:11px">
+            <div class="svc-dot" style="background:var(--accent);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">标准注册套餐</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">基础套餐 + 首年年审 + 公司文件册 + 印章</div></div>
+            <div style="text-align:right"><div class="price price-lg">HKD 5,800</div><div class="price-old">6,800</div></div>
+          </div>
         </div>
-        <div class="card card-pad" style="margin-top:12px;background:var(--bg2)">
-          <div class="note">⏳ 公证认证 / 银行开户协助 / 减资 / 公司恢复 等服务即将上线</div>
+        <div class="pkg-card" onclick="openSvc('pkg-pro')">
+          <div style="display:flex;align-items:flex-start;gap:11px">
+            <div class="svc-dot" style="background:var(--teal);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14.5px">高级注册套餐</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">标准套餐 + 银行开户协助 + SCR + 公证认证</div></div>
+            <div style="text-align:right"><div class="price price-lg">HKD 8,800</div></div>
+          </div>
+        </div>
+
+        <div class="sec-t" style="margin-top:6px"><i class="ti ti-tools" style="font-size:13px;margin-right:4px"></i>其他服务</div>
+        <div class="card" style="padding:0">
+          <div class="svc-row" onclick="openSvc('annual')"><div class="svc-dot" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">年审服务</div><div class="price">HKD 2,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('director')"><div class="svc-dot" style="background:var(--orange)"><i class="ti ti-user-edit"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">董事变更</div><div class="price">HKD 1,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('secretary')"><div class="svc-dot" style="background:var(--teal)"><i class="ti ti-user-cog"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">秘书变更 / 转入</div><div class="price">HKD 1,200</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('address')"><div class="svc-dot" style="background:#E53935"><i class="ti ti-map-pin"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">注册地址变更</div><div class="price">HKD 800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('transfer')"><div class="svc-dot" style="background:#9C27B0"><i class="ti ti-arrows-exchange"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份转让</div><div class="price">HKD 2,000<span style="font-size:11px">起</span></div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('rename')"><div class="svc-dot" style="background:var(--green)"><i class="ti ti-forms"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司名称变更</div><div class="price">HKD 2,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('allot')"><div class="svc-dot" style="background:#3949AB"><i class="ti ti-chart-pie"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份配发</div><div class="price">HKD 1,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" style="border-bottom:none" onclick="openSvc('deregister')"><div class="svc-dot" style="background:var(--text3)"><i class="ti ti-building-off"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司注销</div><div class="price">HKD 2,000</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+        </div>
+        <div class="card card-pad" style="background:var(--bg2)">
+          <div class="note"><i class="ti ti-discount-2" style="color:var(--accent)"></i> 您的渠道码 <b style="color:var(--accent)">LEX888</b> 享专属价格，详情页显示渠道优惠后价格。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 服务详情（电商介绍页）════════ -->
+    <div class="screen has-buybar" id="s-svcdetail" data-title="服务详情" data-back="s-services">
+      <div class="body-pad">
+        <div class="card card-pad" style="background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:46px;height:46px;border-radius:11px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center"><i id="sd-icon" class="ti ti-package" style="font-size:26px"></i></div>
+            <div style="flex:1"><div id="sd-name" style="font-size:17px;font-weight:700">标准注册套餐</div><div id="sd-tags" style="font-size:11px;opacity:.9;margin-top:3px"></div></div>
+          </div>
+          <div style="margin-top:14px;display:flex;align-items:baseline;gap:8px">
+            <span style="font-size:13px;opacity:.85">渠道价</span>
+            <span id="sd-price" style="font-size:26px;font-weight:800">HKD 5,800</span>
+            <span id="sd-priceold" style="font-size:13px;opacity:.7;text-decoration:line-through"></span>
+          </div>
+        </div>
+
+        <div class="sec-t">服务包含</div>
+        <div class="card card-pad" id="sd-incl"></div>
+
+        <div class="sec-t">办理流程</div>
+        <div class="card card-pad">
+          <div id="sd-process" style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text2)"></div>
+        </div>
+
+        <div class="sec-t">办理时效 / 所需材料</div>
+        <div class="card card-pad" style="font-size:12.5px;line-height:1.9" id="sd-meta"></div>
+
+        <div class="sec-t">常见问题</div>
+        <div class="card card-pad">
+          <div class="faq-q" onclick="this.classList.toggle('open')">办理需要多久？<i class="ti ti-chevron-down" style="float:right;color:var(--text4)"></i></div>
+          <div class="faq-a">新公司注册一般 3-5 个工作日（视政府处理）；存续类服务 5-10 个工作日。具体以各服务时效为准。</div>
+          <div class="faq-q" onclick="this.classList.toggle('open')">支付方式？<i class="ti ti-chevron-down" style="float:right;color:var(--text4)"></i></div>
+          <div class="faq-a">当前为线下银行转账 + 上传回单人工确认；微信/支付宝在线支付即将上线。每个服务一一对应一张账单。</div>
+          <div class="faq-q" onclick="this.classList.toggle('open')" style="border-bottom:none">为什么要做 KYC？<i class="ti ti-chevron-down" style="float:right;color:var(--text4)"></i></div>
+          <div class="faq-a">依香港 AMLO，持牌 TCSP 提供秘书服务前必须对客户尽职调查（含 PEP 与制裁名单筛查），资料加密保存 7 年。</div>
+        </div>
+
+        <div class="card card-pad" style="background:var(--yellow-bg);display:flex;gap:9px;align-items:flex-start">
+          <i class="ti ti-shield-check" style="color:#B8860B;font-size:18px;flex-shrink:0;margin-top:1px"></i>
+          <div class="note" style="color:#8a6d00">本平台为香港持牌 TCSP，所有资料依 AMLO 加密保存 7 年。</div>
+        </div>
+      </div>
+      <div class="buybar">
+        <div><div style="font-size:10px;color:var(--text3)">渠道价</div><div class="price" style="font-size:18px" id="sd-barprice">HKD 5,800</div></div>
+        <button class="btn" onclick="buyNow()">立即办理</button>
+      </div>
+    </div>
+
+    <!-- ════════ 信息填写（必要信息）════════ -->
+    <div class="screen has-buybar" id="s-svcform" data-title="填写服务信息" data-back="s-svcdetail">
+      <div class="body-pad">
+        <div class="card card-pad" style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div class="svc-dot" style="background:var(--accent)" id="sf-icon"><i class="ti ti-package"></i></div>
+          <div style="flex:1"><div id="sf-name" style="font-weight:600;font-size:14px">标准注册套餐</div><div class="note">请填写办理所需的必要信息</div></div>
+        </div>
+        <div id="sf-fields"></div>
+        <div class="card card-pad" style="background:var(--accent-bg)">
+          <div class="note" style="color:var(--accent-d)"><i class="ti ti-info-circle"></i> <span id="sf-kyc-note">新公司注册将进入 KYC 尽调 + 核名 + NNC1 注册完整流程。</span></div>
+        </div>
+      </div>
+      <div class="buybar">
+        <button class="btn ghost" style="flex:0 0 90px" onclick="go('s-svcdetail',true)">上一步</button>
+        <button class="btn" onclick="toOrderConfirm()">下一步 · 确认订单</button>
+      </div>
+    </div>
+
+    <!-- ════════ 订单确认（价格明细）════════ -->
+    <div class="screen has-buybar" id="s-svcorder" data-title="确认订单" data-back="s-svcform">
+      <div class="body-pad">
+        <div class="sec-t">服务清单</div>
+        <div class="card" style="padding:0">
+          <div class="svc-row" style="cursor:default">
+            <div class="svc-dot" style="background:var(--accent)" id="so-icon"><i class="ti ti-package"></i></div>
+            <div style="flex:1"><div id="so-name" style="font-size:13.5px;font-weight:600">标准注册套餐</div><div class="note" id="so-desc">含 4 项服务</div></div>
+            <div class="price" id="so-price">HKD 5,800</div>
+          </div>
+        </div>
+        <div class="sec-t">价格明细</div>
+        <div class="card card-pad">
+          <div class="qty-line"><span style="color:var(--text2)">服务原价</span><span id="so-orig">HKD 6,800</span></div>
+          <div class="qty-line"><span style="color:var(--text2)">渠道优惠（LEX888）</span><span style="color:var(--green-d)" id="so-disc">− HKD 1,000</span></div>
+          <div class="qty-line"><span style="font-weight:700;font-size:15px">应付合计</span><span class="price" style="font-size:18px" id="so-total">HKD 5,800</span></div>
+        </div>
+        <div class="card card-pad">
+          <label class="check-row" style="padding:2px" onclick="toggleCheck('so-agree')"><div class="cbox" id="so-agree"><i class="ti ti-check"></i></div><span style="font-size:12.5px">我已阅读并同意《服务条款》及 AMLO 合规说明，确认所填信息真实</span></label>
+        </div>
+      </div>
+      <div class="buybar">
+        <div><div style="font-size:10px;color:var(--text3)">应付</div><div class="price" style="font-size:18px" id="so-barprice">HKD 5,800</div></div>
+        <button class="btn" id="so-submit" onclick="submitOrder()">提交订单 · 去支付</button>
+      </div>
+    </div>
+
+    <!-- ════════ 支付成功 ════════ -->
+    <div class="screen" id="s-paysuccess" data-title="支付提交成功">
+      <div class="body-pad" style="text-align:center">
+        <div class="success-ring"><i class="ti ti-check"></i></div>
+        <div style="font-size:18px;font-weight:700">回单已提交</div>
+        <div class="note" style="margin:6px 0 18px">运营核对到账后，订单将进入「服务中」并开始办理</div>
+        <div class="card card-pad" style="text-align:left">
+          <div class="qty-line"><span style="color:var(--text2)">订单号</span><span style="font-family:monospace" id="ps-order">ORD-2026-0205</span></div>
+          <div class="qty-line"><span style="color:var(--text2)">账单号</span><span style="font-family:monospace" id="ps-bill">LEA-2026-0205-1</span></div>
+          <div class="qty-line"><span style="color:var(--text2)">服务</span><span id="ps-svc">标准注册套餐</span></div>
+          <div class="qty-line"><span style="color:var(--text2)">金额</span><span class="price" id="ps-amt">HKD 5,800</span></div>
+          <div class="qty-line"><span style="color:var(--text2)">状态</span><span class="tag t-blue">待确认</span></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="btn ghost" onclick="go('s-home')">返回首页</button>
+          <button class="btn" onclick="go('s-orders')">查看订单</button>
         </div>
       </div>
     </div>
@@ -633,16 +729,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="screen" id="s-bill" data-title="账单支付" data-back="s-home">
       <div class="body-pad">
         <div class="card card-pad" style="text-align:center">
-          <div class="note">账单号 LEA-2026-0188-1 · 首付款</div>
-          <div class="amount" style="margin:8px 0;color:var(--text)">HKD 2,800.00</div>
+          <div class="note" id="bill-no">账单号 LEA-2026-0188-1</div>
+          <div class="amount" style="margin:8px 0;color:var(--text)" id="bill-amt">HKD 2,800.00</div>
           <span class="tag t-orange" id="bill-status">待支付</span>
-          <div class="note" style="margin-top:8px">7 天内有效 · 逾期自动作废</div>
+          <div class="note" style="margin-top:8px">7 天内有效 · 逾期自动作废 · 此账单对应 1 项服务</div>
         </div>
-        <div class="sec-t">费用明细（逐项清结）</div>
+        <div class="sec-t">费用明细（账单 ↔ 服务 一一对应）</div>
         <div class="card">
-          <div class="label-line" style="padding:12px 14px"><span>公司注册全套服务（首付 50%）</span><span style="font-weight:600">2,500.00</span></div>
-          <div class="label-line" style="padding:12px 14px"><span>政府注册费 + BR 费</span><span style="font-weight:600">300.00</span></div>
-          <div class="label-line" style="padding:12px 14px;font-weight:700"><span>首付款合计</span><span style="color:var(--green-d)">HKD 2,800.00</span></div>
+          <div class="label-line" style="padding:12px 14px"><span id="bill-svc">标准注册套餐</span><span style="font-weight:600" id="bill-svc-amt">5,800.00</span></div>
+          <div class="label-line" style="padding:12px 14px;font-weight:700"><span>应付合计</span><span style="color:var(--green-d)" id="bill-total">HKD 5,800.00</span></div>
         </div>
         <div class="card card-pad" style="background:var(--bg2)">
           <div class="sec-t" style="padding:0 0 8px">线下转账 · Leapex 收款账户</div>
@@ -771,8 +866,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   <!-- TabBar -->
   <div class="tabbar" id="tabbar">
     <div class="tab on" data-tab="home" onclick="go('s-home')"><i class="ti ti-home-2"></i><span>首页</span></div>
-    <div class="tab" data-tab="orders" onclick="go('s-orders')"><i class="ti ti-clipboard-list"></i><span>订单服务</span></div>
-    <div class="tab" data-tab="messages" onclick="go('s-messages')"><i class="ti ti-bell"></i><span>消息通知</span></div>
+    <div class="tab" data-tab="services" onclick="go('s-services')"><i class="ti ti-apps"></i><span>服务</span></div>
+    <div class="tab" data-tab="orders" onclick="go('s-orders')"><i class="ti ti-clipboard-list"></i><span>订单</span></div>
+    <div class="tab" data-tab="messages" onclick="go('s-messages')"><i class="ti ti-bell"></i><span>消息</span></div>
     <div class="tab" data-tab="me2" onclick="go('s-me')"><i class="ti ti-user"></i><span>我的</span></div>
   </div>
 
@@ -837,10 +933,12 @@ function go(id, isBack){
   // back button: show if screen has data-back OR history exists and not a tab root
   var isTabRoot = !!next.dataset.tab;
   document.getElementById('navback').style.visibility = (next.dataset.back || (!isTabRoot && histStack.length)) ? 'visible' : 'hidden';
-  // tabbar state
+  // tabbar：仅 Tab 根页显示，二级页隐藏（贴合小程序 navigateTo）
   var tabKey = next.dataset.tab;
-  document.getElementById('tabbar').style.display = tabKey ? 'flex' : 'flex';
+  document.getElementById('tabbar').style.display = tabKey ? 'flex' : 'none';
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.tab===tabKey); });
+  // page hooks
+  if(id==='s-orders' && typeof renderOrders==='function') renderOrders();
 }
 function goBack(){
   var cur = document.querySelector('.screen.on');
@@ -950,7 +1048,25 @@ function pickArt(el){
   document.querySelectorAll('#reg-3 .radio-card').forEach(function(c){ c.classList.remove('on'); });
   el.classList.add('on');
 }
-function regSubmit(){ toast('注册信息已提交，生成首付款账单'); setTimeout(function(){ go('s-bill'); }, 1000); }
+function regSubmit(){
+  var svc = CURRENT_SVC || SVC_DATA['pkg-std'];
+  var price = svc.channelPrice || chPrice(svc.price);
+  var no = 'ORD-2026-0'+(ORD_SEQ++);
+  CURRENT_ORDER = {
+    no:no, company:'星辰科技有限公司', pkg:svc.name, channel:CHANNEL,
+    status:'待支付', total:price,
+    services:[{name:svc.name, icon:svc.icon, color:'green', bill:no.replace('ORD','LEA')+'-1', amt:price, bs:'待支付'}]
+  };
+  ORDERS.unshift(CURRENT_ORDER);
+  document.getElementById('bill-no').textContent = '账单号 '+CURRENT_ORDER.services[0].bill;
+  document.getElementById('bill-amt').textContent = 'HKD '+fmtMoney(price)+'.00';
+  document.getElementById('bill-status').textContent = '待支付';
+  document.getElementById('bill-status').className = 'tag t-orange';
+  document.getElementById('bill-svc').textContent = svc.name;
+  document.getElementById('bill-svc-amt').textContent = fmtMoney(price)+'.00';
+  document.getElementById('bill-total').textContent = 'HKD '+fmtMoney(price)+'.00';
+  toast('注册信息已提交，生成账单'); setTimeout(function(){ go('s-bill'); }, 1000);
+}
 
 /* Payment proof */
 function proofUploaded(){
@@ -959,8 +1075,208 @@ function proofUploaded(){
 function proofSubmit(){
   document.getElementById('bill-status').textContent='待确认';
   document.getElementById('bill-status').className='tag t-blue';
+  // 支付成功页填充
+  if(CURRENT_ORDER){
+    document.getElementById('ps-order').textContent = CURRENT_ORDER.no;
+    document.getElementById('ps-bill').textContent  = CURRENT_ORDER.no.replace('ORD','LEA')+'-1';
+    document.getElementById('ps-svc').textContent   = CURRENT_ORDER.pkg;
+    document.getElementById('ps-amt').textContent   = 'HKD '+fmtMoney(CURRENT_ORDER.total);
+    CURRENT_ORDER.services[0].bs = '待确认';
+  }
   toast('回单已提交，等待运营核对到账');
-  setTimeout(function(){ go('s-mycompany'); }, 1200);
+  setTimeout(function(){ go('s-paysuccess'); }, 1000);
+}
+
+/* ═══════════ 服务目录 / 电商购买流程 ═══════════ */
+function fmtMoney(n){ return Number(n).toLocaleString('en-HK'); }
+var CHANNEL = 'LEX888';
+
+// 服务目录数据
+var SVC_DATA = {
+  'pkg-basic':{name:'基础注册套餐',icon:'ti-package',price:3800,old:0,form:'register',tags:'含 4 项服务',
+    incl:['公司注册（CI + BR）','首年法定秘书','注册地址','商业登记证'],
+    process:['KYC','核名','注册','交付'],meta:'办理时效：3-5 个工作日<br>所需材料：董事/股东身份证或护照、地址证明<br>交付物：注册证书 CI、商业登记证 BR、章程、名册等'},
+  'pkg-std':{name:'标准注册套餐',icon:'ti-package',price:5800,old:6800,form:'register',tags:'推荐 · 含 7 项服务',
+    incl:['基础套餐全部内容','首年公司年审','公司文件册 Company Kit','公司圆章 + 签字章'],
+    process:['KYC','核名','注册','交付'],meta:'办理时效：3-5 个工作日<br>所需材料：身份证/护照、地址证明<br>交付物：19 项（含印章、文件册）'},
+  'pkg-pro':{name:'高级注册套餐',icon:'ti-package',price:8800,old:0,form:'register',tags:'含 10 项服务',
+    incl:['标准套餐全部内容','银行开户协助','SCR 重要控制人登记册建立','公证认证'],
+    process:['KYC','核名','注册','开户','交付'],meta:'办理时效：5-10 个工作日<br>含银行开户预约与公证认证<br>交付物：19 项 + 开户文件包 + 公证件'},
+  'reg':null, // alias → pkg-std
+  'annual':{name:'年审服务',icon:'ti-calendar-check',price:2800,old:0,form:'annual',tags:'NAR1 周年申报 · 7 项交付物',
+    incl:['周年申报表 NAR1 编制与提交','更新商业登记证 BR','董事/股东名册更新','公司秘书确认函','KYC 年度复核'],
+    process:['信息核对','KYC复核','申报','交付'],meta:'办理时效：5-7 个工作日<br>所需材料：公司 CI/BR、财政年度结算日<br>提示：逾期年审政府将罚款，请及时办理'},
+  'director':{name:'董事变更',icon:'ti-user-edit',price:1500,old:0,form:'director',tags:'ND2A · 5 项交付物',
+    incl:['董事变更通知书 ND2A','新任董事任命书','离任董事辞职书','董事名册更新','董事会决议书'],
+    process:['信息填写','新董事KYC','申报','交付'],meta:'办理时效：3-5 个工作日<br>新任董事需完成 KYC 尽调<br>同步更新 SCR'},
+  'secretary':{name:'秘书变更 / 转入',icon:'ti-user-cog',price:1200,old:0,form:'secretary',tags:'ND2B · 5 项交付物',
+    incl:['秘书变更通知书 ND2B','新任秘书任命书（Leapex）','离任秘书辞职书','秘书名册更新','董事会决议书'],
+    process:['信息填写','交接','申报','交付'],meta:'办理时效：3-5 个工作日<br>Leapex 接任法定秘书<br>转入含历史文件交接核对'},
+  'address':{name:'注册地址变更',icon:'ti-map-pin',price:800,old:0,form:'address',tags:'NR1 · 4 项交付物',
+    incl:['注册地址变更通知书 NR1','新地址证明','董事会决议书','更新地址通知书'],
+    process:['信息填写','申报','交付'],meta:'办理时效：2-3 个工作日<br>可选用 Leapex 虚拟注册地址'},
+  'transfer':{name:'股份转让',icon:'ti-arrows-exchange',price:2000,old:0,form:'transfer',tags:'含印花税 · 6 项交付物',
+    incl:['股份转让文书','印花税申报表','转让后股东名册','董事会批准决议','印花税缴付证明','更新股票证书'],
+    process:['信息填写','印花税','申报','交付'],meta:'办理时效：5-7 个工作日<br>受让方需完成 KYC<br>系统预估应缴印花税（0.2% 对价或资产净值孰高）'},
+  'rename':{name:'公司名称变更',icon:'ti-forms',price:2500,old:0,form:'rename',tags:'需重核名 · 9 项交付物',
+    incl:['核名结果通知书','名称变更决定书 NNC2','更新 CI','更新 BR','更新章程','董事会决议','新圆章','新签字章','致银行通知书'],
+    process:['核名','申报','重制印章','交付'],meta:'办理时效：7-10 个工作日<br>需重新走核名流程（通过后继续）<br>含新印章重制'},
+  'allot':{name:'股份配发',icon:'ti-chart-pie',price:1800,old:0,form:'allot',tags:'AR2 · 6 项交付物',
+    incl:['股份配发申报表 AR2','配发后股东名册','配发后董事名册','董事会配发决议','新股票证书','股份配发通知书'],
+    process:['信息填写','申报','交付'],meta:'办理时效：3-5 个工作日<br>配发予新股东需完成 KYC<br>同步更新 SCR'},
+  'deregister':{name:'公司注销',icon:'ti-building-off',price:2000,old:0,form:'deregister',tags:'DR1 · 6 项交付物',
+    incl:['注销申请书 DR1','税务局不反对注销证明','公司注册处注销证明','董事会注销决议','股东同意注销决议','注销完成通知书'],
+    process:['税务结清','决议','提交DR1','政府审批'],meta:'办理时效：3-6 个月（政府审批）<br>需先结清税务并取得不反对通知书'},
+};
+SVC_DATA['reg'] = SVC_DATA['pkg-std'];
+
+// 各服务必要信息表单
+var SVC_FORM = {
+  register:[['期望公司英文名','如 Star Tech Limited'],['期望公司中文名','如 星辰科技有限公司'],['联系人姓名',''],['联系邮箱','name@email.com']],
+  annual:[['公司名称',''],['公司注册编号 CI',''],['商业登记证号 BR',''],['财政年度结算日','如 03-31']],
+  director:[['公司名称',''],['离任董事姓名',''],['新任董事姓名',''],['新任董事证件号','将触发 KYC']],
+  secretary:[['公司名称',''],['是否由 Leapex 接任','是 / 否']],
+  address:[['公司名称',''],['新注册地址 / 选用 Leapex 地址','']],
+  transfer:[['公司名称',''],['转让方姓名',''],['受让方姓名',''],['转让股数',''],['转让对价 (HKD)','用于预估印花税']],
+  rename:[['公司名称（现）',''],['拟用新名称','将触发核名流程']],
+  allot:[['公司名称',''],['配发对象',''],['配发股数','']],
+  deregister:[['公司名称',''],['注销原因',''],['税务是否已结清','是 / 否']],
+};
+var KYC_NOTE = {
+  register:'新公司注册将进入 KYC 尽调 + 核名 + NNC1 注册完整流程。',
+  director:'新任董事需完成 KYC 尽职调查（含 PEP / 制裁名单筛查）。',
+  transfer:'受让方需完成 KYC；系统将预估应缴印花税。',
+  rename:'名称变更需重新走核名流程，通过后方可继续。',
+  allot:'配发予新股东需完成 KYC 尽职调查。',
+  annual:'年审将触发 KYC 年度复核，如身份信息有变需重新上传。',
+  secretary:'秘书转入将进行历史合规文件交接核对。',
+  address:'地址变更如选用 Leapex 地址，将自动配置注册地址。',
+  deregister:'注销前需结清税务并取得税务局不反对注销证明书。',
+};
+
+var CURRENT_SVC = null, CURRENT_ORDER = null;
+function chPrice(p){ return Math.round(p*0.85/100)*100; } // 渠道 85 折，取整百（演示）
+
+function openSvc(key){
+  var s = SVC_DATA[key]; if(!s) return;
+  CURRENT_SVC = Object.assign({key:key}, s);
+  var cp = s.old ? s.price : chPrice(s.price);
+  var op = s.old ? s.old : s.price;
+  CURRENT_SVC.channelPrice = cp; CURRENT_SVC.origPrice = op;
+  document.getElementById('sd-icon').className = 'ti '+s.icon;
+  document.getElementById('sd-name').textContent = s.name;
+  document.getElementById('sd-tags').textContent = s.tags;
+  document.getElementById('sd-price').textContent = 'HKD '+fmtMoney(cp);
+  document.getElementById('sd-priceold').textContent = op>cp ? 'HKD '+fmtMoney(op) : '';
+  document.getElementById('sd-barprice').textContent = 'HKD '+fmtMoney(cp);
+  document.getElementById('sd-incl').innerHTML = s.incl.map(function(x){
+    return '<div class="incl"><i class="ti ti-circle-check"></i><span>'+x+'</span></div>'; }).join('');
+  document.getElementById('sd-process').innerHTML = s.process.map(function(p,i){
+    return (i?'<i class="ti ti-chevron-right" style="color:var(--text4)"></i>':'')+'<span style="text-align:center"><span style="display:block;width:24px;height:24px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font-weight:700;line-height:24px;margin:0 auto 3px">'+(i+1)+'</span>'+p+'</span>'; }).join('');
+  document.getElementById('sd-meta').innerHTML = s.meta;
+  go('s-svcdetail');
+}
+function buyNow(){
+  if(!CURRENT_SVC) return;
+  // 新注册类 → 走完整 KYC + 核名 + NNC1 流程
+  if(CURRENT_SVC.form==='register'){ go('s-kyc'); return; }
+  document.getElementById('sf-icon').innerHTML = '<i class="ti '+CURRENT_SVC.icon+'"></i>';
+  document.getElementById('sf-name').textContent = CURRENT_SVC.name;
+  var ft = CURRENT_SVC.form;
+  document.getElementById('sf-kyc-note').textContent = KYC_NOTE[ft] || '';
+  var fields = SVC_FORM[ft] || [];
+  document.getElementById('sf-fields').innerHTML = fields.map(function(f){
+    return '<div class="field"><div class="field-l">'+f[0]+'</div><input class="input" placeholder="'+(f[1]||'')+'"></div>'; }).join('');
+  go('s-svcform');
+}
+function toOrderConfirm(){
+  if(!CURRENT_SVC) return;
+  var cp = CURRENT_SVC.channelPrice, op = CURRENT_SVC.origPrice;
+  document.getElementById('so-icon').innerHTML = '<i class="ti '+CURRENT_SVC.icon+'"></i>';
+  document.getElementById('so-name').textContent = CURRENT_SVC.name;
+  document.getElementById('so-desc').textContent = CURRENT_SVC.tags;
+  document.getElementById('so-price').textContent = 'HKD '+fmtMoney(cp);
+  document.getElementById('so-orig').textContent = 'HKD '+fmtMoney(op);
+  document.getElementById('so-disc').textContent = op>cp ? '− HKD '+fmtMoney(op-cp) : '− HKD 0';
+  document.getElementById('so-total').textContent = 'HKD '+fmtMoney(cp);
+  document.getElementById('so-barprice').textContent = 'HKD '+fmtMoney(cp);
+  document.getElementById('so-agree').classList.remove('on');
+  go('s-svcorder');
+}
+var ORD_SEQ = 205;
+function submitOrder(){
+  if(!document.getElementById('so-agree').classList.contains('on')){ toast('请先勾选同意服务条款'); return; }
+  var no = 'ORD-2026-0'+(ORD_SEQ++);
+  CURRENT_ORDER = {
+    no:no, company:'（待注册）'+CURRENT_SVC.name, pkg:CURRENT_SVC.name, channel:CHANNEL,
+    status:'待支付', total:CURRENT_SVC.channelPrice,
+    services:[{name:CURRENT_SVC.name, icon:CURRENT_SVC.icon, color:'accent', bill:no.replace('ORD','LEA')+'-1', amt:CURRENT_SVC.channelPrice, bs:'待支付'}]
+  };
+  ORDERS.unshift(CURRENT_ORDER);
+  // 填充支付页
+  document.getElementById('bill-no').textContent = '账单号 '+CURRENT_ORDER.services[0].bill;
+  document.getElementById('bill-amt').textContent = 'HKD '+fmtMoney(CURRENT_ORDER.total)+'.00';
+  document.getElementById('bill-status').textContent = '待支付';
+  document.getElementById('bill-status').className = 'tag t-orange';
+  document.getElementById('bill-svc').textContent = CURRENT_SVC.name;
+  document.getElementById('bill-svc-amt').textContent = fmtMoney(CURRENT_ORDER.total)+'.00';
+  document.getElementById('bill-total').textContent = 'HKD '+fmtMoney(CURRENT_ORDER.total)+'.00';
+  toast('订单 '+no+' 已生成');
+  setTimeout(function(){ go('s-bill'); }, 600);
+}
+
+/* ═══════════ 订单列表（清晰状态体系）═══════════ */
+var ORD_STATUS = { '待支付':'t-orange', '服务中':'t-blue', '已完成':'t-green', '已取消':'t-gray' };
+var BS_CHIP = { '待支付':'t-orange','待确认':'t-blue','已到账':'t-green','已含':'t-green','办理中':'t-blue','已交付':'t-green','已作废':'t-gray' };
+var COLOR_VAR = { accent:'var(--accent)', green:'var(--green)', teal:'var(--teal)', blue:'var(--blue)', orange:'var(--orange)' };
+var ORDERS = [
+  { no:'ORD-2026-0188', company:'星辰科技有限公司', pkg:'标准注册套餐', channel:'LEX888', status:'服务中', total:5800,
+    services:[
+      {name:'新公司注册', icon:'ti-building-plus', color:'green', bill:'LEA-2026-0188-1', amt:5800, bs:'已到账'},
+      {name:'首年法定秘书', icon:'ti-shield-check', color:'teal', amt:0, bs:'已含'},
+      {name:'公司印章套装', icon:'ti-stamp', color:'orange', bill:'LEA-2026-0188-3', amt:0, bs:'办理中'},
+    ]},
+  { no:'ORD-2026-0142', company:'恒丰贸易有限公司', pkg:'年审 + 董事变更', channel:'LEX888', status:'已完成', total:2300,
+    services:[
+      {name:'2025 公司年审', icon:'ti-calendar-check', color:'blue', bill:'LEA-2026-0142-1', amt:1500, bs:'已交付'},
+      {name:'董事变更', icon:'ti-user-edit', color:'orange', bill:'LEA-2026-0142-2', amt:800, bs:'已交付'},
+    ]},
+  { no:'ORD-2026-0090', company:'光辉投资有限公司', pkg:'注册地址变更', channel:'自然流量', status:'已取消', total:800,
+    services:[ {name:'注册地址变更', icon:'ti-map-pin', color:'orange', bill:'LEA-2026-0090-1', amt:800, bs:'已作废'} ]},
+];
+var ordFilter = 'all';
+function setOrdFilter(el, f){
+  document.querySelectorAll('#ord-filter .mc').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on'); ordFilter = f; renderOrders();
+}
+function renderOrders(){
+  var box = document.getElementById('orders-list'); if(!box) return;
+  var list = ordFilter==='all' ? ORDERS : ORDERS.filter(function(o){ return o.status===ordFilter; });
+  if(!list.length){ box.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)"><i class="ti ti-clipboard-off" style="font-size:32px"></i><div style="margin-top:8px;font-size:13px">暂无订单</div></div>'; return; }
+  box.innerHTML = list.map(function(o){
+    var svcRows = o.services.map(function(s){
+      var amt = s.amt>0 ? 'HKD '+fmtMoney(s.amt) : 'HKD 0';
+      return '<div class="svc-line">'
+        + '<div class="svc-dot" style="background:'+(COLOR_VAR[s.color]||'var(--accent)')+'"><i class="ti '+s.icon+'"></i></div>'
+        + '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+s.name+'</div>'
+        + '<div style="font-size:10.5px;color:var(--text3)">'+(s.bill?'账单 '+s.bill:'内嵌服务')+'</div></div>'
+        + '<div style="text-align:right"><div style="font-size:12.5px;font-weight:700">'+amt+'</div>'
+        + '<span class="bill-chip '+(BS_CHIP[s.bs]||'t-gray')+'">'+s.bs+'</span></div></div>';
+    }).join('');
+    var canAdd = o.status==='服务中' || o.status==='待支付';
+    return '<div class="order-card">'
+      + '<div class="order-head" onclick="go(\'s-orderdetail\')">'
+      +   '<div style="display:flex;justify-content:space-between;align-items:center">'
+      +     '<div style="font-weight:700;font-size:14.5px">'+o.company+'</div>'
+      +     '<span class="tag '+(ORD_STATUS[o.status]||'t-gray')+'">'+o.status+'</span></div>'
+      +   '<div style="font-size:11.5px;color:var(--text3);margin-top:3px">'+o.no+' · '+o.pkg+' · 含 '+o.services.length+' 项服务 · 渠道 '+o.channel+'</div>'
+      + '</div>'
+      + svcRows
+      + '<div style="padding:10px 14px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center">'
+      +   '<span style="font-size:11px;color:var(--text3)">订单合计 HKD '+fmtMoney(o.total)+'</span>'
+      +   (canAdd ? '<button class="btn ghost" style="width:auto;padding:6px 12px;font-size:12px" onclick="event.stopPropagation();go(\'s-services\')"><i class="ti ti-plus" style="font-size:12px"></i>新增服务</button>' : '<span style="font-size:11px;color:var(--green-d)"><i class="ti ti-circle-check"></i> 已交付</span>')
+      + '</div></div>';
+  }).join('');
 }
 
 /* ── Boot：新用户先看整页渠道入口；已注册直接进入 ── */
@@ -968,6 +1284,7 @@ function proofSubmit(){
   var registered = false;
   try{ registered = localStorage.getItem('tcsp_registered')==='1'; }catch(e){}
   if(!registered){ document.getElementById('splash').classList.add('on'); }
+  if(typeof renderOrders==='function') renderOrders();
 })();
 </script>
 </body>
