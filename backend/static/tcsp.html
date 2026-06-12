@@ -8,25 +8,29 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  /* Claude design system · Light Mode — 极简黑白灰 + 靛蓝强调 */
-  --accent:#4F46E5; --accent-d:#4338CA; --accent-bg:#EEF0FB;
-  --primary:#1A1A1A; --primary-d:#000000; --on-primary:#FFFFFF;
-  --green:#0E9F6E; --green-d:#057A55; --green-bg:#E7F6EF;
-  --blue:#4F46E5; --orange:#B45309; --red:#DC2626; --red-bg:#FDECEC;
-  --amber:#B45309; --yellow-bg:#FBF6E9;
-  --text:#1A1A1A; --text2:#666666; --text3:#999999; --text4:#B2B2B2;
-  --bg:#F5F5F5; --bg2:#FAFAFA; --card:#FFFFFF; --line:#E8E8E8; --line2:#E0E0E0;
-  --shadow:0 1px 3px rgba(0,0,0,.07);
+  /* 设计规范 v1.0 · Light — Claude 陶土橘 + 克制中性 */
+  --accent:#C15F3C; --accent-d:#A94E30; --accent-bg:#F7EBE5;
+  --primary:#C15F3C; --primary-d:#A94E30; --on-primary:#FFFFFF;   /* 主CTA=强调色填充 */
+  --green:#2E8B57; --green-d:#256F46; --green-bg:#E7F2EC;          /* success */
+  --blue:#3B6EA5;  --blue-bg:#EAF1F8;                              /* info / 服务中 */
+  --teal:#3B6EA5;                                                 /* 归并到 info */
+  --orange:#B45309; --amber:#B45309; --yellow-bg:#FBF3E6;         /* warning / 待办 */
+  --red:#D93A3A; --red-bg:#FBEAEA;                                /* error */
+  --text:#1A1A1A; --text2:#6B6B6B; --text3:#9B9B9B; --text4:#BDBDBD;
+  --bg:#F5F5F2; --bg2:#EFEFEC; --card:#FFFFFF; --line:#E5E5E2; --line2:#DDDDD8;
+  --shadow:0 1px 3px rgba(0,0,0,.06);
 }
 [data-theme="dark"]{
-  /* Dark Mode — 规范第九章 */
-  --accent:#7C73F0; --accent-d:#6D63E8; --accent-bg:#23223A;
-  --primary:#FFFFFF; --primary-d:#EDEDED; --on-primary:#1A1A1A;
-  --green:#34D399; --green-d:#34D399; --green-bg:#13291F;
-  --blue:#7C73F0; --orange:#F0A848; --red:#F87171; --red-bg:#2A1515;
-  --amber:#F0C040; --yellow-bg:#2A2310;
-  --text:#FFFFFF; --text2:#A8A8A8; --text3:#7E7E7E; --text4:#5A5A5A;
-  --bg:#0F0F0F; --bg2:#242424; --card:#1A1A1A; --line:#2C2C2C; --line2:#363636;
+  /* Dark — OLED 用 #1A1A1A 非纯黑 */
+  --accent:#D97757; --accent-d:#C5664A; --accent-bg:#3A2A22;
+  --primary:#D97757; --primary-d:#C5664A; --on-primary:#1A1A1A;
+  --green:#4CAF7D; --green-d:#4CAF7D; --green-bg:#14291F;
+  --blue:#6F9BD1; --blue-bg:#1A2533;
+  --teal:#6F9BD1;
+  --orange:#E0A458; --amber:#E0A458; --yellow-bg:#2A2310;
+  --red:#F06A6A; --red-bg:#2A1515;
+  --text:#F5F5F2; --text2:#A0A0A0; --text3:#7E7E7E; --text4:#5A5A5A;
+  --bg:#1A1A1A; --bg2:#262626; --card:#262626; --line:#3A3A3A; --line2:#444444;
   --shadow:0 1px 3px rgba(0,0,0,.4);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;
@@ -83,11 +87,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .btn-sm{padding:8px 16px;font-size:13px;width:auto;display:inline-block;border-radius:18px}
 .tag{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:600}
 .t-green{background:var(--green-bg);color:var(--green-d)}
-.t-blue{background:#EAF0FB;color:var(--blue)}
-.t-orange{background:#FFF0E0;color:var(--orange)}
+.t-blue{background:var(--blue-bg);color:var(--blue)}
+.t-orange{background:var(--yellow-bg);color:var(--orange)}
 .t-red{background:var(--red-bg);color:var(--red)}
-.t-yellow{background:var(--yellow-bg);color:#B8860B}
-.t-gray{background:#F0F0F0;color:var(--text3)}
+.t-yellow{background:var(--yellow-bg);color:var(--amber)}
+.t-gray{background:var(--bg2);color:var(--text3)}
 .input{width:100%;padding:12px 13px;border:1px solid var(--line2);border-radius:8px;font-size:15px;font-family:inherit;background:var(--card);color:var(--text);outline:none;transition:border-color .18s,box-shadow .18s}
 .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
 .field{margin-bottom:14px}
@@ -107,7 +111,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
 /* hero */
 .hero{background:linear-gradient(135deg,#1A1A1A 0%,#2D2D2D 100%);border-radius:10px;padding:20px;color:#fff;margin-bottom:12px;position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;right:-36px;top:-36px;width:140px;height:140px;background:radial-gradient(circle,rgba(79,70,229,.55),transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;right:-36px;top:-36px;width:140px;height:140px;background:radial-gradient(circle,rgba(193,95,60,.55),transparent 70%);border-radius:50%}
 .hero::before{content:'';position:absolute;right:18px;bottom:-30px;width:80px;height:80px;border:1px solid rgba(255,255,255,.12);border-radius:50%}
 .hero-t{font-size:18px;font-weight:700;margin-bottom:4px}
 .hero-d{font-size:12px;opacity:.92;line-height:1.6}
@@ -168,18 +172,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .splash{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;overflow:hidden;background:#0B0B14;color:#fff}
 .splash.on{display:flex}
 .splash-bg{position:absolute;inset:0;background:
-  radial-gradient(55% 45% at 18% 12%,rgba(79,70,229,.62),transparent 60%),
-  radial-gradient(50% 40% at 88% 22%,rgba(13,148,136,.45),transparent 60%),
-  radial-gradient(65% 55% at 62% 100%,rgba(124,115,240,.5),transparent 62%),
+  radial-gradient(55% 45% at 18% 12%,rgba(193,95,60,.62),transparent 60%),
+  radial-gradient(50% 40% at 88% 22%,rgba(217,160,91,.45),transparent 60%),
+  radial-gradient(65% 55% at 62% 100%,rgba(193,95,60,.5),transparent 62%),
   linear-gradient(160deg,#0B0B14,#14132099 60%,#0B0B14);}
 .splash-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:radial-gradient(circle at 50% 32%,#000,transparent 78%);mask-image:radial-gradient(circle at 50% 32%,#000,transparent 78%)}
 .splash-blob{position:absolute;border-radius:50%;filter:blur(46px);opacity:.5;mix-blend-mode:screen;animation:blob 10s ease-in-out infinite}
 @keyframes blob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(18px,-30px) scale(1.18)}}
 .splash-inner{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:64px 30px 30px}
-.splash-logo{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(79,70,229,.5)}
+.splash-logo{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(193,95,60,.5)}
 .glass-input{width:100%;padding:16px 16px;border-radius:13px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);backdrop-filter:blur(10px);color:#fff;font-size:24px;letter-spacing:8px;text-align:center;font-weight:700;font-family:inherit;outline:none;text-transform:uppercase}
 .glass-input::placeholder{color:rgba(255,255,255,.35);letter-spacing:4px;font-weight:500}
-.glass-input:focus{border-color:rgba(124,115,240,.9);box-shadow:0 0 0 4px rgba(124,115,240,.2)}
+.glass-input:focus{border-color:rgba(193,95,60,.9);box-shadow:0 0 0 4px rgba(193,95,60,.2)}
 .splash-btn{width:100%;padding:15px;border:none;border-radius:13px;background:#fff;color:#1A1A1A;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 .splash-btn:active{opacity:.85}
 .splash-skip{width:100%;padding:13px;border:1px solid rgba(255,255,255,.25);border-radius:13px;background:transparent;color:rgba(255,255,255,.9);font-size:14px;cursor:pointer;font-family:inherit;margin-top:10px}
@@ -405,10 +409,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="svc-row" onclick="openSvc('annual')"><div class="svc-dot" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">年审服务</div><div class="price">HKD 2,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
           <div class="svc-row" onclick="openSvc('director')"><div class="svc-dot" style="background:var(--orange)"><i class="ti ti-user-edit"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">董事变更</div><div class="price">HKD 1,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
           <div class="svc-row" onclick="openSvc('secretary')"><div class="svc-dot" style="background:var(--teal)"><i class="ti ti-user-cog"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">秘书变更 / 转入</div><div class="price">HKD 1,200</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('address')"><div class="svc-dot" style="background:#E53935"><i class="ti ti-map-pin"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">注册地址变更</div><div class="price">HKD 800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('transfer')"><div class="svc-dot" style="background:#9C27B0"><i class="ti ti-arrows-exchange"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份转让</div><div class="price">HKD 2,000<span style="font-size:11px">起</span></div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('address')"><div class="svc-dot" style="background:#B45309"><i class="ti ti-map-pin"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">注册地址变更</div><div class="price">HKD 800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('transfer')"><div class="svc-dot" style="background:#7A5C9E"><i class="ti ti-arrows-exchange"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份转让</div><div class="price">HKD 2,000<span style="font-size:11px">起</span></div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
           <div class="svc-row" onclick="openSvc('rename')"><div class="svc-dot" style="background:var(--green)"><i class="ti ti-forms"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司名称变更</div><div class="price">HKD 2,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('allot')"><div class="svc-dot" style="background:#3949AB"><i class="ti ti-chart-pie"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份配发</div><div class="price">HKD 1,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('allot')"><div class="svc-dot" style="background:#3B6EA5"><i class="ti ti-chart-pie"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份配发</div><div class="price">HKD 1,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
           <div class="svc-row" style="border-bottom:none" onclick="openSvc('deregister')"><div class="svc-dot" style="background:var(--text3)"><i class="ti ti-building-off"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司注销</div><div class="price">HKD 2,000</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
         </div>
         <div class="card card-pad" style="background:var(--bg2)">
@@ -420,7 +424,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <!-- ════════ 服务详情（电商介绍页）════════ -->
     <div class="screen has-buybar" id="s-svcdetail" data-title="服务详情" data-back="s-services">
       <div class="body-pad">
-        <div class="card card-pad" style="background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff">
+        <div class="card card-pad" style="background:linear-gradient(135deg,#1A1A1A,#A94E30);color:#fff">
           <div style="display:flex;align-items:center;gap:12px">
             <div style="width:46px;height:46px;border-radius:11px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center"><i id="sd-icon" class="ti ti-package" style="font-size:26px"></i></div>
             <div style="flex:1"><div id="sd-name" style="font-size:17px;font-weight:700">标准注册套餐</div><div id="sd-tags" style="font-size:11px;opacity:.9;margin-top:3px"></div></div>
@@ -800,7 +804,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <!-- ════════ DELIVERABLES ════════ -->
     <div class="screen" id="s-deliverables" data-title="交付物中心" data-back="s-mycompany">
       <div class="body-pad">
-        <div class="card card-pad" style="background:linear-gradient(135deg,#312E81,#4338CA);color:#fff">
+        <div class="card card-pad" style="background:linear-gradient(135deg,#7A3A24,#A94E30);color:#fff">
           <div style="font-weight:700;font-size:15px">星辰科技有限公司</div>
           <div style="font-size:12px;opacity:.9;margin-top:3px">交付进度 6 / 17 项就绪 · KYC 存档不对外</div>
           <div style="background:rgba(255,255,255,.25);height:6px;border-radius:3px;margin-top:10px;overflow:hidden"><div style="background:#fff;height:100%;width:35%"></div></div>
@@ -844,7 +848,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="screen" id="s-me" data-title="我的" data-tab="me2">
       <div class="body-pad">
         <div class="card card-pad" style="display:flex;align-items:center;gap:13px">
-          <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1A1A1A,#4338CA);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700">陳</div>
+          <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1A1A1A,#A94E30);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700">陳</div>
           <div style="flex:1"><div style="font-size:16px;font-weight:700">陳大文 Andy Chan</div><div class="note" style="margin-top:2px">taiman@example.hk · 渠道 LEX888</div></div>
           <span class="tag t-green">KYC 已认证</span>
         </div>
@@ -854,7 +858,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="cell" onclick="toast('KYC 资料已加密保存')"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-shield-check"></i></div><div class="cell-main"><div class="cell-t">KYC 资料</div><div class="cell-d">已认证 · AMLO 保存 7 年</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
         <div class="card">
-          <div class="cell" onclick="toast('通知订阅设置')"><div class="cell-ic" style="background:#9C27B0"><i class="ti ti-bell"></i></div><div class="cell-main"><div class="cell-t">通知订阅</div><div class="cell-d">合规通知不可关闭</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('通知订阅设置')"><div class="cell-ic" style="background:#7A5C9E"><i class="ti ti-bell"></i></div><div class="cell-main"><div class="cell-t">通知订阅</div><div class="cell-d">合规通知不可关闭</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
           <div class="cell" onclick="toast('《个人资料（私隐）条例》PDPO 保障')"><div class="cell-ic" style="background:var(--text3)"><i class="ti ti-lock"></i></div><div class="cell-main"><div class="cell-t">隐私与数据</div><div class="cell-d">可查阅 / 更正个人资料</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
           <div class="cell" onclick="toast('Leapex 利柏思商务 · 持牌 TCSP')"><div class="cell-ic" style="background:var(--green-d)"><i class="ti ti-info-circle"></i></div><div class="cell-main"><div class="cell-t">关于 Leapex</div><div class="cell-d">持牌 TCSP · 牌照号 TC0012XX</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
@@ -876,11 +880,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   <div class="splash" id="splash">
     <div class="splash-bg"></div>
     <div class="splash-grid"></div>
-    <div class="splash-blob" style="width:160px;height:160px;background:#4F46E5;top:60px;left:-30px"></div>
-    <div class="splash-blob" style="width:130px;height:130px;background:#0D9488;bottom:140px;right:-20px;animation-delay:-3s"></div>
+    <div class="splash-blob" style="width:160px;height:160px;background:#C15F3C;top:60px;left:-30px"></div>
+    <div class="splash-blob" style="width:130px;height:130px;background:#D9A05B;bottom:140px;right:-20px;animation-delay:-3s"></div>
     <div class="splash-inner">
       <div class="splash-logo">
-        <svg viewBox="0 0 16 16" width="24" height="24"><rect x="1" y="1" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#4F46E5"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#0D9488"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#1A1A1A"/></svg>
+        <svg viewBox="0 0 16 16" width="24" height="24"><rect x="1" y="1" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#C15F3C"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#D9A05B"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#1A1A1A"/></svg>
       </div>
       <div style="margin-top:26px">
         <div style="font-size:13px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.6)">LEAPEX 利柏思商务</div>
