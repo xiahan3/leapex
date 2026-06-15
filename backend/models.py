@@ -1,4 +1,4 @@
-"""SQLModel ORM models for Leapex MVP.
+"""SQLModel ORM models for EasybookX MVP.
 
 Design notes:
 - Single-tenant for MVP (no tenant/company FK enforcement; company_id is a free-form string).

@@ -1,4 +1,4 @@
-"""Leapex MVP backend — FastAPI app."""
+"""EasybookX MVP backend — FastAPI app."""
 import os
 from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException
@@ -11,7 +11,7 @@ from typing import List, Optional, Dict, Any
 from .db import engine, init_db, get_session
 from . import models as M
 
-app = FastAPI(title="Leapex API", version="1.0.0")
+app = FastAPI(title="EasybookX API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +39,7 @@ def on_startup():
 # ═══════════ Health ═══════════
 @app.get("/api/health")
 def health():
-    return {"ok": True, "service": "leapex", "version": "1.0.0"}
+    return {"ok": True, "service": "easybookx", "version": "1.0.0"}
 
 
 # ═══════════ Helpers ═══════════
@@ -436,12 +436,12 @@ def root():
     idx = STATIC_DIR / "index.html"
     if idx.exists():
         return FileResponse(idx)
-    return JSONResponse({"msg": "leapex backend up. UI not yet uploaded."})
+    return JSONResponse({"msg": "easybookx backend up. UI not yet uploaded."})
 
 
 @app.get("/tcsp")
 def tcsp():
-    """Leapex TCSP 公司秘书小程序原型 demo."""
+    """EasybookX TCSP 公司秘书小程序原型 demo."""
     page = STATIC_DIR / "tcsp.html"
     if page.exists():
         return FileResponse(page)

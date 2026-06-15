@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leapex 利柏思商务 — 香港票据 AI 解析与对账系统</title>
+  <title>EasybookX — 香港票据 AI 解析与对账系统</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='1' width='6' height='6' rx='1' fill='%231A1A1A'/%3E%3Crect x='9' y='1' width='6' height='6' rx='1' fill='%231A1A1A'/%3E%3Crect x='1' y='9' width='6' height='6' rx='1' fill='%231A1A1A'/%3E%3Crect x='9' y='9' width='6' height='6' rx='1' fill='%231A1A1A'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
   <style>
@@ -381,8 +381,8 @@
         <svg viewBox="0 0 16 16"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" fill-rule="evenodd"/></svg>
       </div>
       <div>
-        <div style="font-size:14px;font-weight:700;letter-spacing:-.3px">Leapex</div>
-        <div style="font-size:10px;color:var(--text3);letter-spacing:.3px">利柏思商务</div>
+        <div style="font-size:14px;font-weight:700;letter-spacing:-.3px">EasybookX</div>
+        <div style="font-size:10px;color:var(--text3);letter-spacing:.3px">EasybookX</div>
       </div>
     </div>
     <nav class="nav">
@@ -416,6 +416,9 @@
       <div class="ng" style="margin-top:6px">账簿管理</div>
       <div class="ni" id="ni-ledger" onclick="go('ledger',this)">
         <i class="ti ti-book-2" aria-hidden="true"></i><span>账簿浏览</span><span class="nn">NEW</span>
+      </div>
+      <div class="ni" id="ni-auditrpt" onclick="go('auditrpt',this)">
+        <i class="ti ti-report-search" aria-hidden="true"></i><span>AI 审计报告</span><span class="nn">NEW</span>
       </div>
 
       <div class="ng" style="margin-top:6px" data-i18n="ng.settings">设置</div>
@@ -2023,7 +2026,7 @@
                 <div style="font-size:11px;font-weight:700;color:var(--blue-text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">MCP Server</div>
                 <div style="font-size:12px;margin-bottom:6px"><span style="color:var(--text3)">服务地址</span></div>
                 <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:monospace">
-                  https://app.leapex.hk/mcp/v1<span style="margin-left:auto;opacity:.5;font-size:10px">TLS</span>
+                  https://app.easybookx.hk/mcp/v1<span style="margin-left:auto;opacity:.5;font-size:10px">TLS</span>
                 </div>
                 <div style="font-size:11px;margin-top:8px;display:flex;gap:8px">
                   <button class="btn btn-xs" onclick="toast('已复制 MCP 服务地址')">复制地址</button>
@@ -2035,7 +2038,7 @@
                 <div style="font-size:11px;font-weight:700;color:var(--blue-text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">REST API</div>
                 <div style="font-size:12px;margin-bottom:6px"><span style="color:var(--text3)">接口基础地址</span></div>
                 <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:monospace">
-                  https://api.leapex.hk/v1<span style="margin-left:auto;opacity:.5;font-size:10px">OpenAPI</span>
+                  https://api.easybookx.hk/v1<span style="margin-left:auto;opacity:.5;font-size:10px">OpenAPI</span>
                 </div>
                 <div style="font-size:11px;margin-top:8px;display:flex;gap:8px">
                   <button class="btn btn-xs" onclick="toast('已复制 API 基础地址')">复制地址</button>
@@ -2103,7 +2106,7 @@
                     <button class="btn btn-xs" onclick="toast('正在切换默认模型…')">设为默认</button>
                     <button class="btn btn-xs" onclick="toast('已删除接入点')">删除</button>
                   </td></tr>
-                <tr style="background:var(--bg2)"><td>公司自有模型</td><td>私有部署</td><td>leapex-finance-v1</td><td style="font-family:monospace;font-size:11px">10.0.1.5:8080</td><td style="text-align:center"><span class="pill p-amber" style="font-size:10px">待验证</span></td>
+                <tr style="background:var(--bg2)"><td>公司自有模型</td><td>私有部署</td><td>easybookx-finance-v1</td><td style="font-family:monospace;font-size:11px">10.0.1.5:8080</td><td style="text-align:center"><span class="pill p-amber" style="font-size:10px">待验证</span></td>
                   <td style="text-align:center;display:flex;gap:4px;justify-content:center">
                     <button class="btn btn-xs btn-p" onclick="toast('正在测试连接…')">测试</button>
                     <button class="btn btn-xs" onclick="toast('已删除接入点')">删除</button>
@@ -2348,8 +2351,8 @@
           <div class="ch">
             <span class="ct">租户列表</span>
             <div style="display:flex;gap:6px">
-              <input class="rce-input" placeholder="搜索租户名 / 联系人 / BR No" style="width:240px;padding:5px 10px">
-              <select class="inl-sel"><option>全部状态</option><option>active</option><option>trial</option><option>suspended</option></select>
+              <input class="rce-input" id="tenant-search" placeholder="搜索租户名 / 联系人 / BR No" style="width:240px;padding:5px 10px" oninput="renderTenants()">
+              <select class="inl-sel" id="tenant-status-filter" onchange="renderTenants()"><option value="">全部状态</option><option value="active">active</option><option value="trial">trial</option><option value="suspended">suspended</option></select>
             </div>
           </div>
           <table class="tbl">
@@ -2405,69 +2408,19 @@
               <div style="font-size:14px;font-weight:700;margin-bottom:2px">套餐与计费 · Plans & Billing</div>
               <div style="font-size:11.5px;color:var(--text2)">订阅套餐 + Token 用量计费模型 · HKD 标价 · GST 豁免</div>
             </div>
-            <button class="btn btn-p" onclick="toast('新建套餐（演示）')"><i class="ti ti-plus" style="font-size:13px"></i>新建套餐</button>
+            <button class="btn btn-p" onclick="openNewPlanModal()"><i class="ti ti-plus" style="font-size:13px"></i>新建套餐</button>
           </div>
         </div>
 
-        <!-- 套餐卡片 -->
-        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:18px">
-          <div class="bank-card">
-            <div style="font-weight:700;margin-bottom:4px">Trial 试用</div>
-            <div style="font-size:22px;font-weight:700;margin-bottom:8px">$0<span style="font-size:11px;color:var(--text3);font-weight:500"> / 14 天</span></div>
-            <div style="font-size:11.5px;color:var(--text2);line-height:1.7">
-              ✓ 1 家公司<br>✓ 2 个账号<br>✓ 5,000 Token<br>✓ 全部 AI 功能
-            </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3)">活跃 3 个租户</div>
-          </div>
-          <div class="bank-card">
-            <div style="font-weight:700;margin-bottom:4px">Starter</div>
-            <div style="font-size:22px;font-weight:700;margin-bottom:8px">$380<span style="font-size:11px;color:var(--text3);font-weight:500"> / 月</span></div>
-            <div style="font-size:11.5px;color:var(--text2);line-height:1.7">
-              ✓ 3 家公司<br>✓ 5 个账号<br>✓ 50,000 Token/月<br>✓ 全部 AI 功能
-            </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3)">活跃 2 个租户</div>
-          </div>
-          <div class="bank-card selected" style="border-color:var(--blue);background:var(--blue-bg)">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-weight:700">Professional</span><span class="pill p-blue" style="font-size:9.5px">推荐</span></div>
-            <div style="font-size:22px;font-weight:700;margin-bottom:8px">$980<span style="font-size:11px;color:var(--text3);font-weight:500"> / 月</span></div>
-            <div style="font-size:11.5px;color:var(--text2);line-height:1.7">
-              ✓ 10 家公司<br>✓ 15 个账号<br>✓ 200,000 Token/月<br>✓ 优先客服 + 培训
-            </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--blue-text);font-weight:600">活跃 4 个租户</div>
-          </div>
-          <div class="bank-card">
-            <div style="font-weight:700;margin-bottom:4px">Firm</div>
-            <div style="font-size:22px;font-weight:700;margin-bottom:8px">$2,580<span style="font-size:11px;color:var(--text3);font-weight:500"> / 月</span></div>
-            <div style="font-size:11.5px;color:var(--text2);line-height:1.7">
-              ✓ 50 家公司<br>✓ 50 个账号<br>✓ 800,000 Token/月<br>✓ 专属客户经理
-            </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3)">活跃 1 个租户</div>
-          </div>
-          <div class="bank-card">
-            <div style="font-weight:700;margin-bottom:4px">Enterprise</div>
-            <div style="font-size:22px;font-weight:700;margin-bottom:8px">商谈</div>
-            <div style="font-size:11.5px;color:var(--text2);line-height:1.7">
-              ✓ 不限公司<br>✓ 不限账号<br>✓ 按需 Token 包<br>✓ 私有部署可选
-            </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3)">活跃 0 个租户</div>
-          </div>
-        </div>
+        <!-- 套餐卡片（数据驱动） -->
+        <div class="stats-grid" id="plan-cards" style="grid-template-columns:repeat(5,1fr);margin-bottom:18px"></div>
 
-        <!-- Token 计量规则 -->
+        <!-- Token 计量规则（可编辑单价） -->
         <div class="card">
-          <div class="ch"><span class="ct">Token 计量规则</span><span class="pill p-gray">超额单价 HKD 0.005 / Token</span></div>
+          <div class="ch"><span class="ct">Token 计量规则</span><span class="pill p-gray">超额单价 HKD 0.005 / Token · 点单价可编辑</span></div>
           <table class="tbl">
             <thead><tr><th>AI 能力</th><th>单位</th><th>Token 单价</th><th>说明</th></tr></thead>
-            <tbody>
-              <tr><td>银行流水 OCR</td><td>每页</td><td><b>100</b></td><td>PDF / Excel 解析</td></tr>
-              <tr><td>票据 OCR</td><td>每张</td><td><b>50</b></td><td>JPG / PNG / PDF</td></tr>
-              <tr><td>AI 智能匹配</td><td>每笔流水</td><td><b>30</b></td><td>流水 ↔ 票据匹配</td></tr>
-              <tr><td>AI 科目推荐</td><td>每条 JE</td><td><b>20</b></td><td>建议借贷科目</td></tr>
-              <tr><td>AI 期末调整生成</td><td>每条 ADJ</td><td><b>200</b></td><td>折旧 / 应计 / 税务</td></tr>
-              <tr><td>AI 异常检测</td><td>每月</td><td><b>500</b></td><td>A1-A13 异常扫描</td></tr>
-              <tr><td>AI 财务分析报告</td><td>每份</td><td><b>2,000</b></td><td>月度经营总结</td></tr>
-              <tr><td>智能问答（Q&A）</td><td>每次</td><td><b>100</b></td><td>老板自然语言查账</td></tr>
-            </tbody>
+            <tbody id="token-rate-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -2483,28 +2436,21 @@
               <div style="font-size:14px;font-weight:700;margin-bottom:2px">用量监控 · Usage</div>
               <div style="font-size:11.5px;color:var(--text2)">Token 消耗、API 调用、存储、审计日志 — 实时 + 按租户分组</div>
             </div>
-            <select class="inl-sel" style="min-width:160px"><option>本月 (2026-06)</option><option>上月 (2026-05)</option><option>近 90 天</option></select>
+            <select class="inl-sel" id="usage-period" style="min-width:160px" onchange="setUsagePeriod(this.value)">
+              <option value="2026-06">本月 (2026-06)</option><option value="2026-05">上月 (2026-05)</option><option value="90d">近 90 天</option>
+            </select>
+            <button class="btn" onclick="exportUsage()" style="margin-left:6px"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
           </div>
         </div>
 
-        <div class="stats-grid" style="margin-bottom:14px">
-          <div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">总 Token</div><div style="font-size:22px;font-weight:700">428,250</div><div style="font-size:11px;color:var(--text3);margin-top:3px">较上月 +18%</div></div>
-          <div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">OCR 调用</div><div style="font-size:22px;font-weight:700">1,820</div><div style="font-size:11px;color:var(--text3);margin-top:3px">票据 1,524 · 流水 296</div></div>
-          <div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">AI 匹配</div><div style="font-size:22px;font-weight:700">962</div><div style="font-size:11px;color:var(--green-text);margin-top:3px">匹配率 87.4%</div></div>
-          <div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">存储</div><div style="font-size:22px;font-weight:700">2.4 GB</div><div style="font-size:11px;color:var(--text3);margin-top:3px">已上传文件 1,420 个</div></div>
-        </div>
+        <div class="stats-grid" id="usage-stats" style="margin-bottom:14px"></div>
 
         <!-- 按租户用量 -->
         <div class="card">
-          <div class="ch"><span class="ct">按租户用量明细</span></div>
+          <div class="ch"><span class="ct">按租户用量明细</span><span style="font-size:11px;color:var(--text3)">点击行查看钻取</span></div>
           <table class="tbl">
             <thead><tr><th>租户</th><th>套餐</th><th>OCR</th><th>AI 匹配</th><th>科目推荐</th><th>其他</th><th>总 Token</th><th>使用率</th></tr></thead>
-            <tbody>
-              <tr><td><b>ABC CPA Limited</b></td><td>Professional</td><td>72,000</td><td>28,860</td><td>14,200</td><td>9,640</td><td><b>124,700</b></td><td><div style="background:var(--bg2);height:6px;border-radius:3px;overflow:hidden"><div style="background:var(--green);height:100%;width:62%"></div></div><span style="font-size:11px">62%</span></td></tr>
-              <tr><td><b>Sunrise CPA Limited</b></td><td>Professional</td><td>104,000</td><td>52,860</td><td>21,600</td><td>5,140</td><td><b>183,600</b></td><td><div style="background:var(--bg2);height:6px;border-radius:3px;overflow:hidden"><div style="background:var(--amber);height:100%;width:92%"></div></div><span style="font-size:11px">92%</span></td></tr>
-              <tr><td><b>Vantage CPA Group</b></td><td>Firm</td><td>61,300</td><td>20,400</td><td>9,800</td><td>2,450</td><td><b>93,950</b></td><td><div style="background:var(--bg2);height:6px;border-radius:3px;overflow:hidden"><div style="background:var(--green);height:100%;width:12%"></div></div><span style="font-size:11px">12%</span></td></tr>
-              <tr><td><b>HK Bookkeep Co.</b></td><td>Starter</td><td>14,500</td><td>5,900</td><td>3,200</td><td>2,400</td><td><b>26,000</b></td><td><div style="background:var(--bg2);height:6px;border-radius:3px;overflow:hidden"><div style="background:var(--red);height:100%;width:52%"></div></div><span style="font-size:11px;color:var(--red-text)">52% · 已暂停</span></td></tr>
-            </tbody>
+            <tbody id="usage-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -2520,7 +2466,7 @@
               <div style="font-size:14px;font-weight:700;margin-bottom:2px">员工管理 · Users</div>
               <div style="font-size:11.5px;color:var(--text2)">租户内员工 CRUD · 角色与公司授权 · 密码重置 · 强制下线 · 审计</div>
             </div>
-            <button class="btn" onclick="toast('导出员工清单 CSV（演示）')"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
+            <button class="btn" onclick="exportUsers()"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
             <button class="btn btn-p" onclick="openInviteUserModal()"><i class="ti ti-user-plus" style="font-size:13px"></i>邀请员工</button>
           </div>
         </div>
@@ -2538,7 +2484,7 @@
           <div class="ch">
             <span class="ct">员工列表</span>
             <div style="display:flex;gap:6px;align-items:center">
-              <input class="rce-input" placeholder="搜索姓名 / 邮箱" style="width:220px;padding:5px 10px">
+              <input class="rce-input" id="user-search" placeholder="搜索姓名 / 邮箱" style="width:220px;padding:5px 10px" oninput="renderUsers()">
               <select class="inl-sel" id="user-role-filter" onchange="renderUsers()">
                 <option value="">全部角色</option>
                 <option value="tenant_admin">租户管理员</option>
@@ -2688,29 +2634,137 @@
               <div style="font-size:14px;font-weight:700;margin-bottom:2px">审计日志 · Audit Log</div>
               <div style="font-size:11.5px;color:var(--text2)">不可篡改 · 7 年留存 · 满足 HK CO S622 + PDPO 合规</div>
             </div>
-            <button class="btn" onclick="toast('导出审计日志（演示）')"><i class="ti ti-download" style="font-size:13px"></i>导出 CSV</button>
+            <button class="btn" onclick="exportAudit()"><i class="ti ti-download" style="font-size:13px"></i>导出 CSV</button>
           </div>
         </div>
         <div class="card">
           <div class="ch"><span class="ct">操作日志</span>
             <div style="display:flex;gap:6px">
-              <select class="inl-sel"><option>全部事件</option><option>登录相关</option><option>账号管理</option><option>财务记账</option></select>
-              <input class="rce-input" type="date" value="2026-06-09" style="padding:5px 10px;width:140px">
+              <select class="inl-sel" id="audit-cat-filter" onchange="renderAudit(true)">
+                <option value="">全部事件</option>
+                <option value="login">登录相关</option>
+                <option value="account">账号管理</option>
+                <option value="finance">财务记账</option>
+                <option value="platform">平台运营</option>
+              </select>
+              <input class="rce-input" id="audit-user-filter" placeholder="搜索用户" style="padding:5px 10px;width:150px" oninput="renderAudit(true)">
+              <input class="rce-input" type="date" id="audit-date-filter" style="padding:5px 10px;width:140px" onchange="renderAudit(true)">
             </div>
           </div>
           <table class="tbl">
             <thead><tr><th>时间</th><th>用户</th><th>事件</th><th>对象</th><th>IP / UA</th><th>状态</th></tr></thead>
-            <tbody>
-              <tr><td>2026-06-09 14:23:18</td><td>andy@abccpa.hk</td><td><b>USER_INVITED</b></td><td>mary@abccpa.hk · 记账员 · 1 公司</td><td>192.168.1.10 · Chrome</td><td><span class="pill p-green">成功</span></td></tr>
-              <tr><td>2026-06-09 14:15:02</td><td>andy@abccpa.hk</td><td>USER_LOGGED_IN</td><td>—</td><td>192.168.1.10 · Chrome / macOS</td><td><span class="pill p-green">成功</span></td></tr>
-              <tr><td>2026-06-09 13:58:41</td><td>siu@abccpa.hk</td><td><b>USER_LOGGED_IN_FAILED</b></td><td>—</td><td>180.x.x.x · Chrome / Win</td><td><span class="pill p-red">密码错误 (3/5)</span></td></tr>
-              <tr><td>2026-06-09 11:02:33</td><td>andy@abccpa.hk</td><td>JE_CONFIRMED</td><td>JV-2026-006</td><td>192.168.1.10</td><td><span class="pill p-green">成功</span></td></tr>
-              <tr><td>2026-06-09 09:30:11</td><td>system</td><td><b>SESSION_REVOKED</b></td><td>U-2026-00008 (张三)</td><td>—</td><td><span class="pill p-gray">过期</span></td></tr>
-              <tr><td>2026-06-08 16:42:50</td><td>andy@abccpa.hk</td><td><b>USER_PASSWORD_RESET</b></td><td>siu@abccpa.hk (代重置)</td><td>192.168.1.10</td><td><span class="pill p-green">成功</span></td></tr>
-              <tr><td>2026-06-08 15:20:18</td><td>—</td><td>SYSTEM_PERIOD_LOCKED</td><td>ABC Trading · 2026-05</td><td>—</td><td><span class="pill p-green">关账</span></td></tr>
-              <tr><td>2026-06-08 10:11:05</td><td>wang@abccpa.hk</td><td>USER_2FA_ENABLED</td><td>—</td><td>58.x.x.x · Safari</td><td><span class="pill p-green">成功</span></td></tr>
-            </tbody>
+            <tbody id="audit-tbody"></tbody>
           </table>
+          <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text3)">
+            <span id="audit-count">—</span>
+            <button class="btn btn-xs" id="audit-more-btn" onclick="loadMoreAudit()">加载更多</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════ AI 审计报告 ═══════════════════════ -->
+      <div class="page" id="page-auditrpt">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="ti ti-report-search" style="color:white;font-size:22px"></i>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">AI 审计报告 · Audit Report</div>
+              <div style="font-size:11.5px;color:var(--text2)">选择企业 → 抓取平台数据 → AI 生成审前分析 / 审计辅助底稿（结合香港 HKFRS / SME-FRS / HKSA）</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 合规免责提示条 -->
+        <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:var(--rl);padding:11px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px">
+          <i class="ti ti-alert-triangle" style="font-size:16px;color:var(--amber-text);flex-shrink:0;margin-top:1px"></i>
+          <div style="font-size:11.5px;color:var(--amber-text);line-height:1.6">
+            <b>合规声明：</b>本报告由 AI 基于平台记账数据自动生成，仅供管理层内部参考与<b>审计准备</b>之用，<b>不构成香港法定审计意见</b>，亦不替代 HKICPA 执业会计师依《香港审计准则》(HKSA) 出具的鉴证。
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:14px">
+          <!-- 左：生成配置 -->
+          <div class="card">
+            <div class="ch"><span class="ct">① 生成配置</span></div>
+            <div style="padding:14px 16px;display:grid;gap:13px">
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:4px">选择企业</label>
+                <select class="inl-sel" id="ar-company" style="width:100%" onchange="onArCompany()"></select>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div>
+                  <label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:4px">财政年度 (FY)</label>
+                  <div id="ar-fy" style="font-size:12.5px;padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:7px">—</div>
+                </div>
+                <div>
+                  <label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:4px">基准币种</label>
+                  <div style="font-size:12.5px;padding:6px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:7px">HKD</div>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:5px">报告类型</label>
+                <div id="ar-type" class="mc-group" style="display:flex;gap:6px;flex-wrap:wrap">
+                  <div class="mc on" data-v="pre" onclick="pickAr('ar-type',this)">审前分析报告</div>
+                  <div class="mc" data-v="wp" onclick="pickAr('ar-type',this)">审计辅助底稿</div>
+                  <div class="mc" data-v="draft" onclick="pickAr('ar-type',this)">意见书草稿模板</div>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:5px">会计框架</label>
+                <div id="ar-framework" class="mc-group" style="display:flex;gap:6px">
+                  <div class="mc on" data-v="SME-FRS" onclick="pickAr('ar-framework',this)">SME-FRS</div>
+                  <div class="mc" data-v="HKFRS" onclick="pickAr('ar-framework',this)">HKFRS</div>
+                </div>
+              </div>
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px">
+                <input type="checkbox" id="ar-deep"> <span>深度模式（Opus 4.8 · 复杂主体 / 大额账目，耗时更长）</span>
+              </label>
+              <button class="btn btn-p" style="width:100%;justify-content:center" onclick="generateAuditReport()">
+                <i class="ti ti-sparkles" style="font-size:14px"></i>生成审计报告 <span style="opacity:.8;font-size:11px">（计费 5,000 Token）</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 右：数据就绪度 -->
+          <div class="card">
+            <div class="ch"><span class="ct">② 数据就绪度校验</span><span id="ar-ready-pill" class="pill p-gray">—</span></div>
+            <div id="ar-readiness" style="padding:6px 0"></div>
+          </div>
+        </div>
+
+        <!-- 生成进度 -->
+        <div class="card" id="ar-progress-card" style="margin-top:14px;display:none">
+          <div class="ch"><span class="ct">③ AI 生成流水线</span></div>
+          <div id="ar-progress" style="padding:14px 18px"></div>
+        </div>
+
+        <!-- 报告预览 -->
+        <div id="ar-report" style="margin-top:14px;display:none"></div>
+
+        <!-- 历史报告 -->
+        <div class="card" style="margin-top:14px">
+          <div class="ch"><span class="ct">历史报告</span></div>
+          <table class="tbl">
+            <thead><tr><th style="width:16%">报告号</th><th style="width:22%">企业</th><th style="width:14%">期间</th><th style="width:14%">类型</th><th style="width:10%">质量分</th><th style="width:24%">操作</th></tr></thead>
+            <tbody id="ar-history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════ 通用弹窗 (Generic Modal) ═══════════════════════ -->
+      <div class="pm-overlay" id="gx-modal" onclick="if(event.target===this)gxClose()" style="z-index:2800">
+        <div class="pm-dialog" id="gx-dialog" style="max-width:680px">
+          <div class="pm-hd">
+            <div>
+              <div style="font-size:14px;font-weight:700" id="gx-title">—</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:1px" id="gx-sub"></div>
+            </div>
+            <button class="pm-close" onclick="gxClose()">×</button>
+          </div>
+          <div class="pm-right" id="gx-body" style="max-height:68vh"></div>
+          <div class="pm-ft" id="gx-foot"></div>
         </div>
       </div>
 
@@ -2726,7 +2780,7 @@
               <div style="font-size:11.5px;color:var(--text2)">后付费清结模型 · 每张账单逐项列明 · 线下凭证核对 + 线上支付 · 强匹配对账</div>
             </div>
             <button class="btn" onclick="openPayAccountModal()"><i class="ti ti-building-bank" style="font-size:13px"></i>收款账户</button>
-            <button class="btn btn-p" onclick="toast('已按 2026-05 用量批量生成 6 张账单草稿（演示）')"><i class="ti ti-file-plus" style="font-size:13px"></i>月初批量出账</button>
+            <button class="btn btn-p" onclick="batchIssueBills()"><i class="ti ti-file-plus" style="font-size:13px"></i>月初批量出账</button>
           </div>
         </div>
 
@@ -2789,7 +2843,7 @@
                 <td>BOC HK</td>
                 <td><b>HKD 980.00</b></td>
                 <td style="color:var(--text3)">（附言为空）</td>
-                <td><button class="btn btn-xs btn-p" onclick="toast('打开认领：选择对应账单核销')"><i class="ti ti-link" style="font-size:11px"></i>认领核销</button></td>
+                <td><button class="btn btn-xs btn-p" onclick="claimPayment()"><i class="ti ti-link" style="font-size:11px"></i>认领核销</button></td>
               </tr>
             </tbody>
           </table>
@@ -2859,7 +2913,7 @@
             <div id="inv-modal-payinfo" style="margin-top:14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 15px">
               <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px">线下转账 · 平台收款账户</div>
               <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:12px">
-                <span style="color:var(--text3)">收款人</span><span style="font-weight:600">Leapex Limited 利柏思有限公司</span>
+                <span style="color:var(--text3)">收款人</span><span style="font-weight:600">EasybookX Limited</span>
                 <span style="color:var(--text3)">银行</span><span>HSBC 香港上海汇丰银行 (004)</span>
                 <span style="color:var(--text3)">账号</span><span style="font-family:monospace">123-456789-001</span>
                 <span style="color:var(--text3)">FPS ID</span><span style="font-family:monospace">163088888</span>
@@ -2993,9 +3047,9 @@
           </div>
           <div class="pm-right">
             <div class="card" style="margin-bottom:0;box-shadow:none;border-color:var(--blue)">
-              <div class="ch" style="background:var(--blue-bg)"><span class="ct" style="font-size:12px">Leapex 主收款账户</span><span class="pill p-blue">默认</span></div>
+              <div class="ch" style="background:var(--blue-bg)"><span class="ct" style="font-size:12px">EasybookX 主收款账户</span><span class="pill p-blue">默认</span></div>
               <div style="padding:13px 15px;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:12px">
-                <span style="color:var(--text3)">收款人</span><span style="font-weight:600">Leapex Limited 利柏思有限公司</span>
+                <span style="color:var(--text3)">收款人</span><span style="font-weight:600">EasybookX Limited</span>
                 <span style="color:var(--text3)">银行</span><span>HSBC 香港上海汇丰银行</span>
                 <span style="color:var(--text3)">银行代码</span><span style="font-family:monospace">004</span>
                 <span style="color:var(--text3)">账号</span><span style="font-family:monospace">123-456789-001</span>
@@ -3237,13 +3291,13 @@
           <div style="width:32px;height:32px;background:white;border-radius:7px;display:flex;align-items:center;justify-content:center">
             <svg viewBox="0 0 16 16" width="18" height="18"><rect x="1" y="1" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#1A1A1A"/></svg>
           </div>
-          <span style="font-size:18px;font-weight:700;letter-spacing:-.3px">Leapex 利柏思商务</span>
+          <span style="font-size:18px;font-weight:700;letter-spacing:-.3px">EasybookX</span>
         </div>
         <div style="font-size:22px;font-weight:700;line-height:1.4;margin-bottom:14px">香港 AI 会计师<br>关账只需 30 分钟</div>
         <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.7">银行流水 + 票据 AI 解析 · 自动匹配 · 智能科目推荐 · 一键生成 P&L / B/S · 符合 HK SME-FRS 与 IRO 要求</div>
       </div>
       <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">
-        © 2026 Leapex Ltd. · 符合 HK CO S622 + PDPO<br>
+        © 2026 EasybookX Ltd. · 符合 HK CO S622 + PDPO<br>
         powered by Claude AI · 数据加密静态存储
       </div>
     </div>
@@ -3253,7 +3307,7 @@
       <!-- 登录表单 -->
       <div id="login-form">
         <div style="font-size:20px;font-weight:700;margin-bottom:5px">欢迎回来</div>
-        <div style="font-size:12.5px;color:var(--text3);margin-bottom:22px">登录到您的 Leapex 工作台</div>
+        <div style="font-size:12.5px;color:var(--text3);margin-bottom:22px">登录到您的 EasybookX 工作台</div>
 
         <div style="margin-bottom:14px">
           <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">邮箱</label>
@@ -3858,6 +3912,7 @@ const PAGE_META = {
   users:    ['员工管理','邀请 / 角色 / 公司授权 / 密码重置 / 强制下线'],
   me:       ['我的账号','个人资料 · 安全设置 · 登录设备 · 最近活动'],
   audit:    ['审计日志','不可篡改 · 7 年留存 · HK CO S622 + PDPO 合规'],
+  auditrpt: ['AI 审计报告','选企业 · 抓数据 · 生成审前分析（HKFRS / SME-FRS / HKSA）'],
 };
 
 // Progress bar step map
@@ -8297,7 +8352,7 @@ function handleInvDrop(evt) {
 }
 </script>
 
-<!-- ═════════════════════════ Leapex Backend Bridge v1.0 ═════════════════════════
+<!-- ═════════════════════════ EasybookX Backend Bridge v1.0 ═════════════════════════
      Replaces in-memory mock data with live REST calls to FastAPI backend.
      Persists user mutations (cash entries, adjustments, bank edits, recon
      annotations, journal confirmations) via /api/* endpoints.
@@ -8404,9 +8459,9 @@ function handleInvDrop(evt) {
       }
 
       rerender();
-      console.log('[Leapex] data loaded from API');
+      console.log('[EasybookX] data loaded from API');
     } catch (e) {
-      console.error('[Leapex bridge] hydrate failed:', e);
+      console.error('[EasybookX bridge] hydrate failed:', e);
     }
   }
 
@@ -8479,7 +8534,7 @@ function handleInvDrop(evt) {
         COA_DATA.forEach(function(a){ jpost('/coa', a); });
       }
     });
-    console.log('[Leapex] mutation patches applied');
+    console.log('[EasybookX] mutation patches applied');
   }
 
   // ── Boot ────────────────────────────────────────────────────────
@@ -8494,7 +8549,7 @@ function handleInvDrop(evt) {
   }
 
   // Expose for manual debugging in console
-  window.__leapex = { hydrate: hydrate, rerender: rerender, api: API };
+  window.__easybookx = { hydrate: hydrate, rerender: rerender, api: API };
 
   // ═══════════════════ Ledger module rendering ═══════════════════
   // Ledger metadata: title, columns, mock entries
@@ -8808,7 +8863,14 @@ function handleInvDrop(evt) {
   function renderTenants() {
     var tb = document.getElementById('tenant-tbody');
     if (!tb) return;
-    tb.innerHTML = TENANT_LIST.map(function(t){
+    var kw = ((document.getElementById('tenant-search')||{}).value||'').toLowerCase();
+    var sf = (document.getElementById('tenant-status-filter')||{}).value||'';
+    var list = TENANT_LIST.filter(function(t){
+      if (sf && t.status !== sf) return false;
+      if (kw && (t.name+' '+(t.contact||'')+' '+(t.brNo||'')+' '+t.id).toLowerCase().indexOf(kw) < 0) return false;
+      return true;
+    });
+    tb.innerHTML = list.map(function(t){
       var pct = Math.round(t.tokenUsed / t.tokenQuota * 100);
       var bar = pct >= 90 ? 'var(--red)' : pct >= 70 ? 'var(--amber)' : 'var(--green)';
       var statusText = { active:'活跃', trial:'试用', suspended:'已暂停' }[t.status];
@@ -8896,9 +8958,11 @@ function handleInvDrop(evt) {
     if (!tb) return;
     var rf = (document.getElementById('user-role-filter')||{}).value || '';
     var sf = (document.getElementById('user-status-filter')||{}).value || '';
+    var kw = ((document.getElementById('user-search')||{}).value||'').toLowerCase();
     var list = USER_LIST.filter(function(u){
       if (rf && u.role !== rf) return false;
       if (sf && u.status !== sf) return false;
+      if (kw && (u.name+' '+u.email).toLowerCase().indexOf(kw) < 0) return false;
       return true;
     });
     var statusMap = { active:['活跃','p-green'], invited:['待激活','p-amber'], disabled:['已停用','p-gray'] };
@@ -8998,7 +9062,7 @@ function handleInvDrop(evt) {
   window.dismissLogin = function() {
     document.getElementById('login-overlay').style.display = 'none';
     document.body.style.overflow = '';
-    try { localStorage.setItem('leapex_demo_login', '1'); } catch(e){}
+    try { localStorage.setItem('easybookx_demo_login', '1'); } catch(e){}
   };
   window.doLogin = function() {
     var email = document.getElementById('login-email').value.trim();
@@ -9050,7 +9114,7 @@ function handleInvDrop(evt) {
   });
   window.doLogout = function() {
     if (!confirm('确认退出登录？')) return;
-    try { localStorage.removeItem('leapex_demo_login'); } catch(e){}
+    try { localStorage.removeItem('easybookx_demo_login'); } catch(e){}
     window.toast && window.toast('已退出登录');
     setTimeout(function(){
       document.getElementById('login-overlay').style.display = 'flex';
@@ -9294,6 +9358,10 @@ function handleInvDrop(evt) {
       if (id === 'tenants') renderTenants();
       if (id === 'users')   renderUsers();
       if (id === 'billing') renderBilling();
+      if (id === 'plans')   renderPlans();
+      if (id === 'usage')   renderUsage();
+      if (id === 'audit')   renderAudit(true);
+      if (id === 'auditrpt') initAuditReport();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
@@ -9307,7 +9375,7 @@ function handleInvDrop(evt) {
   // doesn't re-prompt mid-demo.
   function maybeShowLogin() {
     try {
-      if (localStorage.getItem('leapex_demo_login') === '1') return;
+      if (localStorage.getItem('easybookx_demo_login') === '1') return;
     } catch(e){}
     var ov = document.getElementById('login-overlay');
     if (ov) {
@@ -9362,7 +9430,7 @@ function handleInvDrop(evt) {
     if (typeof window.toast === 'function') {
       window.toast('✓ 已添加 ' + ok + ' 张票据到待解析列表' + (fail ? '（失败 ' + fail + '）' : ''));
     }
-    if (window.__leapex && window.__leapex.hydrate) window.__leapex.hydrate();
+    if (window.__easybookx && window.__easybookx.hydrate) window.__easybookx.hydrate();
   };
   // Override original single-file handlers
   window.handleInvFileSelect = function(evt) {
@@ -9432,8 +9500,647 @@ function handleInvDrop(evt) {
       window.toast('✓ 已添加 ' + ok + ' 个文件到待解析列表' + (fail ? '（失败 ' + fail + '）' : ''));
     }
     // Refresh state from backend so 待解析列表 (STAGED_BK) reflects new rows
-    if (window.__leapex && window.__leapex.hydrate) window.__leapex.hydrate();
+    if (window.__easybookx && window.__easybookx.hydrate) window.__easybookx.hydrate();
   };
+
+  // ════════════════════════════════════════════════════════════════
+  //  平台管理增强 + AI 审计报告  (EasybookX v1.0)
+  // ════════════════════════════════════════════════════════════════
+  function _money(n){ return 'HKD ' + Number(n).toLocaleString(undefined,{minimumFractionDigits:2}); }
+  function _num(n){ return Number(n).toLocaleString(); }
+  function _esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _dl(name, content){
+    var blob = new Blob(['﻿'+content], {type:'text/csv;charset=utf-8;'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+
+  // ── Generic modal ──────────────────────────────────────────────
+  window.gxOpen = function(title, sub, body, foot, width){
+    document.getElementById('gx-title').textContent = title || '';
+    document.getElementById('gx-sub').textContent = sub || '';
+    document.getElementById('gx-body').innerHTML = body || '';
+    document.getElementById('gx-foot').innerHTML = foot || '<button class="btn" onclick="gxClose()">关闭</button>';
+    document.getElementById('gx-dialog').style.maxWidth = (width||680) + 'px';
+    document.getElementById('gx-modal').classList.add('open');
+  };
+  window.gxClose = function(){ document.getElementById('gx-modal').classList.remove('open'); };
+
+  // ── Enrich tenant data (详情/编辑所需字段) ──────────────────────
+  var _tenantExtra = {
+    'T-2026-0001':{brNo:'1234567',contact:'陈大文 Andy Chan',email:'andy@abccpa.hk',phone:'+852 9123 4567',createdAt:'2025-08-12',expireAt:'2026-06-22'},
+    'T-2026-0002':{brNo:'2345678',contact:'李明 Sunny Lee',email:'admin@sunrisecpa.hk',phone:'+852 9234 5678',createdAt:'2025-09-01',expireAt:'2026-07-01'},
+    'T-2026-0003':{brNo:'3456789',contact:'黄国强 K.K. Wong',email:'ops@vantage.hk',phone:'+852 9345 6789',createdAt:'2025-05-20',expireAt:'2026-09-15'},
+    'T-2026-0004':{brNo:'4567890',contact:'张伟 Wilson Cheung',email:'info@hkbookkeep.hk',phone:'+852 9456 7890',createdAt:'2026-01-10',expireAt:'2026-06-06',overdueDays:9},
+    'T-2026-0005':{brNo:'5678901',contact:'刘德 Derek Lau',email:'finance@peakfin.hk',phone:'+852 9567 8901',createdAt:'2026-02-15',expireAt:'2026-08-01'},
+    'T-2026-0006':{brNo:'6789012',contact:'陈太楷 Taikai Chan',email:'hello@taikai.hk',phone:'+852 9678 9012',createdAt:'2026-06-01',expireAt:'2026-06-15'},
+  };
+  TENANT_LIST.forEach(function(t){ var e=_tenantExtra[t.id]; if(e) for(var k in e) t[k]=e[k]; });
+
+  // Expose scoped render fns to global scope (inline on* handlers call them globally)
+  window.renderTenants = renderTenants;
+  window.renderUsers   = renderUsers;
+  window.renderBilling = renderBilling;
+  window.renderPlans   = function(){ return renderPlans(); };
+  window.renderUsage   = function(){ return renderUsage(); };
+
+  // ── Tenant: 查看详情 / 编辑 (override toast 占位) ────────────────
+  window.viewTenant = function(id){
+    var t = TENANT_LIST.find(function(x){return x.id===id;}); if(!t) return;
+    var pct = Math.round(t.tokenUsed/t.tokenQuota*100);
+    var statusText = {active:'活跃',trial:'试用',suspended:'已暂停'}[t.status];
+    var body = ''
+      + '<div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px 16px;font-size:12.5px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 15px;margin-bottom:14px">'
+        + kv('租户 ID', t.id) + kv('状态', '<span class="pill '+t.statusPill+'">'+statusText+'</span>')
+        + kv('BR No', t.brNo||'—') + kv('业务类型', t.type)
+        + kv('联系人', t.contact||'—') + kv('联系邮箱', t.email||'—')
+        + kv('电话', t.phone||'—') + kv('注册时间', t.createdAt||'—')
+        + kv('当前套餐', '<span class="pill p-blue">'+t.plan+'</span>') + kv('套餐到期', t.expireAt||'—')
+      + '</div>'
+      + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">用量快照</div>'
+      + '<div class="stats-grid" style="margin-bottom:14px">'
+        + statCard('Token 用量', _num(t.tokenUsed)+' / '+_num(t.tokenQuota), '使用率 '+pct+'%')
+        + statCard('名下公司', t.companies+' 家', '管理实体')
+        + statCard('员工账号', t.users+' 个', '租户内用户')
+        + statCard('本月 MRR', _money(t.mrr), '订阅月费')
+      + '</div>'
+      + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">名下公司（示例）</div>'
+      + '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>公司</th><th>BR No</th><th>记账状态</th></tr></thead><tbody>'
+        + '<tr><td>ABC Trading Co. Ltd</td><td>1122334</td><td><span class="pill p-green">已关账 2026-05</span></td></tr>'
+        + '<tr><td>Peak View Ltd</td><td>2233445</td><td><span class="pill p-amber">记账中</span></td></tr>'
+        + '<tr><td>HK Ventures Ltd</td><td>3344556</td><td><span class="pill p-blue">待初始化</span></td></tr>'
+      + '</tbody></table>';
+    var foot = '<button class="btn" onclick="gxClose()">关闭</button>'
+      + '<button class="btn" onclick="gxClose();go(\'usage\',document.getElementById(\'ni-usage\'))"><i class="ti ti-activity" style="font-size:13px"></i>查看用量</button>'
+      + '<button class="btn btn-p" onclick="gxClose();editTenant(\''+t.id+'\')"><i class="ti ti-edit" style="font-size:13px"></i>编辑租户</button>';
+    gxOpen('租户详情 · '+t.name, t.id+' · '+t.type, body, foot, 760);
+  };
+  function kv(k,v){ return '<span style="color:var(--text3)">'+k+'</span><span style="font-weight:600">'+v+'</span>'; }
+  function statCard(label,val,sub){ return '<div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">'+label+'</div><div style="font-size:18px;font-weight:700">'+val+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">'+sub+'</div></div>'; }
+
+  window.editTenant = function(id){
+    var t = TENANT_LIST.find(function(x){return x.id===id;}); if(!t) return;
+    function opt(v,sel){ return '<option value="'+v+'"'+(sel===v?' selected':'')+'>'+v+'</option>'; }
+    var body = '<div style="display:grid;gap:11px">'
+      + fld('名称','<input class="rce-input" id="et-name" value="'+_esc(t.name)+'" style="width:100%;padding:6px 10px">')
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">'
+        + fld('联系人','<input class="rce-input" id="et-contact" value="'+_esc(t.contact||'')+'" style="width:100%;padding:6px 10px">')
+        + fld('联系邮箱','<input class="rce-input" id="et-email" value="'+_esc(t.email||'')+'" style="width:100%;padding:6px 10px">')
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">'
+        + fld('电话','<input class="rce-input" id="et-phone" value="'+_esc(t.phone||'')+'" style="width:100%;padding:6px 10px">')
+        + fld('BR No','<input class="rce-input" id="et-br" value="'+_esc(t.brNo||'')+'" style="width:100%;padding:6px 10px">')
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">'
+        + fld('套餐','<select class="inl-sel" id="et-plan" style="width:100%">'+['Trial','Starter','Professional','Firm','Enterprise'].map(function(p){return opt(p,t.plan);}).join('')+'</select>')
+        + fld('Token 配额（覆盖）','<input class="rce-input" id="et-quota" type="number" value="'+t.tokenQuota+'" style="width:100%;padding:6px 10px">')
+      + '</div>'
+      + '</div>';
+    var foot = '<button class="btn" onclick="gxClose()">取消</button><button class="btn btn-p" onclick="submitEditTenant(\''+t.id+'\')"><i class="ti ti-check" style="font-size:13px"></i>保存</button>';
+    gxOpen('编辑租户 · '+t.name, t.id, body, foot, 560);
+  };
+  function fld(label,inner){ return '<div><label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:4px">'+label+'</label>'+inner+'</div>'; }
+  window.submitEditTenant = function(id){
+    var t = TENANT_LIST.find(function(x){return x.id===id;}); if(!t) return;
+    var planMrr = {Trial:0,Starter:380,Professional:980,Firm:2580,Enterprise:0};
+    t.name = document.getElementById('et-name').value.trim()||t.name;
+    t.contact = document.getElementById('et-contact').value.trim();
+    t.email = document.getElementById('et-email').value.trim();
+    t.phone = document.getElementById('et-phone').value.trim();
+    t.brNo = document.getElementById('et-br').value.trim();
+    t.plan = document.getElementById('et-plan').value;
+    t.mrr = planMrr[t.plan]!==undefined?planMrr[t.plan]:t.mrr;
+    t.tokenQuota = parseInt(document.getElementById('et-quota').value,10)||t.tokenQuota;
+    renderTenants(); renderPlans();
+    auditPush('andy@abccpa.hk','TENANT_UPDATED',true,t.id+' ('+t.name+')','platform','成功','p-green');
+    gxClose(); window.toast('✓ 已保存租户 '+t.name+' · 已写入审计日志');
+  };
+
+  // ── User: 编辑 / 公司授权 (override toast 占位) ─────────────────
+  window.editUser = function(id){
+    var u = USER_LIST.find(function(x){return x.id===id;}); if(!u) return;
+    var roleChips = Object.keys(ROLE_LABEL).map(function(r){
+      return '<div class="mc'+(u.role===r?' on':'')+'" data-r="'+r+'" onclick="pickEditRole(this,\''+r+'\')">'+ROLE_LABEL[r]+'</div>';
+    }).join('');
+    var body = '<div style="display:grid;gap:12px">'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">'
+        + fld('姓名','<input class="rce-input" id="eu-name" value="'+_esc(u.name)+'" style="width:100%;padding:6px 10px">')
+        + fld('电话','<input class="rce-input" id="eu-phone" value="'+_esc(u.phone||'')+'" style="width:100%;padding:6px 10px">')
+      + '</div>'
+      + fld('邮箱','<input class="rce-input" value="'+_esc(u.email)+'" disabled style="width:100%;padding:6px 10px;opacity:.6">')
+      + '<div>'+fld('角色','<div id="eu-roles" style="display:flex;gap:6px;flex-wrap:wrap">'+roleChips+'</div>')
+        + '<div id="eu-role-desc" style="font-size:11px;color:var(--text3);margin-top:6px">'+ROLE_DESC[u.role]+'</div></div>'
+      + fld('公司授权','<div style="display:flex;flex-wrap:wrap;gap:9px;font-size:12px">'
+        + ['ABC Trading Co. Ltd','Peak View Ltd','HK Ventures Ltd','Sunrise Holdings Ltd'].map(function(c,i){
+            return '<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" class="eu-co"'+(i<Math.min(u.companies,4)?' checked':'')+'> '+c+'</label>';
+          }).join('') + '</div>')
+      + '<label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px"><input type="checkbox" id="eu-2fa"'+(u.twofa?' checked':'')+'> 要求该员工启用二步验证 (2FA)</label>'
+      + '</div>';
+    var foot = '<button class="btn" onclick="gxClose()">取消</button><button class="btn btn-p" onclick="submitEditUser(\''+u.id+'\')"><i class="ti ti-check" style="font-size:13px"></i>保存</button>';
+    gxOpen('编辑员工 · '+u.name, u.id+' · '+u.email, body, foot, 560);
+  };
+  window.pickEditRole = function(el, role){
+    document.querySelectorAll('#eu-roles .mc').forEach(function(c){c.classList.remove('on');});
+    el.classList.add('on');
+    document.getElementById('eu-role-desc').textContent = ROLE_DESC[role];
+  };
+  window.submitEditUser = function(id){
+    var u = USER_LIST.find(function(x){return x.id===id;}); if(!u) return;
+    u.name = document.getElementById('eu-name').value.trim()||u.name;
+    u.phone = document.getElementById('eu-phone').value.trim();
+    var roleEl = document.querySelector('#eu-roles .mc.on'); if(roleEl) u.role = roleEl.getAttribute('data-r');
+    u.companies = document.querySelectorAll('.eu-co:checked').length;
+    u.twofa = document.getElementById('eu-2fa').checked;
+    renderUsers();
+    auditPush('andy@abccpa.hk','USER_ROLE_CHANGED',true,u.email+' → '+ROLE_LABEL[u.role],'account','成功','p-green');
+    gxClose(); window.toast('✓ 已更新员工 '+u.name+' · 已写入审计日志');
+  };
+  window.viewUserCompanies = function(id){
+    var u = USER_LIST.find(function(x){return x.id===id;}); if(!u) return;
+    var cos = ['ABC Trading Co. Ltd','Peak View Ltd','HK Ventures Ltd','Sunrise Holdings Ltd'];
+    var rows = cos.slice(0,Math.max(1,Math.min(u.companies,4))).map(function(c){
+      return '<tr><td>'+c+'</td><td><span class="pill '+ROLE_PILL[u.role]+'">'+ROLE_LABEL[u.role]+'</span></td></tr>';
+    }).join('');
+    gxOpen('公司授权 · '+u.name, u.email+' · 共 '+u.companies+' 家',
+      '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>公司</th><th>该员工角色</th></tr></thead><tbody>'+rows+'</tbody></table>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:10px">提示：在「编辑员工」中可勾选增减授权公司。</div>',
+      '<button class="btn" onclick="gxClose()">关闭</button><button class="btn btn-p" onclick="gxClose();editUser(\''+u.id+'\')">去编辑授权</button>', 520);
+  };
+  window.exportUsers = function(){
+    var head = '员工ID,姓名,邮箱,角色,公司数,状态,最后登录,2FA\n';
+    var rows = USER_LIST.map(function(u){
+      return [u.id,u.name,u.email,ROLE_LABEL[u.role],u.companies,u.status,u.last,u.twofa?'已开':'未开'].join(',');
+    }).join('\n');
+    _dl('EasybookX_员工清单.csv', head+rows);
+    window.toast('✓ 已导出员工清单 CSV');
+  };
+
+  // ── Plans ──────────────────────────────────────────────────────
+  var PLAN_LIST = [
+    {key:'trial', name:'Trial 试用', price:0, unit:'/ 14 天', maxCompanies:1, maxUsers:2, tokenQuota:5000, features:['全部 AI 功能'], rec:false},
+    {key:'starter', name:'Starter', price:380, unit:'/ 月', maxCompanies:3, maxUsers:5, tokenQuota:50000, features:['全部 AI 功能'], rec:false},
+    {key:'pro', name:'Professional', price:980, unit:'/ 月', maxCompanies:10, maxUsers:15, tokenQuota:200000, features:['优先客服 + 培训'], rec:true},
+    {key:'firm', name:'Firm', price:2580, unit:'/ 月', maxCompanies:50, maxUsers:50, tokenQuota:800000, features:['专属客户经理'], rec:false},
+    {key:'ent', name:'Enterprise', price:null, unit:'', maxCompanies:'不限', maxUsers:'不限', tokenQuota:'按需', features:['私有部署可选'], rec:false},
+  ];
+  var PLAN_NAME_MATCH = {trial:'Trial',starter:'Starter',pro:'Professional',firm:'Firm',ent:'Enterprise'};
+  var TOKEN_RATES = [
+    ['银行流水 OCR','每页',100,'PDF / Excel 解析'],
+    ['票据 OCR','每张',50,'JPG / PNG / PDF'],
+    ['AI 智能匹配','每笔流水',30,'流水 ↔ 票据匹配'],
+    ['AI 科目推荐','每条 JE',20,'建议借贷科目'],
+    ['AI 期末调整生成','每条 ADJ',200,'折旧 / 应计 / 税务'],
+    ['AI 异常检测','每月',500,'A1-A13 异常扫描'],
+    ['AI 财务分析报告','每份',2000,'月度经营总结'],
+    ['AI 审计报告','每份',5000,'审前分析 / 审计辅助'],
+    ['智能问答（Q&A）','每次',100,'老板自然语言查账'],
+  ];
+  function planActiveCount(planName){ return TENANT_LIST.filter(function(t){return t.plan===planName;}).length; }
+  function renderPlans(){
+    var box = document.getElementById('plan-cards');
+    if(box){
+      box.innerHTML = PLAN_LIST.map(function(p){
+        var cnt = planActiveCount(PLAN_NAME_MATCH[p.key]);
+        var price = p.price===null ? '商谈' : '$'+_num(p.price);
+        var sel = p.rec ? ' style="border-color:var(--blue);background:var(--blue-bg)"' : '';
+        return '<div class="bank-card" onclick="viewPlanTenants(\''+p.key+'\')"'+sel+' style="cursor:pointer'+(p.rec?';border-color:var(--blue);background:var(--blue-bg)':'')+'">'
+          + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-weight:700">'+p.name+'</span>'+(p.rec?'<span class="pill p-blue" style="font-size:9.5px">推荐</span>':'')+'</div>'
+          + '<div style="font-size:22px;font-weight:700;margin-bottom:8px">'+price+'<span style="font-size:11px;color:var(--text3);font-weight:500"> '+p.unit+'</span></div>'
+          + '<div style="font-size:11.5px;color:var(--text2);line-height:1.7">✓ '+p.maxCompanies+' 家公司<br>✓ '+p.maxUsers+' 个账号<br>✓ '+(typeof p.tokenQuota==='number'?_num(p.tokenQuota)+' Token':p.tokenQuota)+'<br>✓ '+p.features.join('<br>✓ ')+'</div>'
+          + '<div style="margin-top:10px;font-size:11px;color:'+(p.rec?'var(--blue-text);font-weight:600':'var(--text3)')+'">活跃 '+cnt+' 个租户</div>'
+          + '</div>';
+      }).join('');
+    }
+    var trt = document.getElementById('token-rate-tbody');
+    if(trt){
+      trt.innerHTML = TOKEN_RATES.map(function(r,i){
+        return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td><b style="cursor:pointer;border-bottom:1px dashed var(--text3)" onclick="editTokenRate('+i+')">'+_num(r[2])+'</b></td><td>'+r[3]+'</td></tr>';
+      }).join('');
+    }
+  }
+  window.editTokenRate = function(i){
+    var cur = TOKEN_RATES[i];
+    var v = prompt('设置「'+cur[0]+'」的 Token 单价：', cur[2]);
+    if(v===null) return;
+    var n = parseInt(v,10); if(isNaN(n)||n<0){ window.toast('请输入有效数字'); return; }
+    TOKEN_RATES[i][2] = n; renderPlans();
+    auditPush('andy@abccpa.hk','PLAN_RATE_CHANGED',true,cur[0]+' → '+n+' Token','platform','成功','p-green');
+    window.toast('✓ 已更新「'+cur[0]+'」单价为 '+n+' Token');
+  };
+  window.viewPlanTenants = function(key){
+    var pname = PLAN_NAME_MATCH[key];
+    var list = TENANT_LIST.filter(function(t){return t.plan===pname;});
+    var rows = list.length ? list.map(function(t){
+      return '<tr><td>'+t.name+'</td><td>'+t.companies+' 家</td><td>'+_num(t.tokenUsed)+' / '+_num(t.tokenQuota)+'</td><td>'+_money(t.mrr)+'</td></tr>';
+    }).join('') : '<tr><td colspan="4" style="color:var(--text3)">该套餐暂无租户</td></tr>';
+    gxOpen(pname+' · 套餐租户', '当前活跃 '+list.length+' 个租户',
+      '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>租户</th><th>公司数</th><th>Token 用量</th><th>MRR</th></tr></thead><tbody>'+rows+'</tbody></table>',
+      null, 600);
+  };
+  window.openNewPlanModal = function(){
+    var body = '<div style="display:grid;gap:11px">'
+      + fld('套餐名称','<input class="rce-input" id="np-name" placeholder="如 Growth" style="width:100%;padding:6px 10px">')
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">'
+        + fld('月费 (HKD)','<input class="rce-input" id="np-price" type="number" value="680" style="width:100%;padding:6px 10px">')
+        + fld('Token/月','<input class="rce-input" id="np-token" type="number" value="100000" style="width:100%;padding:6px 10px">')
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">'
+        + fld('公司数上限','<input class="rce-input" id="np-co" type="number" value="5" style="width:100%;padding:6px 10px">')
+        + fld('账号数上限','<input class="rce-input" id="np-user" type="number" value="8" style="width:100%;padding:6px 10px">')
+      + '</div>'
+      + fld('特性（逗号分隔）','<input class="rce-input" id="np-feat" value="全部 AI 功能,标准客服" style="width:100%;padding:6px 10px">')
+      + '</div>';
+    var foot = '<button class="btn" onclick="gxClose()">取消</button><button class="btn btn-p" onclick="submitNewPlan()"><i class="ti ti-check" style="font-size:13px"></i>创建套餐</button>';
+    gxOpen('新建套餐', 'HKD 计价 · GST 豁免', body, foot, 540);
+  };
+  window.submitNewPlan = function(){
+    var name = document.getElementById('np-name').value.trim();
+    if(!name){ window.toast('请填写套餐名称'); return; }
+    var key = 'p'+(PLAN_LIST.length+1);
+    PLAN_LIST.splice(PLAN_LIST.length-1, 0, {
+      key:key, name:name, price:parseInt(document.getElementById('np-price').value,10)||0, unit:'/ 月',
+      maxCompanies:parseInt(document.getElementById('np-co').value,10)||0,
+      maxUsers:parseInt(document.getElementById('np-user').value,10)||0,
+      tokenQuota:parseInt(document.getElementById('np-token').value,10)||0,
+      features:document.getElementById('np-feat').value.split(',').map(function(s){return s.trim();}).filter(Boolean), rec:false
+    });
+    PLAN_NAME_MATCH[key] = name;
+    renderPlans();
+    auditPush('andy@abccpa.hk','PLAN_CREATED',true,name,'platform','成功','p-green');
+    gxClose(); window.toast('✓ 已创建套餐 '+name);
+  };
+
+  // ── Usage ──────────────────────────────────────────────────────
+  var USAGE_DATA = {
+    '2026-06':{stats:{token:428250,tokenMoM:'+18%',ocr:1820,ocrSplit:'票据 1,524 · 流水 296',match:962,matchRate:'87.4%',storage:'2.4 GB',files:1420},
+      rows:[
+        {tenant:'ABC CPA Limited',plan:'Professional',ocr:72000,match:28860,suggest:14200,other:9640,total:124700,quota:200000},
+        {tenant:'Sunrise CPA Limited',plan:'Professional',ocr:104000,match:52860,suggest:21600,other:5140,total:183600,quota:200000},
+        {tenant:'Vantage CPA Group',plan:'Firm',ocr:61300,match:20400,suggest:9800,other:2450,total:93950,quota:800000},
+        {tenant:'HK Bookkeep Co.',plan:'Starter',ocr:14500,match:5900,suggest:3200,other:2400,total:26000,quota:50000,suspended:true},
+      ]},
+    '2026-05':{stats:{token:362900,tokenMoM:'+9%',ocr:1610,ocrSplit:'票据 1,330 · 流水 280',match:840,matchRate:'85.1%',storage:'2.1 GB',files:1235},
+      rows:[
+        {tenant:'ABC CPA Limited',plan:'Professional',ocr:60000,match:24000,suggest:12000,other:8000,total:104000,quota:200000},
+        {tenant:'Sunrise CPA Limited',plan:'Professional',ocr:90000,match:44000,suggest:18000,other:4900,total:156900,quota:200000},
+        {tenant:'Vantage CPA Group',plan:'Firm',ocr:50000,match:16000,suggest:8000,other:2000,total:76000,quota:800000},
+        {tenant:'HK Bookkeep Co.',plan:'Starter',ocr:12000,match:5000,suggest:2800,other:2200,total:22000,quota:50000},
+      ]},
+    '90d':{stats:{token:1180000,tokenMoM:'+14%',ocr:5240,ocrSplit:'票据 4,380 · 流水 860',match:2710,matchRate:'86.2%',storage:'2.4 GB',files:4180},
+      rows:[
+        {tenant:'ABC CPA Limited',plan:'Professional',ocr:198000,match:78000,suggest:39000,other:25000,total:340000,quota:600000},
+        {tenant:'Sunrise CPA Limited',plan:'Professional',ocr:290000,match:142000,suggest:58000,other:15000,total:505000,quota:600000},
+        {tenant:'Vantage CPA Group',plan:'Firm',ocr:165000,match:54000,suggest:26000,other:7000,total:252000,quota:2400000},
+        {tenant:'HK Bookkeep Co.',plan:'Starter',ocr:40000,match:16000,suggest:9000,other:6000,total:71000,quota:150000},
+      ]},
+  };
+  var _usagePeriod = '2026-06';
+  window.setUsagePeriod = function(p){ _usagePeriod = p; renderUsage(); window.toast('已切换至 '+(p==='90d'?'近 90 天':p)); };
+  function renderUsage(){
+    var d = USAGE_DATA[_usagePeriod] || USAGE_DATA['2026-06'];
+    var sc = document.getElementById('usage-stats');
+    if(sc){
+      var s = d.stats;
+      sc.innerHTML = statCard('总 Token', _num(s.token), '较上期 '+s.tokenMoM)
+        + statCard('OCR 调用', _num(s.ocr), s.ocrSplit)
+        + statCard('AI 匹配', _num(s.match), '匹配率 '+s.matchRate)
+        + statCard('存储', s.storage, '已上传文件 '+_num(s.files)+' 个');
+    }
+    var tb = document.getElementById('usage-tbody');
+    if(tb){
+      tb.innerHTML = d.rows.map(function(r){
+        var pct = Math.round(r.total/r.quota*100);
+        var col = pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--green)';
+        var label = r.suspended ? pct+'% · 已暂停' : pct+'%';
+        var lcol = r.suspended ? ';color:var(--red-text)' : '';
+        return '<tr style="cursor:pointer" onclick="drillUsage(\''+_esc(r.tenant)+'\')">'
+          + '<td><b>'+r.tenant+'</b></td><td>'+r.plan+'</td><td>'+_num(r.ocr)+'</td><td>'+_num(r.match)+'</td><td>'+_num(r.suggest)+'</td><td>'+_num(r.other)+'</td><td><b>'+_num(r.total)+'</b></td>'
+          + '<td><div style="background:var(--bg2);height:6px;border-radius:3px;overflow:hidden"><div style="background:'+col+';height:100%;width:'+Math.min(pct,100)+'%"></div></div><span style="font-size:11px'+lcol+'">'+label+'</span></td></tr>';
+      }).join('');
+    }
+  }
+  window.drillUsage = function(tenant){
+    var d = USAGE_DATA[_usagePeriod]; var r = d.rows.find(function(x){return x.tenant===tenant;}); if(!r) return;
+    var dims = [['银行流水/票据 OCR',r.ocr],['AI 智能匹配',r.match],['AI 科目推荐',r.suggest],['其他（调整/分析/问答）',r.other]];
+    var max = Math.max.apply(null, dims.map(function(x){return x[1];}));
+    var bars = dims.map(function(x){
+      var w = Math.round(x[1]/max*100);
+      return '<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px"><span>'+x[0]+'</span><span style="font-weight:600">'+_num(x[1])+' Token</span></div>'
+        + '<div style="background:var(--bg2);height:9px;border-radius:4px;overflow:hidden"><div style="background:var(--blue);height:100%;width:'+w+'%"></div></div></div>';
+    }).join('');
+    var pct = Math.round(r.total/r.quota*100);
+    var up = pct>=90 ? '<div style="margin-top:12px;background:var(--amber-bg);border:1px solid var(--amber);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--amber-text)">⚠ 使用率 '+pct+'%，建议联系该租户升级套餐。</div>' : '';
+    gxOpen('用量钻取 · '+tenant, _usagePeriod+' · '+r.plan+' · 总 '+_num(r.total)+' / '+_num(r.quota)+' Token ('+pct+'%)', bars+up, null, 560);
+  };
+  window.exportUsage = function(){
+    var d = USAGE_DATA[_usagePeriod];
+    var head = '租户,套餐,OCR,AI匹配,科目推荐,其他,总Token,配额,使用率\n';
+    var rows = d.rows.map(function(r){ return [r.tenant,r.plan,r.ocr,r.match,r.suggest,r.other,r.total,r.quota,Math.round(r.total/r.quota*100)+'%'].join(','); }).join('\n');
+    _dl('EasybookX_用量_'+_usagePeriod+'.csv', head+rows);
+    window.toast('✓ 已导出用量明细 CSV');
+  };
+
+  // ── Audit log ──────────────────────────────────────────────────
+  var AUDIT_LIST = [
+    {ts:'2026-06-09 14:23:18',user:'andy@abccpa.hk',event:'USER_INVITED',sensitive:true,target:'mary@abccpa.hk · 记账员 · 1 公司',ipua:'192.168.1.10 · Chrome',result:'成功',pill:'p-green',cat:'account'},
+    {ts:'2026-06-09 14:15:02',user:'andy@abccpa.hk',event:'USER_LOGGED_IN',sensitive:false,target:'—',ipua:'192.168.1.10 · Chrome / macOS',result:'成功',pill:'p-green',cat:'login'},
+    {ts:'2026-06-09 13:58:41',user:'siu@abccpa.hk',event:'USER_LOGGED_IN_FAILED',sensitive:true,target:'—',ipua:'180.x.x.x · Chrome / Win',result:'密码错误 (3/5)',pill:'p-red',cat:'login'},
+    {ts:'2026-06-09 11:02:33',user:'andy@abccpa.hk',event:'JE_CONFIRMED',sensitive:false,target:'JV-2026-006',ipua:'192.168.1.10',result:'成功',pill:'p-green',cat:'finance'},
+    {ts:'2026-06-09 09:30:11',user:'system',event:'SESSION_REVOKED',sensitive:true,target:'U-2026-00008 (张三)',ipua:'—',result:'过期',pill:'p-gray',cat:'login'},
+    {ts:'2026-06-08 16:42:50',user:'andy@abccpa.hk',event:'USER_PASSWORD_RESET',sensitive:true,target:'siu@abccpa.hk (代重置)',ipua:'192.168.1.10',result:'成功',pill:'p-green',cat:'account'},
+    {ts:'2026-06-08 15:20:18',user:'—',event:'SYSTEM_PERIOD_LOCKED',sensitive:false,target:'ABC Trading · 2026-05',ipua:'—',result:'关账',pill:'p-green',cat:'finance'},
+    {ts:'2026-06-08 10:11:05',user:'wang@abccpa.hk',event:'USER_2FA_ENABLED',sensitive:false,target:'—',ipua:'58.x.x.x · Safari',result:'成功',pill:'p-green',cat:'login'},
+    {ts:'2026-06-07 17:05:40',user:'andy@abccpa.hk',event:'BILL_ISSUED',sensitive:false,target:'INV-2026-05-T0001 · ABC CPA',ipua:'192.168.1.10',result:'成功',pill:'p-green',cat:'platform'},
+    {ts:'2026-06-07 16:48:22',user:'andy@abccpa.hk',event:'PAYMENT_CONFIRMED',sensitive:true,target:'INV-2026-05-T0002 · HKD 1,458',ipua:'192.168.1.10',result:'成功',pill:'p-green',cat:'platform'},
+    {ts:'2026-06-06 11:30:09',user:'andy@abccpa.hk',event:'TENANT_SUSPENDED',sensitive:true,target:'HK Bookkeep Co. (欠费)',ipua:'192.168.1.10',result:'成功',pill:'p-amber',cat:'platform'},
+    {ts:'2026-06-05 09:12:55',user:'joe@abccpa.hk',event:'COA_MODIFIED',sensitive:false,target:'科目 6233 中文名',ipua:'192.168.1.20',result:'成功',pill:'p-green',cat:'finance'},
+  ];
+  var CAT_LABEL = {login:'登录',account:'账号',finance:'财务',platform:'平台'};
+  var _auditShown = 8;
+  function auditPush(user,event,sensitive,target,cat,result,pill){
+    var now = new Date().toISOString().slice(0,19).replace('T',' ');
+    AUDIT_LIST.unshift({ts:now,user:user,event:event,sensitive:sensitive,target:target,ipua:'192.168.1.10 · Chrome',result:result,pill:pill,cat:cat});
+  }
+  function auditFiltered(){
+    var cf = (document.getElementById('audit-cat-filter')||{}).value||'';
+    var uf = ((document.getElementById('audit-user-filter')||{}).value||'').toLowerCase();
+    var df = (document.getElementById('audit-date-filter')||{}).value||'';
+    return AUDIT_LIST.filter(function(a){
+      if(cf && a.cat!==cf) return false;
+      if(uf && a.user.toLowerCase().indexOf(uf)<0) return false;
+      if(df && a.ts.slice(0,10)!==df) return false;
+      return true;
+    });
+  }
+  function renderAudit(reset){
+    if(reset) _auditShown = 8;
+    var tb = document.getElementById('audit-tbody'); if(!tb) return;
+    var all = auditFiltered();
+    var list = all.slice(0,_auditShown);
+    tb.innerHTML = list.map(function(a,i){
+      var ev = a.sensitive ? '<b>'+a.event+'</b>' : a.event;
+      return '<tr style="cursor:pointer" onclick="auditDetail('+AUDIT_LIST.indexOf(a)+')"><td style="font-size:11.5px">'+a.ts+'</td><td>'+a.user+'</td><td>'+ev+' <span class="pill p-gray" style="font-size:9px">'+CAT_LABEL[a.cat]+'</span></td><td>'+a.target+'</td><td style="font-size:11px;color:var(--text3)">'+a.ipua+'</td><td><span class="pill '+a.pill+'">'+a.result+'</span></td></tr>';
+    }).join('');
+    var cnt = document.getElementById('audit-count'); if(cnt) cnt.textContent = '显示 '+list.length+' / '+all.length+' 条';
+    var more = document.getElementById('audit-more-btn'); if(more) more.style.display = _auditShown>=all.length?'none':'';
+  }
+  window.renderAudit = renderAudit;
+  window.loadMoreAudit = function(){ _auditShown += 8; renderAudit(false); };
+  window.auditDetail = function(idx){
+    var a = AUDIT_LIST[idx]; if(!a) return;
+    var detail = {event:a.event,timestamp:a.ts,actor:a.user,target:a.target,category:CAT_LABEL[a.cat],source_ip:a.ipua,result:a.result,immutable:true,retention:'7 years (HK CO Cap.622 / PDPO)'};
+    gxOpen('审计事件详情', a.event+' · '+a.ts,
+      '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 15px;font-family:monospace;font-size:11.5px;white-space:pre-wrap;line-height:1.7">'+_esc(JSON.stringify(detail,null,2))+'</div>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:10px"><i class="ti ti-lock"></i> 该记录为 append-only 不可篡改，留存 7 年以满足合规。</div>', null, 560);
+  };
+  window.exportAudit = function(){
+    var all = auditFiltered();
+    var head = '时间,用户,事件,分类,对象,IP/UA,结果\n';
+    var rows = all.map(function(a){ return [a.ts,a.user,a.event,CAT_LABEL[a.cat],'"'+a.target+'"',a.ipua,a.result].join(','); }).join('\n');
+    _dl('EasybookX_审计日志.csv', head+rows);
+    window.toast('✓ 已导出审计日志 CSV（'+all.length+' 条）');
+  };
+
+  // ── Billing: 月初批量出账 + 认领核销 ────────────────────────────
+  window.batchIssueBills = function(){
+    var drafts = [
+      {tenant:'Peak Finance Ltd',plan:'Starter',total:380},
+      {tenant:'TaiKai 太楷簿记',plan:'Trial',total:0},
+    ];
+    var rows = drafts.map(function(d){ return '<tr><td>'+d.tenant+'</td><td>'+d.plan+'</td><td style="text-align:right;font-weight:600">'+_money(d.total)+'</td></tr>'; }).join('');
+    gxOpen('月初批量出账', '按 2026-05 用量生成账单草稿',
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:10px">已按各租户上一账期实际用量（订阅费 + Token 超额逐项）生成以下账单草稿，复核后可一键开出：</div>'
+      + '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>租户</th><th>套餐</th><th style="text-align:right">应付</th></tr></thead><tbody>'+rows+'</tbody></table>',
+      '<button class="btn" onclick="gxClose()">取消</button><button class="btn btn-p" onclick="confirmBatchIssue()"><i class="ti ti-send" style="font-size:13px"></i>全部开出</button>', 560);
+  };
+  window.confirmBatchIssue = function(){
+    auditPush('andy@abccpa.hk','BILL_ISSUED',false,'批量出账 2 张 · 账期 2026-05','platform','成功','p-green');
+    gxClose(); window.toast('✓ 已开出 2 张账单并通知租户');
+  };
+  window.claimPayment = function(){
+    var bills = INVOICE_LIST.filter(function(i){return i.status==='issued'||i.status==='overdue';});
+    var opts = bills.map(function(b){ return '<option value="'+b.no+'">'+b.no+' · '+b.tenant+' · '+_money(b.total)+'</option>'; }).join('');
+    gxOpen('认领核销 · 未匹配付款', 'BOC HK · HKD 980.00 · 2026-06-08',
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:11px">该笔到账附言缺账单号，请选择对应未结账单核销：</div>'
+      + fld('对应账单','<select class="inl-sel" id="claim-bill" style="width:100%">'+opts+'</select>')
+      + '<div style="font-size:11px;color:var(--text3);margin-top:9px">金额一致将直接核销结清；不一致会提示差额处理。</div>',
+      '<button class="btn" onclick="gxClose()">取消</button><button class="btn btn-p" onclick="confirmClaim()"><i class="ti ti-link" style="font-size:13px"></i>核销结清</button>', 540);
+  };
+  window.confirmClaim = function(){
+    var no = (document.getElementById('claim-bill')||{}).value;
+    var inv = INVOICE_LIST.find(function(x){return x.no===no;});
+    if(inv){ inv.status='paid'; inv.method='线下转账'; inv.channel='offline'; renderBilling(); }
+    auditPush('andy@abccpa.hk','PAYMENT_CONFIRMED',true,no+' · 认领核销 HKD 980','platform','成功','p-green');
+    gxClose(); window.toast('✓ 已认领核销 '+no+' · 账单结清');
+  };
+
+  // ════════════════════════════════════════════════════════════════
+  //  AI 审计报告
+  // ════════════════════════════════════════════════════════════════
+  var AR_COMPANIES = [
+    {id:'abc', name:'ABC Trading Co. Ltd', brNo:'1122334', fy:'2025-04-01 ~ 2026-03-31', framework:'SME-FRS',
+     data:{revenue:3200000, expenses:2680000, netProfit:520000, priorRevenue:2750000, priorNet:410000,
+           assets:4100000, liabilities:2300000, equity:1800000, ca:1900000, cl:1200000, inv:300000, ar:680000, ap:540000, cogs:2100000,
+           tbBalanced:true, bsBalanced:true, locked:true, bankMatched:0.93, bankUnmatched:7, dupInv:3, lowConf:11, parseFailed:0, adjPending:0}},
+    {id:'peak', name:'Peak View Ltd', brNo:'2233445', fy:'2025-01-01 ~ 2025-12-31', framework:'SME-FRS',
+     data:{revenue:1850000, expenses:1990000, netProfit:-140000, priorRevenue:2100000, priorNet:120000,
+           assets:2600000, liabilities:1900000, equity:700000, ca:980000, cl:1150000, inv:120000, ar:430000, ap:610000, cogs:1480000,
+           tbBalanced:true, bsBalanced:true, locked:false, bankMatched:0.81, bankUnmatched:24, dupInv:6, lowConf:32, parseFailed:2, adjPending:3}},
+    {id:'hkv', name:'HK Ventures Ltd', brNo:'3344556', fy:'2025-07-01 ~ 2026-06-30', framework:'HKFRS',
+     data:{revenue:8600000, expenses:7100000, netProfit:1500000, priorRevenue:6900000, priorNet:1180000,
+           assets:12400000, liabilities:7800000, equity:4600000, ca:5200000, cl:3100000, inv:1400000, ar:2100000, ap:1600000, cogs:5400000,
+           tbBalanced:true, bsBalanced:true, locked:true, bankMatched:0.97, bankUnmatched:3, dupInv:1, lowConf:5, parseFailed:0, adjPending:0}},
+  ];
+  var AR_HISTORY = [
+    {no:'AR-2026-0007', company:'ABC Trading Co. Ltd', period:'FY2025/26', type:'审前分析报告', score:87},
+    {no:'AR-2026-0005', company:'HK Ventures Ltd', period:'FY2025/26', type:'审计辅助底稿', score:93},
+  ];
+  var _arType = 'pre', _arFramework = 'SME-FRS';
+  var AR_TYPE_LABEL = {pre:'审前分析报告', wp:'审计辅助底稿', draft:'意见书草稿模板'};
+  window.pickAr = function(group, el){
+    document.querySelectorAll('#'+group+' .mc').forEach(function(c){c.classList.remove('on');});
+    el.classList.add('on');
+    var v = el.getAttribute('data-v');
+    if(group==='ar-type') _arType = v;
+    if(group==='ar-framework') _arFramework = v;
+  };
+  function initAuditReport(){
+    var sel = document.getElementById('ar-company');
+    if(sel && !sel.options.length){
+      sel.innerHTML = AR_COMPANIES.map(function(c){return '<option value="'+c.id+'">'+c.name+'</option>';}).join('');
+    }
+    onArCompany();
+    renderArHistory();
+  }
+  window.initAuditReport = initAuditReport;
+  window.onArCompany = function(){
+    var c = curArCompany(); if(!c) return;
+    var fy = document.getElementById('ar-fy'); if(fy) fy.textContent = c.fy;
+    var fwEls = document.querySelectorAll('#ar-framework .mc');
+    fwEls.forEach(function(e){ e.classList.toggle('on', e.getAttribute('data-v')===c.framework); });
+    _arFramework = c.framework;
+    renderReadiness(c);
+    document.getElementById('ar-report').style.display='none';
+    document.getElementById('ar-progress-card').style.display='none';
+  };
+  function curArCompany(){ var id=(document.getElementById('ar-company')||{}).value; return AR_COMPANIES.find(function(c){return c.id===id;}) || AR_COMPANIES[0]; }
+  function renderReadiness(c){
+    var d = c.data;
+    var checks = [
+      ['试算平衡（借贷差额 < 0.01）', d.tbBalanced],
+      ['资产负债表平衡', d.bsBalanced],
+      ['目标期间已关账', d.locked],
+      ['银行未对账项 < 5%', d.bankUnmatched/100 < 0.05 ? (d.bankMatched>=0.95) : d.bankMatched>=0.95],
+      ['票据解析无失败', d.parseFailed===0],
+      ['无待确认期末调整', d.adjPending===0],
+    ];
+    var pass = checks.filter(function(x){return x[1];}).length;
+    var box = document.getElementById('ar-readiness');
+    box.innerHTML = checks.map(function(x){
+      var ok = x[1];
+      return '<div style="display:flex;align-items:center;gap:9px;padding:9px 16px;border-bottom:1px solid var(--bg2)">'
+        + '<i class="ti '+(ok?'ti-circle-check':'ti-alert-circle')+'" style="font-size:16px;color:'+(ok?'var(--green)':'var(--amber-text)')+'"></i>'
+        + '<span style="flex:1;font-size:12px">'+x[0]+'</span>'
+        + '<span class="pill '+(ok?'p-green':'p-amber')+'" style="font-size:10px">'+(ok?'通过':'待处理')+'</span></div>';
+    }).join('');
+    var pill = document.getElementById('ar-ready-pill');
+    pill.className = 'pill ' + (pass===checks.length?'p-green':'p-amber');
+    pill.textContent = pass+' / '+checks.length+' 通过';
+  }
+  window.generateAuditReport = function(){
+    var c = curArCompany(); if(!c) return;
+    var card = document.getElementById('ar-progress-card');
+    var prog = document.getElementById('ar-progress');
+    var report = document.getElementById('ar-report');
+    report.style.display='none';
+    card.style.display='';
+    var stages = ['Stage 0 · 抓取并规整平台数据（已脱敏）','Stage 1 · 财务比率与分析性复核 (HKSA 520)','Stage 2 · 风险与异常扫描 (HKSA 240)','Stage 3 · 香港合规检查','Stage 4 · 报告撰写','Stage 5 · 自检校验（防幻觉）'];
+    var model = document.getElementById('ar-deep').checked ? 'claude-opus-4-8' : 'claude-sonnet-4-6';
+    prog.innerHTML = '<div style="font-size:11px;color:var(--text3);margin-bottom:10px">模型：'+model+' · 报告类型：'+AR_TYPE_LABEL[_arType]+' · 框架：'+_arFramework+'</div>' + stages.map(function(s,i){
+      return '<div id="ar-st-'+i+'" style="display:flex;align-items:center;gap:9px;padding:7px 0"><i class="ti ti-circle" style="font-size:15px;color:var(--text3)"></i><span style="font-size:12px;color:var(--text3)">'+s+'</span></div>';
+    }).join('');
+    var i = 0;
+    (function step(){
+      if(i>0){ var prev=document.getElementById('ar-st-'+(i-1)); prev.querySelector('i').className='ti ti-circle-check'; prev.querySelector('i').style.color='var(--green)'; prev.querySelector('span').style.color='var(--text)'; }
+      if(i>=stages.length){
+        renderReportOutput(c); report.style.display='';
+        AR_HISTORY.unshift({no:'AR-2026-'+String(8+AR_HISTORY.length).padStart(4,'0'),company:c.name,period:'FY'+c.fy.slice(2,4)+'/'+c.fy.slice(-2),type:AR_TYPE_LABEL[_arType],score:computeScore(c)});
+        renderArHistory();
+        auditPush('andy@abccpa.hk','AUDIT_REPORT_GENERATED',true,c.name+' · '+AR_TYPE_LABEL[_arType],'platform','成功','p-green');
+        window.toast('✓ 审计报告已生成 · 计费 5,000 Token · 已写入审计日志');
+        report.scrollIntoView({behavior:'smooth',block:'start'});
+        return;
+      }
+      var cur=document.getElementById('ar-st-'+i); cur.querySelector('i').className='ti ti-loader-2'; cur.querySelector('i').style.color='var(--blue)'; cur.querySelector('span').style.color='var(--text)';
+      i++; setTimeout(step, 620);
+    })();
+  };
+  function computeScore(c){
+    var d=c.data, s=100;
+    if(!d.locked) s-=10; if(d.bankMatched<0.95) s-=Math.round((0.95-d.bankMatched)*100); if(d.parseFailed>0) s-=5; if(d.adjPending>0) s-=d.adjPending*2; if(d.dupInv>0) s-=Math.min(d.dupInv,5);
+    return Math.max(40,Math.min(100,s));
+  }
+  function p(v){ return (v*100).toFixed(1)+'%'; }
+  function renderReportOutput(c){
+    var d = c.data;
+    var grossMargin = (d.revenue-d.cogs)/d.revenue, netMargin = d.netProfit/d.revenue, roe = d.netProfit/d.equity, roa = d.netProfit/d.assets;
+    var current = d.ca/d.cl, quick = (d.ca-d.inv)/d.cl, dso = d.ar/d.revenue*365, dpo = d.ap/d.cogs*365, gearing = d.liabilities/d.assets;
+    var revYoY = (d.revenue-d.priorRevenue)/d.priorRevenue, netYoY = d.priorNet?(d.netProfit-d.priorNet)/Math.abs(d.priorNet):0;
+    var score = computeScore(c);
+    // risks
+    var risks = [];
+    if(d.bankMatched<0.95) risks.push(['A2','银行未对账项偏多','medium','银行匹配率 '+pn(d.bankMatched*100,1)+'%，未匹配 '+d.bankUnmatched+' 笔','HKSA 500','完成对账后再行审计，核实未匹配款项性质']);
+    if(d.dupInv>0) risks.push(['A3','疑似重复票据','medium',d.dupInv+' 张票据疑似重复','HKSA 240','人工复核去重，避免费用/收入重复入账']);
+    if(d.netProfit<0) risks.push(['A8','本期录得亏损','high','净利 '+_money(d.netProfit)+'，同比下滑','HKSA 570 持续经营','评估持续经营能力，关注现金流与流动比率']);
+    if(quick<1) risks.push(['A11','速动比率 < 1','medium','速动比率 '+pn(quick,2)+'，短期偿债能力偏弱','HKSA 520','关注流动性，必要时披露']);
+    if(d.adjPending>0) risks.push(['A10','存在待确认期末调整','low',d.adjPending+' 条 ADJ 待确认','—','确认折旧/应计等调整后再出报表']);
+    risks.push(['A13','利得税预提复核','low','须复核利得税暂估 8.25% / 16.5% 两级税率适用','IRO Cap.112','核对暂缴税与应缴税额']);
+    var riskRows = risks.map(function(r){
+      var sc = {high:'p-red',medium:'p-amber',low:'p-gray'}[r[2]];
+      var sl = {high:'高',medium:'中',low:'低'}[r[2]];
+      return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td><span class="pill '+sc+'">'+sl+'</span></td><td style="font-size:11px">'+r[3]+'</td><td style="font-size:11px;color:var(--text3)">'+r[4]+'</td></tr>';
+    }).join('');
+    // compliance
+    var comp = [
+      ['商业登记 BR 续期', c.id==='hkv'?'due_soon':'ok'],
+      ['周年申报 NAR1（公司注册处）', 'ok'],
+      ['利得税报税表 PTR (BIR51)', 'due_soon'],
+      ['暂缴利得税', 'ok'],
+      ['强积金 MPF 供款', d.adjPending>0?'unknown':'ok'],
+      ['法定账簿 7 年保存 (Cap.622 S.373)', 'ok'],
+      ['审计师委任', 'unknown'],
+      ['SME 报告豁免资格 (Cap.622 S.359)', c.framework==='SME-FRS'?'ok':'unknown'],
+    ];
+    var compMap = {ok:['符合','p-green'],due_soon:['即将到期','p-amber'],overdue:['逾期','p-red'],unknown:['待确认','p-gray']};
+    var compRows = comp.map(function(x){ var m=compMap[x[1]]; return '<tr><td>'+x[0]+'</td><td><span class="pill '+m[1]+'">'+m[0]+'</span></td></tr>'; }).join('');
+    function ratioRow(name,val,bench,interp){ return '<tr><td>'+name+'</td><td style="font-weight:700">'+val+'</td><td style="font-size:11px;color:var(--text3)">'+bench+'</td><td style="font-size:11px">'+interp+'</td></tr>'; }
+    var disclaimer = '<div style="background:var(--red-bg,#FEF2F2);border:1px solid var(--red);border-radius:10px;padding:13px 16px;margin-bottom:16px;font-size:11.5px;color:var(--red-text);line-height:1.6"><b>⚠ 免责声明：</b>本报告由 EasybookX AI 基于平台记账数据自动生成，仅供管理层内部参考与审计准备之用，<b>不构成香港法定审计意见</b>，不得对外作为鉴证文件，须由 HKICPA 注册执业会计师依《香港审计准则》(HKSA) 复核并签署后方可用于法定用途。</div>';
+    function sec(title, inner){ return '<div class="card" style="margin-bottom:12px"><div class="ch"><span class="ct">'+title+'</span></div><div style="padding:13px 16px;font-size:12.5px;line-height:1.7">'+inner+'</div></div>'; }
+    var html = ''
+      + '<div class="card" style="margin-bottom:12px"><div style="padding:16px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">'
+        + '<div style="flex:1"><div style="font-size:16px;font-weight:700">'+AR_TYPE_LABEL[_arType]+'</div>'
+        + '<div style="font-size:12px;color:var(--text2);margin-top:3px">'+c.name+' · BR '+c.brNo+' · '+c.fy+' · '+c.framework+' · HKD</div></div>'
+        + '<div style="text-align:center"><div style="font-size:28px;font-weight:800;color:'+(score>=85?'var(--green-text)':score>=70?'var(--amber-text)':'var(--red-text)')+'">'+score+'</div><div style="font-size:10px;color:var(--text3)">数据质量分</div></div>'
+        + '<button class="btn btn-p" onclick="exportReport()"><i class="ti ti-download" style="font-size:13px"></i>导出 PDF</button></div></div>'
+      + disclaimer
+      + sec('执行摘要 Executive Summary',
+          '<ul style="margin:0;padding-left:18px"><li>本期收入 '+_money(d.revenue)+'，同比 '+pn(revYoY*100,1)+'%；净'+(d.netProfit>=0?'利':'亏')+' '+_money(Math.abs(d.netProfit))+'。</li>'
+          + '<li>资产 '+_money(d.assets)+'，负债 '+_money(d.liabilities)+'，权益 '+_money(d.equity)+'，资产负债率 '+pn(gearing*100,1)+'%。</li>'
+          + '<li>最需关注：'+(risks.filter(function(r){return r[2]!=='low';})[0]?risks.filter(function(r){return r[2]!=='low';})[0][1]:'未见重大风险')+'。</li>'
+          + '<li>数据质量评分 '+score+'/100；试算与资产负债表均'+(d.tbBalanced&&d.bsBalanced?'平衡':'存在不平衡')+'。</li></ul>')
+      + sec('财务报表概览',
+          '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><tbody>'
+          + '<tr><td>营业收入</td><td style="text-align:right;font-weight:600">'+_money(d.revenue)+'</td><td style="color:var(--text3);font-size:11px">同比 '+pn(revYoY*100,1)+'%</td></tr>'
+          + '<tr><td>销售成本</td><td style="text-align:right">'+_money(d.cogs)+'</td><td></td></tr>'
+          + '<tr><td>毛利</td><td style="text-align:right;font-weight:600">'+_money(d.revenue-d.cogs)+'</td><td style="color:var(--text3);font-size:11px">毛利率 '+pn(grossMargin*100,1)+'%</td></tr>'
+          + '<tr><td>费用合计</td><td style="text-align:right">'+_money(d.expenses)+'</td><td></td></tr>'
+          + '<tr style="border-top:2px solid var(--border)"><td><b>净'+(d.netProfit>=0?'利':'亏损')+'</b></td><td style="text-align:right;font-weight:700;color:'+(d.netProfit>=0?'var(--green-text)':'var(--red-text)')+'">'+_money(d.netProfit)+'</td><td style="color:var(--text3);font-size:11px">净利率 '+pn(netMargin*100,1)+'%</td></tr>'
+          + '<tr><td>资产 / 负债 / 权益</td><td style="text-align:right" colspan="2">'+_money(d.assets)+' / '+_money(d.liabilities)+' / '+_money(d.equity)+'　<span class="pill '+(d.bsBalanced?'p-green':'p-red')+'" style="font-size:9px">'+(d.bsBalanced?'平衡':'不平衡')+'</span></td></tr>'
+          + '</tbody></table>')
+      + sec('关键财务比率与分析',
+          '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>比率</th><th>数值</th><th>常识区间</th><th>解读</th></tr></thead><tbody>'
+          + ratioRow('毛利率', pn(grossMargin*100,1)+'%', '贸易业 15–35%', grossMargin<0.15?'偏低，关注成本与定价':'处于合理区间')
+          + ratioRow('净利率', pn(netMargin*100,1)+'%', '5–15%', netMargin<0?'录得亏损，需关注':'尚可')
+          + ratioRow('流动比率', pn(current,2), '> 1.5 较稳健', current<1.5?'偏低，短期偿债压力':'良好')
+          + ratioRow('速动比率', pn(quick,2), '≈ 1', quick<1?'低于 1，流动性偏紧':'良好')
+          + ratioRow('应收周转天数 DSO', Math.round(dso)+' 天', '30–90 天', dso>90?'回款偏慢，关注坏账':'正常')
+          + ratioRow('应付周转天数 DPO', Math.round(dpo)+' 天', '30–60 天', '正常')
+          + ratioRow('ROE', pn(roe*100,1)+'%', '10–20%', roe<0?'为负':'')
+          + ratioRow('资产负债率', pn(gearing*100,1)+'%', '< 60%', gearing>0.6?'杠杆偏高':'稳健')
+          + '</tbody></table>')
+      + sec('风险与异常事项（HKSA 240 / 315 视角）',
+          '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>代码</th><th>风险项</th><th>等级</th><th>证据</th><th>准则</th></tr></thead><tbody>'+riskRows+'</tbody></table>')
+      + sec('香港合规检查清单',
+          '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>检查项</th><th>状态</th></tr></thead><tbody>'+compRows+'</tbody></table>')
+      + sec('待调整事项与审计调整建议',
+          '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>建议分录</th><th style="text-align:right">金额</th><th></th></tr></thead><tbody>'
+          + '<tr><td>Dr 折旧费用 (6236) / Cr 累计折旧 (1660)</td><td style="text-align:right">HKD 400.00</td><td><button class="btn btn-xs btn-p" onclick="backfillAdj()">回填期末调整</button></td></tr>'
+          + '<tr><td>Dr 审计费 (6201) / Cr 应计费用 (2150)</td><td style="text-align:right">HKD 5,000.00</td><td><button class="btn btn-xs" onclick="backfillAdj()">回填</button></td></tr>'
+          + '</tbody></table>')
+      + sec('附注草稿（'+c.framework+'）',
+          '<ol style="margin:0;padding-left:18px;color:var(--text2)"><li>主要会计政策（'+c.framework+' 编制基准）— <i>待补全</i></li><li>固定资产及折旧 — <i>待补全</i></li><li>应收 / 应付款项 — <i>待补全</i></li><li>关联方交易 — <i>待补全</i></li><li>或有事项与承担 — <i>待补全</i></li></ol>')
+      + sec('管理建议 Management Letter',
+          '<ul style="margin:0;padding-left:18px"><li>完善银行对账流程，月末未匹配项控制在 5% 以内。</li><li>票据去重与命名规范，降低重复入账风险。</li><li>及时确认期末调整（折旧 / 应计 / 税务）。</li><li>关注现金流与速动比率，必要时安排融资。</li></ul>'
+          + (_arType==='draft' ? '<div style="margin-top:12px;background:var(--amber-bg);border:1px dashed var(--amber);border-radius:8px;padding:11px 14px;font-size:11.5px;color:var(--amber-text)"><b>[草稿 DRAFT — 待执业会计师审阅签署]</b><br>意见书结构（HKSA 700）：标题 → 致股东 → 意见段（结论由审计师填写）→ 意见基础 → 管理层责任 → 审计师责任 → 执业会计师签名 / 牌照号 / 日期占位。平台不提供结论性鉴证措辞。</div>' : ''));
+    document.getElementById('ar-report').innerHTML = html;
+  }
+  function pn(v,dec){ return Number(v).toFixed(dec===undefined?1:dec); }
+  window.backfillAdj = function(){
+    window.toast('✓ 已回填至「期末调整」模块，请前往确认');
+    auditPush('andy@abccpa.hk','ADJ_BACKFILLED',false,'由审计报告回填调整建议','finance','成功','p-green');
+  };
+  window.exportReport = function(){ window.toast('✓ 正在导出 PDF（含 AI-Generated · Not a Statutory Audit 水印）'); };
+  function renderArHistory(){
+    var tb = document.getElementById('ar-history-tbody'); if(!tb) return;
+    tb.innerHTML = AR_HISTORY.map(function(h){
+      return '<tr><td style="font-family:monospace;font-size:11px">'+h.no+'</td><td>'+h.company+'</td><td>'+h.period+'</td><td><span class="pill p-blue" style="font-size:9.5px">'+h.type+'</span></td>'
+        + '<td><b style="color:'+(h.score>=85?'var(--green-text)':'var(--amber-text)')+'">'+h.score+'</b></td>'
+        + '<td><div style="display:flex;gap:4px"><button class="btn btn-xs" onclick="window.toast(\'查看报告 '+h.no+'\')">查看</button><button class="btn btn-xs" onclick="exportReport()">导出</button><button class="btn btn-xs" onclick="window.toast(\'重新生成 '+h.no+'\')">重生成</button></div></td></tr>';
+    }).join('');
+  }
+
+  // Refresh state from backend so 待解析列表 (STAGED_BK) reflects new rows
+  if (window.__easybookx && window.__easybookx.hydrate) window.__easybookx.hydrate();
 })();
 </script>
 

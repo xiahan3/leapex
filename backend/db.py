@@ -1,8 +1,8 @@
-"""SQLite + SQLModel setup. Single-file DB at ./leapex.db"""
+"""SQLite + SQLModel setup. Single-file DB at ./easybookx.db"""
 import os
 from sqlmodel import SQLModel, create_engine, Session
 
-DB_PATH = os.environ.get("LEAPEX_DB", os.path.join(os.path.dirname(__file__), "leapex.db"))
+DB_PATH = os.environ.get("EASYBOOKX_DB", os.path.join(os.path.dirname(__file__), "easybookx.db"))
 DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(

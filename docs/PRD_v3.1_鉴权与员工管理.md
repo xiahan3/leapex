@@ -1,4 +1,4 @@
-# Leapex 需求文档 v3.1 增量 — 鉴权 / 员工 / 密码
+# EasybookX 需求文档 v3.1 增量 — 鉴权 / 员工 / 密码
 
 > **文档定位**：v3.0 租户管理的补全模块——登录、员工 CRUD、密码与会话
 > **更新日期**：2026-06-09
@@ -157,7 +157,7 @@ Body:  { old_password, new_password }
 ```
 1. 收到邀请邮件
    ┌────────────────────────────────────────────────┐
-   │ 主题: 邀请你加入 ABC CPA Limited 的 Leapex 工作台 │
+   │ 主题: 邀请你加入 ABC CPA Limited 的 EasybookX 工作台 │
    │                                                  │
    │ Hi Andy,                                         │
    │                                                  │
@@ -178,7 +178,7 @@ Body:  { old_password, new_password }
 
 3. 激活页面
    ┌────────────────────────────────────────────────┐
-   │ 欢迎加入 Leapex                                  │
+   │ 欢迎加入 EasybookX                                  │
    │                                                  │
    │ 邮箱: andy@abccpa.hk  (不可改)                  │
    │ 姓名: ┌────────────────────┐                   │
@@ -278,7 +278,7 @@ Body:  { old_password, new_password }
        └─ 后端：
            ├─ 邮箱不存在 → 静默丢弃
            ├─ 邮箱存在 → 生成 reset_token (32字节，1 小时寿命)
-           │            → 发邮件含链接 https://leapex.hk/reset?token=...
+           │            → 发邮件含链接 https://easybookx.hk/reset?token=...
            │            → 写审计日志 PASSWORD_RESET_REQUESTED
            │            → 限流（同邮箱 5 分钟内最多 1 次）
 

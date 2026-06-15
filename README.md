@@ -1,4 +1,4 @@
-# Leapex 利柏思商务
+# EasybookX
 
 香港中小企业服务平台，含两条产品线：
 
@@ -26,7 +26,7 @@ python3 -m venv .venv
 
 | 路径 | 内容 |
 |---|---|
-| `/` | Leapex Web 主应用（会计做账） |
+| `/` | EasybookX Web 主应用（会计做账） |
 | `/tcsp` | TCSP 公司秘书小程序原型 |
 | `/docs` | FastAPI Swagger API 文档 |
 | `/api/health` | 健康检查 |
@@ -42,10 +42,10 @@ backend/
 ├── data/            COA 科目表种子
 └── static/          前端 (index.html, tcsp.html)
 deploy/
-└── leapex.service   systemd 单元
+└── easybookx.service   systemd 单元
 docs/                PRD 需求文档 (v3.0 / v3.1 / v3.2 / TCSP)
 ```
 
 ## 部署
 
-见 `deploy/leapex.service`。SQLite 数据库 (`backend/leapex.db`) 为运行时生成，不纳入版本管理。
+见 `deploy/easybookx.service`。SQLite 数据库 (`backend/easybookx.db`) 为运行时生成，不纳入版本管理。

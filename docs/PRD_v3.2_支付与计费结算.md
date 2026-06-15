@@ -1,4 +1,4 @@
-# Leapex 需求文档 v3.2 增量 — 租户支付与计费结算
+# EasybookX 需求文档 v3.2 增量 — 租户支付与计费结算
 
 > **文档定位**：v3.0 套餐/计费的补全——支付方式、账单结算、对账
 > **更新日期**：2026-06-10
@@ -138,7 +138,7 @@
     │
     ├─ 查看账单明细（逐项服务清单）
     ├─ 看到平台收款账户信息：
-    │     收款人: Leapex Limited
+    │     收款人: EasybookX Limited
     │     银行:   HSBC 香港上海汇丰银行
     │     账号:   123-456789-001
     │     FPS ID: 163088888  /  FPS 二维码
@@ -185,8 +185,8 @@
 ```python
 class PaymentAccount:
     id            : str
-    name          : str          # "Leapex 主收款账户"
-    payee_name    : str          # Leapex Limited
+    name          : str          # "EasybookX 主收款账户"
+    payee_name    : str          # EasybookX Limited
     bank          : str          # HSBC
     bank_code     : str          # 004
     account_no    : str          # 123-456789-001

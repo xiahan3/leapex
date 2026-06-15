@@ -1,4 +1,4 @@
-# Leapex TCSP 小程序 — V2.3 客户反馈优化
+# EasybookX TCSP 小程序 — V2.3 客户反馈优化
 
 > **来源**：客户 2026-06-11 微信反馈
 > **基于**：PRD_TCSP小程序_MVP.md
@@ -42,13 +42,13 @@
 | 订单 > 服务 | 订单层级高于服务；一个订单（如「新公司注册套餐」）含多个服务 |
 | 服务 ↔ 账单 1:1 | 每个服务一一绑定一张账单（修订自 V2.2「账单↔支付 1:1」，进一步明确账单挂在服务上）|
 | 订单下新增服务 | 现有订单之下可随时「新增服务」（如注册套餐里追加「商标注册」）|
-| 账单生成 | 账单金额在 Leapex 管理后台生成；具体结算线下计算 |
+| 账单生成 | 账单金额在 EasybookX 管理后台生成；具体结算线下计算 |
 
 ### 2.2 示例（小程序已呈现）
 
 ```
 ORD-2026-0188 · 星辰科技 · 新公司注册套餐
-  ├─ 新公司注册      → LEA-2026-0188-1  HKD 2,800  待确认（Leapex 直接交付）
+  ├─ 新公司注册      → LEA-2026-0188-1  HKD 2,800  待确认（EasybookX 直接交付）
   ├─ 法定秘书(首年)  → LEA-2026-0188-2  HKD 0      已含（内嵌）
   └─ 公司印章套装    → LEA-2026-0188-3  HKD 480    待生成（供应商「金印堂」交付）
   订单合计 HKD 3,280 · [新增服务]
@@ -66,7 +66,7 @@ ORD-2026-0188 · 星辰科技 · 新公司注册套餐
 |---|---|
 | 供应商用户 | 后台新增 `supplier` 角色，独立登录 |
 | 交付物上传 | 供应商在后台为指派的服务上传交付物（如印章成品照、公证件扫描）|
-| 双方账单体现 | 系统体现「Leapex → 客户账单」与「供应商 → Leapex 账单」两笔，**结算线下计算**，平台仅做记录与对账 |
+| 双方账单体现 | 系统体现「EasybookX → 客户账单」与「供应商 → EasybookX 账单」两笔，**结算线下计算**，平台仅做记录与对账 |
 | 数据隔离 | 供应商只能看到指派给自己的订单/服务/交付任务，看不到客户 KYC 等敏感资料 |
 
 **数据模型增量**
@@ -74,12 +74,12 @@ ORD-2026-0188 · 星辰科技 · 新公司注册套餐
 class Supplier:
     id, name, contact, service_types[], status, created_at
 
-class SupplierBill:        # 供应商 → Leapex 的应付账单
+class SupplierBill:        # 供应商 → EasybookX 的应付账单
     id, supplier_id, order_id, service_id, amount, currency,
     status('待对账'|'已确认'|'已结算'), settled_offline:bool, remark
 
 class Service:             # 订单下的服务（新增交付方字段）
-    id, order_id, service_type, deliver_by('leapex'|'supplier'),
+    id, order_id, service_type, deliver_by('easybookx'|'supplier'),
     supplier_id?, bill_id(1:1), status
 ```
 

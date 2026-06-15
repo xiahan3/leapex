@@ -1,4 +1,4 @@
-"""Seed initial data from the Leapex-1.11.html prototype.
+"""Seed initial data from the EasybookX-1.11.html prototype.
 
 COA loaded from coa_seed.json (sibling file).
 Other entities are inlined.

@@ -18,7 +18,7 @@ __pycache__/
 *.db
 *.sqlite
 *.sqlite3
-backend/leapex.db
+backend/easybookx.db
 
 # ── OS / editor ──
 .DS_Store
@@ -29,3 +29,4 @@ Thumbs.db
 
 # ── Logs ──
 *.log
+.claude/

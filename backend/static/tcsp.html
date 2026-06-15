@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Leapex TCSP 公司秘书 · 小程序原型</title>
+<title>EasybookX TCSP 公司秘书 · 小程序原型</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -234,14 +234,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   </div>
   <div class="mp-bar">
     <div class="mp-back" id="navback" onclick="goBack()" style="visibility:hidden"><i class="ti ti-chevron-left"></i></div>
-    <div class="mp-title" id="navtitle">Leapex 公司秘书</div>
+    <div class="mp-title" id="navtitle">EasybookX 公司秘书</div>
     <div class="capsule"><i class="ti ti-dots"></i><div class="div"></div><i class="ti ti-circle"></i></div>
   </div>
 
   <div class="screens" id="screens">
 
     <!-- ════════ HOME ════════ -->
-    <div class="screen on" id="s-home" data-title="Leapex 公司秘书" data-tab="home">
+    <div class="screen on" id="s-home" data-title="EasybookX 公司秘书" data-tab="home">
       <div class="body-pad">
         <div class="hero">
           <div class="hero-t">香港公司，线上一站办妥</div>
@@ -311,7 +311,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <button class="btn" id="ch-btn" onclick="chConfirm()">确认渠道码</button>
         <div class="divider-or">或</div>
         <button class="btn ghost" onclick="chSkip()">跳过 · 以自然流量进入</button>
-        <div class="note" style="text-align:center;margin-top:14px">跳过后订单归属 Leapex 直营</div>
+        <div class="note" style="text-align:center;margin-top:14px">跳过后订单归属 EasybookX 直营</div>
       </div>
     </div>
 
@@ -357,7 +357,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="order-card">
           <div class="svc-line">
             <div class="svc-dot" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-building-plus"></i></div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">新公司注册</div><div style="font-size:10.5px;color:var(--text3)">由 Leapex 直接交付</div></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">新公司注册</div><div style="font-size:10.5px;color:var(--text3)">由 EasybookX 直接交付</div></div>
             <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 2,800</div><span class="bill-chip t-blue" onclick="go('s-bill')" style="cursor:pointer">查看账单 ›</span></div>
           </div>
           <div class="svc-line">
@@ -375,7 +375,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <button class="btn ghost" onclick="go('s-services')"><i class="ti ti-plus" style="font-size:14px"></i> 在此订单新增服务</button>
 
         <div class="card card-pad" style="background:var(--bg2);margin-top:12px">
-          <div class="note"><i class="ti ti-info-circle"></i> 「公司印章套装」由 Leapex 供应商交付，交付物与结算在后台管理；客户端仅展示服务进度与账单。</div>
+          <div class="note"><i class="ti ti-info-circle"></i> 「公司印章套装」由 EasybookX 供应商交付，交付物与结算在后台管理；客户端仅展示服务进度与账单。</div>
         </div>
       </div>
     </div>
@@ -690,7 +690,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="reg-pane" id="reg-2" style="display:none">
           <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 2 · 地址与股本</div>
           <div class="field"><div class="field-l">注册地址</div>
-            <div class="radio-card on"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">Leapex 虚拟注册地址</div><div class="note">中环干诺道中 XX 号 · 含法定秘书服务</div></div></div>
+            <div class="radio-card on"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">EasybookX 虚拟注册地址</div><div class="note">中环干诺道中 XX 号 · 含法定秘书服务</div></div></div>
             <div class="radio-card"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">自有地址</div><div class="note">需提供地址证明</div></div></div>
           </div>
           <div class="grid2">
@@ -707,7 +707,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="note" style="margin-bottom:12px">根据您的单股东简单股本结构，<b style="color:var(--green)">智能推荐 Sample A 标准章程</b></div>
           <div class="radio-card on" onclick="pickArt(this)"><div class="radio-dot"></div><div style="flex:1"><div style="display:flex;justify-content:space-between"><div style="font-weight:600;font-size:14px">标准章程 Sample A</div><span class="tag t-green">推荐</span></div><div class="note">基于《公司条例》附表 1，简单股权结构</div></div></div>
           <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">增强版章程 Sample B</div><div class="note">含优先购买权、转让限制、董事权限细化</div></div></div>
-          <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">自定义章程</div><div class="note">复杂股权 / 特殊条款，由 Leapex 法务起草</div></div></div>
+          <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">自定义章程</div><div class="note">复杂股权 / 特殊条款，由 EasybookX 法务起草</div></div></div>
           <div class="card" onclick="toast('打开 ZAA_Sample_A.pdf 全文预览')" style="cursor:pointer"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--red-bg);color:var(--red)"><i class="ti ti-file-type-pdf"></i></div><div class="cell-main"><div class="cell-t">预览章程全文</div><div class="cell-d">ZAA_Sample_A.pdf · v1.2</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div></div>
           <div class="check-row" onclick="toggleCheck('art-agree')"><div class="cbox" id="art-agree"><i class="ti ti-check"></i></div><div style="font-size:13px">本人确认已阅读并同意以上章程细则</div></div>
           <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(2)">上一步</button><button class="btn" id="reg-3-btn" disabled onclick="regStep(4)">下一步</button></div>
@@ -717,7 +717,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 4 · 董事与秘书</div>
           <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-user"></i></div><div class="cell-main"><div class="cell-t">陳大文（董事）</div><div class="cell-d">身份信息复用 KYC · 已认证</div></div><span class="tag t-green">✓</span></div></div>
           <button class="btn ghost btn-sm" style="width:100%;margin-bottom:12px" onclick="toast('添加董事（至少 1 名自然人）')">+ 添加董事</button>
-          <div class="card card-pad" style="background:var(--green-bg)"><div style="font-size:13px;color:var(--green-d);font-weight:600"><i class="ti ti-shield-check"></i> 法定秘书：Leapex 利柏思（内嵌服务）</div><div class="note" style="color:var(--green-d);margin-top:3px">已含于注册套餐，自动担任公司法定秘书</div></div>
+          <div class="card card-pad" style="background:var(--green-bg)"><div style="font-size:13px;color:var(--green-d);font-weight:600"><i class="ti ti-shield-check"></i> 法定秘书：EasybookX（内嵌服务）</div><div class="note" style="color:var(--green-d);margin-top:3px">已含于注册套餐，自动担任公司法定秘书</div></div>
           <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(3)">上一步</button><button class="btn" onclick="regStep(5)">下一步</button></div>
         </div>
 
@@ -747,9 +747,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="label-line" style="padding:12px 14px;font-weight:700"><span>应付合计</span><span style="color:var(--green-d)" id="bill-total">HKD 5,800.00</span></div>
         </div>
         <div class="card card-pad" style="background:var(--bg2)">
-          <div class="sec-t" style="padding:0 0 8px">线下转账 · Leapex 收款账户</div>
+          <div class="sec-t" style="padding:0 0 8px">线下转账 · EasybookX 收款账户</div>
           <div style="font-size:13px;line-height:2">
-            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">收款人</span><span>Leapex Limited</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">收款人</span><span>EasybookX Limited</span></div>
             <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">银行</span><span>HSBC (004)</span></div>
             <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">账号</span><span style="font-family:monospace">123-456789-001</span></div>
             <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">FPS ID</span><span style="font-family:monospace">163088888</span></div>
@@ -822,7 +822,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="deliv-row" onclick="toast('预览 公司章程.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司章程大纲及细则</div><div class="note">Sample A · 已生成</div></div><span class="tag t-green">可下载</span></div>
           <div class="deliv-row" onclick="toast('预览 董事名册.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">董事名册</div><div class="note">Register of Directors</div></div><span class="tag t-green">可下载</span></div>
           <div class="deliv-row" onclick="toast('预览 股东名册.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">股东名册</div><div class="note">Register of Members</div></div><span class="tag t-green">可下载</span></div>
-          <div class="deliv-row" onclick="toast('预览 公司秘书任命书.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司秘书任命书</div><div class="note">Leapex 担任法定秘书</div></div><span class="tag t-green">可下载</span></div>
+          <div class="deliv-row" onclick="toast('预览 公司秘书任命书.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">公司秘书任命书</div><div class="note">EasybookX 担任法定秘书</div></div><span class="tag t-green">可下载</span></div>
           <div class="deliv-row" onclick="toast('预览 股票证书.pdf')"><div class="deliv-ic"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">股票证书</div><div class="note">Share Certificate</div></div><span class="tag t-green">可下载</span></div>
           <div style="padding:9px 14px;text-align:center;color:var(--text3);font-size:12px">共 12 项 PDF · 展开查看全部</div>
         </div>
@@ -863,7 +863,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="card">
           <div class="cell" onclick="toast('通知订阅设置')"><div class="cell-ic" style="background:var(--purple-bg);color:#7A5C9E"><i class="ti ti-bell"></i></div><div class="cell-main"><div class="cell-t">通知订阅</div><div class="cell-d">合规通知不可关闭</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
           <div class="cell" onclick="toast('《个人资料（私隐）条例》PDPO 保障')"><div class="cell-ic" style="background:var(--bg2);color:var(--text3)"><i class="ti ti-lock"></i></div><div class="cell-main"><div class="cell-t">隐私与数据</div><div class="cell-d">可查阅 / 更正个人资料</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
-          <div class="cell" onclick="toast('Leapex 利柏思商务 · 持牌 TCSP')"><div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-info-circle"></i></div><div class="cell-main"><div class="cell-t">关于 Leapex</div><div class="cell-d">持牌 TCSP · 牌照号 TC0012XX</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('EasybookX · 持牌 TCSP')"><div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-info-circle"></i></div><div class="cell-main"><div class="cell-t">关于 EasybookX</div><div class="cell-d">持牌 TCSP · 牌照号 TC0012XX</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
       </div>
     </div>
@@ -890,7 +890,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <svg viewBox="0 0 16 16" width="24" height="24"><rect x="1" y="1" width="6" height="6" rx="1" fill="#1A1A1A"/><rect x="9" y="1" width="6" height="6" rx="1" fill="#C15F3C"/><rect x="1" y="9" width="6" height="6" rx="1" fill="#D9A05B"/><rect x="9" y="9" width="6" height="6" rx="1" fill="#1A1A1A"/></svg>
       </div>
       <div style="margin-top:26px">
-        <div style="font-size:13px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.6)">LEAPEX 利柏思商务</div>
+        <div style="font-size:13px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.6)">EASYBOOKX</div>
         <div style="font-size:27px;font-weight:800;line-height:1.25;margin-top:10px">香港公司秘书<br>线上一站办妥</div>
         <div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:12px;line-height:1.7">持牌 TCSP · KYC 合规尽调 · 核名注册<br>法定秘书 · 年审变更全托管</div>
       </div>
@@ -904,7 +904,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
       </div>
       <button class="splash-btn" onclick="spEnter()">输入渠道码 · 进入</button>
       <button class="splash-skip" onclick="spSkip()">没有渠道码？跳过 · 以自然流量进入</button>
-      <div style="text-align:center;font-size:10.5px;color:rgba(255,255,255,.4);margin-top:14px">© 2026 Leapex · 持牌 TCSP · 符合 AMLO / PDPO</div>
+      <div style="text-align:center;font-size:10.5px;color:rgba(255,255,255,.4);margin-top:14px">© 2026 EasybookX · 持牌 TCSP · 符合 AMLO / PDPO</div>
     </div>
   </div>
 
@@ -912,7 +912,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
   <div class="toast" id="toast"></div>
 </div>
 
-<div class="frame-cap">Leapex TCSP 公司秘书 · 微信小程序原型 Demo（可点击交互）</div>
+<div class="frame-cap">EasybookX TCSP 公司秘书 · 微信小程序原型 Demo（可点击交互）</div>
 
 <script>
 var histStack = [];
@@ -936,7 +936,7 @@ function go(id, isBack){
   next.classList.add('on');
   next.scrollTop = 0;
   // title
-  document.getElementById('navtitle').textContent = next.dataset.title || 'Leapex';
+  document.getElementById('navtitle').textContent = next.dataset.title || 'EasybookX';
   // back button: show if screen has data-back OR history exists and not a tab root
   var isTabRoot = !!next.dataset.tab;
   document.getElementById('navback').style.visibility = (next.dataset.back || (!isTabRoot && histStack.length)) ? 'visible' : 'hidden';
@@ -1008,7 +1008,7 @@ function spEnter(){
 }
 function spSkip(){
   document.getElementById('home-ch').textContent = '自然流量';
-  document.getElementById('home-ch-d').textContent = 'Leapex 直营 · 标准价格';
+  document.getElementById('home-ch-d').textContent = 'EasybookX 直营 · 标准价格';
   _markRegistered(); _hideSplash();
   toast('已以自然流量进入');
 }
@@ -1117,11 +1117,11 @@ var SVC_DATA = {
     incl:['董事变更通知书 ND2A','新任董事任命书','离任董事辞职书','董事名册更新','董事会决议书'],
     process:['信息填写','新董事KYC','申报','交付'],meta:'办理时效：3-5 个工作日<br>新任董事需完成 KYC 尽调<br>同步更新 SCR'},
   'secretary':{name:'秘书变更 / 转入',icon:'ti-user-cog',price:1200,old:0,form:'secretary',tags:'ND2B · 5 项交付物',
-    incl:['秘书变更通知书 ND2B','新任秘书任命书（Leapex）','离任秘书辞职书','秘书名册更新','董事会决议书'],
-    process:['信息填写','交接','申报','交付'],meta:'办理时效：3-5 个工作日<br>Leapex 接任法定秘书<br>转入含历史文件交接核对'},
+    incl:['秘书变更通知书 ND2B','新任秘书任命书（EasybookX）','离任秘书辞职书','秘书名册更新','董事会决议书'],
+    process:['信息填写','交接','申报','交付'],meta:'办理时效：3-5 个工作日<br>EasybookX 接任法定秘书<br>转入含历史文件交接核对'},
   'address':{name:'注册地址变更',icon:'ti-map-pin',price:800,old:0,form:'address',tags:'NR1 · 4 项交付物',
     incl:['注册地址变更通知书 NR1','新地址证明','董事会决议书','更新地址通知书'],
-    process:['信息填写','申报','交付'],meta:'办理时效：2-3 个工作日<br>可选用 Leapex 虚拟注册地址'},
+    process:['信息填写','申报','交付'],meta:'办理时效：2-3 个工作日<br>可选用 EasybookX 虚拟注册地址'},
   'transfer':{name:'股份转让',icon:'ti-arrows-exchange',price:2000,old:0,form:'transfer',tags:'含印花税 · 6 项交付物',
     incl:['股份转让文书','印花税申报表','转让后股东名册','董事会批准决议','印花税缴付证明','更新股票证书'],
     process:['信息填写','印花税','申报','交付'],meta:'办理时效：5-7 个工作日<br>受让方需完成 KYC<br>系统预估应缴印花税（0.2% 对价或资产净值孰高）'},
@@ -1142,8 +1142,8 @@ var SVC_FORM = {
   register:[['期望公司英文名','如 Star Tech Limited'],['期望公司中文名','如 星辰科技有限公司'],['联系人姓名',''],['联系邮箱','name@email.com']],
   annual:[['公司名称',''],['公司注册编号 CI',''],['商业登记证号 BR',''],['财政年度结算日','如 03-31']],
   director:[['公司名称',''],['离任董事姓名',''],['新任董事姓名',''],['新任董事证件号','将触发 KYC']],
-  secretary:[['公司名称',''],['是否由 Leapex 接任','是 / 否']],
-  address:[['公司名称',''],['新注册地址 / 选用 Leapex 地址','']],
+  secretary:[['公司名称',''],['是否由 EasybookX 接任','是 / 否']],
+  address:[['公司名称',''],['新注册地址 / 选用 EasybookX 地址','']],
   transfer:[['公司名称',''],['转让方姓名',''],['受让方姓名',''],['转让股数',''],['转让对价 (HKD)','用于预估印花税']],
   rename:[['公司名称（现）',''],['拟用新名称','将触发核名流程']],
   allot:[['公司名称',''],['配发对象',''],['配发股数','']],
@@ -1157,7 +1157,7 @@ var KYC_NOTE = {
   allot:'配发予新股东需完成 KYC 尽职调查。',
   annual:'年审将触发 KYC 年度复核，如身份信息有变需重新上传。',
   secretary:'秘书转入将进行历史合规文件交接核对。',
-  address:'地址变更如选用 Leapex 地址，将自动配置注册地址。',
+  address:'地址变更如选用 EasybookX 地址，将自动配置注册地址。',
   deregister:'注销前需结清税务并取得税务局不反对注销证明书。',
 };
 
