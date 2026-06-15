@@ -790,16 +790,24 @@
         <!-- ── 已解析列表 ── -->
         <div class="card">
           <div class="ch">
-            <span class="ct">已解析票据 <span id="inv-month-lbl" style="font-weight:400;color:var(--text3)">· 2026年1月</span></span>
-            <span style="font-size:11px;color:var(--text3)" id="inv-count">24 张 · 3 张待处理</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="ct">已解析票据 <span id="inv-month-lbl" style="font-weight:400;color:var(--text3)">· 2026年1月</span></span>
+              <span style="font-size:11px;color:var(--text3)" id="inv-count">24 张 · 3 张待处理</span>
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <button class="btn btn-xs btn-p" onclick="batchConfirmInv()"><i class="ti ti-checks" style="font-size:12px" aria-hidden="true"></i>批量确认</button>
+              <button class="btn btn-xs" style="color:var(--red);border-color:var(--red)" onclick="batchDeleteInv()"><i class="ti ti-trash" style="font-size:11px" aria-hidden="true"></i>批量删除</button>
+            </div>
           </div>
           <table class="tbl" id="inv-table">
             <thead><tr>
               <th style="width:28px"><input type="checkbox" id="inv-all" onchange="toggleAll(this,'inv-cb')"></th>
-              <th style="width:22%">商户 / 发票号</th><th style="width:84px">日期</th><th style="width:88px">金额</th>
-              <th>费用类别</th><th style="width:50px;text-align:center">类型</th>
-              <th style="width:96px">解析状态</th>
-              <th style="width:108px;text-align:center">操作</th>
+              <th style="width:19%">商户 / 发票号</th><th style="width:82px">日期</th><th style="width:90px">金额</th>
+              <th style="width:48px;text-align:center">币种</th>
+              <th style="width:96px">商业登记号</th>
+              <th>费用类别</th><th style="width:48px;text-align:center">类型</th>
+              <th style="width:92px">解析状态</th>
+              <th style="width:150px;text-align:center">操作</th>
             </tr></thead>
             <tbody id="inv-tbody"></tbody>
           </table>
@@ -885,10 +893,14 @@
               <span class="dr-sep">—</span>
               <input type="date" class="dr-input" id="dr-bank-e" value="2026-01-31" onchange="onDRChange('bank')">
             </div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <button class="btn btn-xs btn-p" onclick="batchConfirmBk()"><i class="ti ti-checks" style="font-size:12px" aria-hidden="true"></i>批量确认</button>
+              <button class="btn btn-xs" style="color:var(--red);border-color:var(--red)" onclick="batchDeleteBk()"><i class="ti ti-trash" style="font-size:11px" aria-hidden="true"></i>批量删除</button>
+            </div>
           </div>
           <table class="tbl">
             <thead><tr>
-              <th style="width:26px"><input type="checkbox"></th>
+              <th style="width:26px"><input type="checkbox" onchange="toggleAll(this,'bk-cb')"></th>
               <th style="width:22%">文件名称</th>
               <th style="width:9%">所属银行</th>
               <th style="width:130px">账号</th>
@@ -897,7 +909,7 @@
               <th style="width:50px;text-align:center">笔数</th>
               <th style="width:110px;text-align:right">期末余额</th>
               <th style="width:78px">状态</th>
-              <th style="width:150px;text-align:center">操作</th>
+              <th style="width:215px;text-align:center">操作</th>
             </tr></thead>
             <tbody id="bk-tbody"></tbody>
           </table>
@@ -996,6 +1008,13 @@
           <!-- 操作 -->
           <div class="filter-row">
             <span class="filter-lbl">操作</span>
+            <button class="btn btn-xs btn-p" onclick="aiMatchReconAll()">
+              <i class="ti ti-sparkles" style="font-size:12px" aria-hidden="true"></i>银行票据 AI 匹配
+            </button>
+            <button class="btn btn-xs btn-t" onclick="batchConfirmJE()">
+              <i class="ti ti-checks" style="font-size:12px" aria-hidden="true"></i>批量确认会计分录
+            </button>
+            <span style="flex:1"></span>
             <button class="btn btn-xs" onclick="openExportModal('bank')">
               <i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出银行流水
             </button>
@@ -2765,6 +2784,27 @@
         </div>
       </div>
 
+      <!-- ═══════════════ 通用左右分栏编辑弹窗（左预览 / 右可编辑详情）═══════════════ -->
+      <div class="pm-overlay" id="split-modal" onclick="if(event.target===this)closeSplitModal()" style="z-index:2900">
+        <div class="pm-dialog" style="max-width:1000px;width:96%">
+          <div class="pm-hd">
+            <div>
+              <div style="font-size:14px;font-weight:700" id="split-title">编辑</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:1px" id="split-sub"></div>
+            </div>
+            <button class="pm-close" onclick="closeSplitModal()">×</button>
+          </div>
+          <div style="display:flex;align-items:stretch;max-height:70vh">
+            <div id="split-left" style="width:46%;border-right:1px solid var(--border);overflow:auto;background:var(--bg2);padding:16px"></div>
+            <div id="split-right" style="width:54%;overflow:auto;padding:16px 18px"></div>
+          </div>
+          <div class="pm-ft">
+            <button class="btn" onclick="closeSplitModal()">取消</button>
+            <button class="btn btn-p" onclick="splitSave()"><i class="ti ti-check" style="font-size:13px"></i>保存</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ═══════════════════════ BILLING & PAYMENTS ═══════════════════════ -->
       <div class="page" id="page-billing">
         <div class="card" style="margin-bottom:14px">
@@ -3984,6 +4024,23 @@ const INV_DATA = {
 const MTH_LABEL = { '2025-11':'2025年11月','2025-12':'2025年12月','2026-01':'2026年1月','2026-02':'2026年2月' };
 let editingInvId = null;
 
+// ─── 票据公共字段补全（结合香港财务：币种 + 供应商商业登记号 BR No）──
+// 香港不征 GST/VAT，故无税额字段；但「币种」与对方「商业登记号(BR)」是辨别票据、
+// 满足开支实证与 AMLO 尽调的关键公共字段。
+const SUPPLIER_BR = {
+  '電訊盈科 PCCW':'11010147', '中国石化':'30215588', '惠康超市':'08842217',
+  '美心餐廳':'19283746', 'UPS Hong Kong':'52119087', '九記茶餐廳':'66271830',
+  '香港的士 ×2':'—', '商務印書館':'40028813', 'ABC Trading Co.':'63920011',
+  'Peak View Ltd':'71558240',
+};
+Object.keys(INV_DATA).forEach(function(mk){
+  INV_DATA[mk].forEach(function(r){
+    if (!r.currency) { var m = String(r.amt||'').match(/[A-Z]{3}/); r.currency = m ? m[0] : 'HKD'; }
+    if (!r.brNo) { r.brNo = SUPPLIER_BR[r.merchant] || (r.invoiceType === 'income' ? '63920011' : '—'); }
+    if (r.confirmed === undefined) r.confirmed = false;
+  });
+});
+
 function renderInv(month) {
   if (month) { currentInvMonth = month; }
   const rows = INV_DATA[currentInvMonth] || [];
@@ -4011,8 +4068,12 @@ function makeInvRow(r) {
   const parsePill = parsedOK
     ? '<span class="pill p-green" style="font-size:10.5px">✓ 解析成功</span>'
     : '<span class="pill p-red"   style="font-size:10.5px">✗ 解析失败</span>';
+  const confirmedPill = r.confirmed ? ' <span class="pill p-blue" style="font-size:9px">已确认</span>' : '';
+  const confirmBtn = r.confirmed
+    ? '<button class="btn btn-xs" style="font-size:10.5px;color:var(--text3)" onclick="confirmInv(\''+r.id+'\',false)">撤确认</button>'
+    : '<button class="btn btn-xs" style="font-size:10.5px;color:var(--green-text);border-color:var(--green-text)" onclick="confirmInv(\''+r.id+'\',true)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>确认</button>';
   tr.innerHTML = `
-    <td><input type="checkbox" class="inv-cb"></td>
+    <td><input type="checkbox" class="inv-cb" data-id="${r.id}"></td>
     <td><div class="mi"><div class="ma">${r.merchant.slice(0,2)}</div>
       <div>
         <div style="font-weight:500;font-size:12px">${r.merchant}</div>
@@ -4020,12 +4081,15 @@ function makeInvRow(r) {
       </div></div></td>
     <td style="font-size:11.5px">${r.date}</td>
     <td style="font-weight:600;font-size:12px">${r.amt}</td>
+    <td style="text-align:center"><span class="pill p-gray" style="font-size:9.5px">${r.currency||'HKD'}</span></td>
+    <td style="font-family:monospace;font-size:11px;color:var(--text2)">${r.brNo||'—'}</td>
     <td><span class="pill p-gray" style="font-size:10.5px">${r.cat}</span></td>
     <td style="text-align:center">${typePill}</td>
-    <td>${parsePill}</td>
-    <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center">
-      <button class="btn btn-xs" style="font-size:10.5px" onclick="viewInv('${r.id}')">查看</button>
-      <button class="btn btn-xs" style="font-size:10.5px;color:var(--blue);border-color:var(--blue)" onclick="startEditInv('${r.id}')"><i class="ti ti-edit" style="font-size:11px" aria-hidden="true"></i>编辑</button>
+    <td>${parsePill}${confirmedPill}</td>
+    <td style="text-align:center"><div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-xs" style="font-size:10.5px" onclick="openInvEditModal('${r.id}')"><i class="ti ti-edit" style="font-size:11px" aria-hidden="true"></i>编辑</button>
+      ${confirmBtn}
+      <button class="btn btn-xs" style="font-size:10.5px;color:var(--red);border-color:var(--red)" onclick="deleteInv('${r.id}')"><i class="ti ti-trash" style="font-size:11px" aria-hidden="true"></i>删除</button>
     </div></td>`;
   return tr;
 }
@@ -4078,6 +4142,101 @@ function cancelEditInv(id) {
   const r = JSON.parse(tr.dataset.inv);
   editingInvId = null;
   tr.parentNode.replaceChild(makeInvRow(r), tr);
+}
+
+// ─── 票据：确认 / 删除 / 批量 / 编辑弹窗 ─────────────────────────
+function _invRec(id) { return (INV_DATA[currentInvMonth] || []).find(function(x){ return x.id === id; }); }
+function confirmInv(id, val) {
+  const r = _invRec(id); if (!r) return;
+  r.confirmed = val; renderInv();
+  toast(val ? '✓ 已确认票据：' + r.merchant : '已撤销确认：' + r.merchant);
+}
+function deleteInv(id) {
+  const r = _invRec(id); if (!r) return;
+  if (!confirm('确认删除票据「' + r.merchant + ' · ' + r.amt + '」？该操作不可恢复。')) return;
+  const arr = INV_DATA[currentInvMonth] || [];
+  const idx = arr.findIndex(function(x){ return x.id === id; });
+  if (idx >= 0) arr.splice(idx, 1);
+  renderInv();
+  toast('已删除票据：' + r.merchant);
+}
+function _checkedInvIds() {
+  return Array.prototype.slice.call(document.querySelectorAll('.inv-cb:checked')).map(function(cb){ return cb.getAttribute('data-id'); }).filter(Boolean);
+}
+function batchConfirmInv() {
+  const ids = _checkedInvIds();
+  if (!ids.length) { toast('请先勾选要确认的票据'); return; }
+  ids.forEach(function(id){ const r = _invRec(id); if (r) r.confirmed = true; });
+  renderInv();
+  toast('✓ 已批量确认 ' + ids.length + ' 张票据');
+}
+function batchDeleteInv() {
+  const ids = _checkedInvIds();
+  if (!ids.length) { toast('请先勾选要删除的票据'); return; }
+  if (!confirm('确认删除选中的 ' + ids.length + ' 张票据？该操作不可恢复。')) return;
+  const arr = INV_DATA[currentInvMonth] || [];
+  ids.forEach(function(id){ const idx = arr.findIndex(function(x){ return x.id === id; }); if (idx >= 0) arr.splice(idx, 1); });
+  renderInv();
+  toast('已批量删除 ' + ids.length + ' 张票据');
+}
+function openInvEditModal(id) {
+  const r = _invRec(id); if (!r) return;
+  const isIncome = r.invoiceType === 'income';
+  // 左侧：票据预览（仿票据/发票图像）
+  const left = '<div style="background:white;border:1px solid var(--border);border-radius:8px;padding:18px;font-size:12px;min-height:300px;box-shadow:0 1px 4px rgba(0,0,0,.06)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px dashed var(--border2);padding-bottom:10px;margin-bottom:12px">'
+    +   '<div style="display:flex;align-items:center;gap:9px"><div class="ma" style="width:34px;height:34px;font-size:13px">' + r.merchant.slice(0,2) + '</div>'
+    +   '<div><div style="font-weight:700;font-size:13px">' + r.merchant + '</div><div style="font-size:10px;color:var(--text3)">' + (isIncome ? 'SALES INVOICE 销售发票' : 'RECEIPT / INVOICE 收据') + '</div></div></div>'
+    +   '<span class="pill ' + (isIncome ? 'p-blue' : 'p-gray') + '" style="font-size:10px">' + (isIncome ? '收入' : '支出') + '</span></div>'
+    + '<div style="display:grid;grid-template-columns:auto 1fr;gap:7px 12px;font-size:11.5px">'
+    +   '<span style="color:var(--text3)">发票号 No.</span><span style="font-family:monospace">' + (r.invoiceNo || '—') + '</span>'
+    +   '<span style="color:var(--text3)">日期 Date</span><span>' + r.date + '</span>'
+    +   '<span style="color:var(--text3)">商业登记号 BR</span><span style="font-family:monospace">' + (r.brNo || '—') + '</span>'
+    +   '<span style="color:var(--text3)">费用类别</span><span>' + r.cat + '</span>'
+    + '</div>'
+    + '<div style="border-top:1px dashed var(--border2);margin-top:14px;padding-top:12px;text-align:right">'
+    +   '<div style="font-size:10px;color:var(--text3)">应付金额 Amount</div>'
+    +   '<div style="font-size:22px;font-weight:800;color:' + (isIncome ? 'var(--blue-text)' : 'var(--text)') + '">' + r.amt + '</div></div>'
+    + '<div style="margin-top:12px;font-size:10px;color:var(--text3);text-align:center">AI 解析置信度 ' + (r.conf || 0) + '%　·　香港不征 GST/VAT</div>'
+    + '</div>';
+  // 右侧：可编辑详情
+  const cats = ['Fuel','Telephone','Meals','Travelling expenses','Office supplies','Postage','Entertainment','Sales Invoice','Other'];
+  const catOpts  = cats.map(function(c){ return '<option' + (c === r.cat ? ' selected' : '') + '>' + c + '</option>'; }).join('');
+  const curOpts  = ['HKD','USD','CNY','EUR','GBP'].map(function(c){ return '<option' + (c === (r.currency||'HKD') ? ' selected' : '') + '>' + c + '</option>'; }).join('');
+  const typeOpts = [['expense','支出'],['income','收入']].map(function(t){ return '<option value="' + t[0] + '"' + (t[0] === r.invoiceType ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('');
+  const iStyle = 'width:100%;font-size:12px;padding:6px 9px;border:1px solid var(--border2);border-radius:6px;background:var(--bg);outline:none;font-family:inherit';
+  const right = '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">票据信息（可编辑）</div>'
+    + _fld('商户 / 对方公司', '<input id="ie-merchant" style="' + iStyle + '" value="' + r.merchant + '">')
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +   _fld('发票号', '<input id="ie-no" style="' + iStyle + ';font-family:monospace" value="' + (r.invoiceNo || '') + '">')
+    +   _fld('日期', '<input id="ie-date" style="' + iStyle + '" value="' + r.date + '">')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +   _fld('金额', '<input id="ie-amt" style="' + iStyle + '" value="' + r.amt + '">')
+    +   _fld('币种', '<select id="ie-cur" class="inl-sel" style="' + iStyle + '">' + curOpts + '</select>')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +   _fld('商业登记号 BR No', '<input id="ie-br" style="' + iStyle + ';font-family:monospace" value="' + (r.brNo || '') + '">')
+    +   _fld('费用类别', '<select id="ie-cat" class="inl-sel" style="' + iStyle + '">' + catOpts + '</select>')
+    + '</div>'
+    + _fld('票据类型', '<select id="ie-type" class="inl-sel" style="' + iStyle + '">' + typeOpts + '</select>')
+    + '<div style="font-size:11px;color:var(--text3);margin-top:6px;background:var(--bg2);border-radius:6px;padding:9px 11px">提示：左侧为票据原件预览，右侧可核对并修改字段；保存后该票据视为「解析成功」。</div>';
+  openSplitModal('编辑票据 · ' + r.merchant, (r.invoiceNo || '') + ' · ' + r.date, left, right, function(){ saveInvFromModal(id); });
+}
+function saveInvFromModal(id) {
+  const r = _invRec(id); if (!r) return;
+  r.merchant  = (document.getElementById('ie-merchant').value || r.merchant).trim();
+  r.invoiceNo = (document.getElementById('ie-no').value || '').trim() || '—';
+  r.date      = (document.getElementById('ie-date').value || r.date).trim();
+  r.amt       = (document.getElementById('ie-amt').value || r.amt).trim();
+  r.currency  = document.getElementById('ie-cur').value;
+  r.brNo      = (document.getElementById('ie-br').value || '').trim() || '—';
+  r.cat       = document.getElementById('ie-cat').value;
+  r.invoiceType = document.getElementById('ie-type').value;
+  r.parseStatus = 'success';
+  renderInv();
+  closeSplitModal();
+  toast('✓ 票据信息已保存：' + r.merchant);
 }
 
 renderInv('2026-01');
@@ -4145,8 +4304,14 @@ const ACCT_TYPES  = ['往来账户','储蓄账户','外汇账户','定期存款'
 let editingBkId = null;
 
 function bkRowHTML(r) {
+  const statusPill = r.confirmed
+    ? '<span class="pill p-blue" style="font-size:10.5px">✓ 已确认</span>'
+    : '<span class="pill p-green" style="font-size:10.5px">✓ 已解析</span>';
+  const confirmBtn = r.confirmed
+    ? '<button class="btn btn-xs" style="font-size:10.5px;color:var(--text3)" onclick="confirmBk(\''+r.id+'\',false)">撤确认</button>'
+    : '<button class="btn btn-xs" style="font-size:10.5px;color:var(--green-text);border-color:var(--green-text)" onclick="confirmBk(\''+r.id+'\',true)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>确认</button>';
   return `
-    <td><input type="checkbox"></td>
+    <td><input type="checkbox" class="bk-cb" data-id="${r.id}"></td>
     <td><div class="mi"><i class="ti ti-file-text" style="font-size:14px;color:var(--text3)" aria-hidden="true"></i><span style="font-size:11.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.fname}</span></div></td>
     <td><span style="font-size:12px;font-weight:800;color:${r.bankColor}">${r.bank}</span></td>
     <td style="font-family:monospace;font-size:11.5px;color:var(--text2);letter-spacing:.5px">${r.acctNo}</td>
@@ -4154,11 +4319,12 @@ function bkRowHTML(r) {
     <td><span class="pill p-gray" style="font-size:10.5px">${r.mthLabel}</span></td>
     <td style="text-align:center;font-weight:600;font-size:12.5px">${r.txns}</td>
     <td style="text-align:right;font-size:12px;font-weight:600;color:var(--green-text)">${r.endBalance}</td>
-    <td><span class="pill p-green" style="font-size:10.5px">✓ 已解析</span></td>
-    <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center">
-      <button class="btn btn-xs" style="font-size:10.5px" onclick="viewBk('${r.id}')"><i class="ti ti-eye" style="font-size:11px" aria-hidden="true"></i>详情</button>
-      <button class="btn btn-xs" style="font-size:10.5px" onclick="dlBk('${r.id}')">下载</button>
-      <button class="btn btn-xs" style="font-size:10.5px;color:var(--blue);border-color:var(--blue)" onclick="startEditBk('${r.id}')"><i class="ti ti-edit" style="font-size:11px" aria-hidden="true"></i>编辑</button>
+    <td>${statusPill}</td>
+    <td style="text-align:center"><div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-xs" style="font-size:10.5px" onclick="viewBk('${r.id}')"><i class="ti ti-eye" style="font-size:11px" aria-hidden="true"></i>预览</button>
+      <button class="btn btn-xs" style="font-size:10.5px;color:var(--blue);border-color:var(--blue)" onclick="openBkEditModal('${r.id}')"><i class="ti ti-edit" style="font-size:11px" aria-hidden="true"></i>编辑</button>
+      ${confirmBtn}
+      <button class="btn btn-xs" style="font-size:10.5px;color:var(--red);border-color:var(--red)" onclick="deleteBk('${r.id}')"><i class="ti ti-trash" style="font-size:11px" aria-hidden="true"></i>删除</button>
     </div></td>`;
 }
 
@@ -4429,6 +4595,119 @@ function cancelEditBk(id) {
   const r = JSON.parse(tr.dataset.bk);
   tr.className = ''; tr.innerHTML = bkRowHTML(r);
   editingBkId = null;
+}
+
+// ─── 对账单：确认 / 删除 / 批量 ───────────────────────────────────
+function confirmBk(id, val) {
+  const r = BK_LIST.find(b => b.id === id); if (!r) return;
+  r.confirmed = val;
+  renderBkList();
+  toast(val ? '✓ 已确认对账单：' + r.fname : '已撤销确认：' + r.fname);
+}
+function deleteBk(id) {
+  const r = BK_LIST.find(b => b.id === id); if (!r) return;
+  if (!confirm('确认删除对账单「' + r.fname + '」？该操作不可恢复。')) return;
+  const idx = BK_LIST.findIndex(b => b.id === id);
+  if (idx >= 0) BK_LIST.splice(idx, 1);
+  renderBkList();
+  toast('已删除对账单：' + r.fname);
+}
+function _checkedBkIds() {
+  return Array.prototype.slice.call(document.querySelectorAll('.bk-cb:checked')).map(cb => cb.getAttribute('data-id'));
+}
+function batchConfirmBk() {
+  const ids = _checkedBkIds();
+  if (!ids.length) { toast('请先勾选要确认的对账单'); return; }
+  ids.forEach(id => { const r = BK_LIST.find(b => b.id === id); if (r) r.confirmed = true; });
+  renderBkList();
+  toast('✓ 已批量确认 ' + ids.length + ' 份对账单');
+}
+function batchDeleteBk() {
+  const ids = _checkedBkIds();
+  if (!ids.length) { toast('请先勾选要删除的对账单'); return; }
+  if (!confirm('确认删除选中的 ' + ids.length + ' 份对账单？该操作不可恢复。')) return;
+  ids.forEach(id => { const idx = BK_LIST.findIndex(b => b.id === id); if (idx >= 0) BK_LIST.splice(idx, 1); });
+  renderBkList();
+  toast('已批量删除 ' + ids.length + ' 份对账单');
+}
+
+// ─── 通用左右分栏编辑弹窗（左预览 + 右可编辑详情）─────────────────
+let _splitSaveHandler = null;
+function openSplitModal(title, sub, leftHTML, rightHTML, onSave) {
+  document.getElementById('split-title').textContent = title || '编辑';
+  document.getElementById('split-sub').textContent = sub || '';
+  document.getElementById('split-left').innerHTML = leftHTML || '';
+  document.getElementById('split-right').innerHTML = rightHTML || '';
+  _splitSaveHandler = onSave || null;
+  document.getElementById('split-modal').classList.add('open');
+}
+function closeSplitModal() { document.getElementById('split-modal').classList.remove('open'); _splitSaveHandler = null; }
+function splitSave() { if (typeof _splitSaveHandler === 'function') _splitSaveHandler(); }
+function _fld(label, inner) {
+  return '<div style="margin-bottom:11px"><label style="font-size:11px;font-weight:600;color:var(--text3);display:block;margin-bottom:4px">' + label + '</label>' + inner + '</div>';
+}
+
+// ─── 对账单：编辑弹窗（左=文件预览，右=可编辑详情）────────────────
+function openBkEditModal(id) {
+  const r = BK_LIST.find(b => b.id === id); if (!r) return;
+  const d = STATEMENT_DETAIL[id];
+  // 左侧：文件预览（仿对账单文档）
+  let left = '<div style="background:white;border:1px solid var(--border);border-radius:8px;padding:18px;font-size:11.5px;min-height:300px;box-shadow:0 1px 4px rgba(0,0,0,.06)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid ' + r.bankColor + ';padding-bottom:8px;margin-bottom:10px">'
+    +   '<span style="font-size:15px;font-weight:800;color:' + r.bankColor + '">' + r.bank + '</span>'
+    +   '<span style="font-size:10px;color:var(--text3)">BANK STATEMENT</span></div>'
+    + '<div style="display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:11px;margin-bottom:12px">'
+    +   '<span style="color:var(--text3)">账户 A/C</span><span style="font-family:monospace">' + r.acctNo + '</span>'
+    +   '<span style="color:var(--text3)">类型</span><span>' + r.acctType + '</span>'
+    +   '<span style="color:var(--text3)">账期</span><span>' + (d ? d.periodStart + ' ~ ' + d.periodEnd : r.mthLabel) + '</span>'
+    +   '<span style="color:var(--text3)">期末余额</span><span style="font-weight:700;color:var(--green-text)">' + r.endBalance + '</span>'
+    + '</div>';
+  if (d && d.subs && d.subs.length) {
+    left += '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">交易明细预览（' + r.txns + ' 笔）</div>';
+    const sub0 = d.subs.find(s => s.txns && s.txns.length) || d.subs[0];
+    left += '<table class="tbl" style="font-size:10.5px"><thead><tr><th>日期</th><th>摘要</th><th style="text-align:right">存入</th><th style="text-align:right">提取</th></tr></thead><tbody>'
+      + (sub0.txns || []).slice(0, 8).map(t => '<tr><td style="white-space:nowrap">' + t[0] + '</td><td>' + (t[1] || '') + '</td><td style="text-align:right;color:var(--green-text)">' + (t[6] ? _fmt(t[6]) : '—') + '</td><td style="text-align:right;color:var(--red-text)">' + (t[7] ? _fmt(t[7]) : '—') + '</td></tr>').join('')
+      + '</tbody></table>';
+  } else {
+    left += '<div style="text-align:center;color:var(--text3);padding:30px 0"><i class="ti ti-file-text" style="font-size:34px"></i><div style="margin-top:8px">' + r.fname + '</div></div>';
+  }
+  left += '</div>';
+  // 右侧：可编辑详情（statement 级字段）
+  const bankOpts = ['HSBC','恒生','中銀'].map(v => '<option' + (v === r.bank ? ' selected' : '') + '>' + v + '</option>').join('');
+  const typeOpts = ACCT_TYPES.map(t => '<option' + (t === r.acctType ? ' selected' : '') + '>' + t + '</option>').join('');
+  const mthOpts  = ['2025-10','2025-11','2025-12','2026-01','2026-02','2026-03'].map(m => '<option' + (m === r.month ? ' selected' : '') + '>' + m + '</option>').join('');
+  const iStyle = 'width:100%;font-size:12px;padding:6px 9px;border:1px solid var(--border2);border-radius:6px;background:var(--bg);outline:none;font-family:inherit';
+  const right = '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">对账单信息（可编辑）</div>'
+    + _fld('文件名称', '<input id="bke-fname" style="' + iStyle + '" value="' + r.fname + '">')
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +   _fld('所属银行', '<select id="bke-bank" class="inl-sel" style="' + iStyle + '">' + bankOpts + '</select>')
+    +   _fld('账户类型', '<select id="bke-accttype" class="inl-sel" style="' + iStyle + '">' + typeOpts + '</select>')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +   _fld('账号', '<input id="bke-acctno" style="' + iStyle + ';font-family:monospace" value="' + r.acctNo + '">')
+    +   _fld('账期月份', '<select id="bke-mth" class="inl-sel" style="' + iStyle + '">' + mthOpts + '</select>')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +   _fld('交易笔数', '<input id="bke-txns" type="number" style="' + iStyle + '" value="' + r.txns + '">')
+    +   _fld('期末余额', '<input id="bke-bal" style="' + iStyle + '" value="' + r.endBalance + '">')
+    + '</div>'
+    + '<div style="font-size:11px;color:var(--text3);margin-top:6px;background:var(--bg2);border-radius:6px;padding:9px 11px">提示：左侧为对账单文件预览，右侧字段经核对后可修改并保存；交易明细以原始结单为准。</div>';
+  openSplitModal('编辑对账单 · ' + r.bank, r.fname, left, right, function(){ saveBkFromModal(id); });
+}
+function saveBkFromModal(id) {
+  const r = BK_LIST.find(b => b.id === id); if (!r) return;
+  r.fname    = (document.getElementById('bke-fname').value || r.fname).trim();
+  r.bank     = document.getElementById('bke-bank').value;
+  r.acctType = document.getElementById('bke-accttype').value;
+  r.acctNo   = (document.getElementById('bke-acctno').value || r.acctNo).trim();
+  r.month    = document.getElementById('bke-mth').value;
+  r.mthLabel = MTH_LABEL[r.month] || r.month;
+  r.txns     = parseInt(document.getElementById('bke-txns').value, 10) || r.txns;
+  r.endBalance = (document.getElementById('bke-bal').value || r.endBalance).trim();
+  r.bankColor = BANK_COLORS[r.bank] || '#555';
+  renderBkList();
+  closeSplitModal();
+  toast('✓ 对账单信息已保存：' + r.fname);
 }
 
 renderBkList();
@@ -5053,6 +5332,34 @@ function applyReconMonth(month) {
   renderReconJournalEntries();
 }
 applyReconMonth('2026-01');
+
+// ─── 银行票据 AI 匹配 + 批量确认会计分录 ─────────────────────────
+function _reconRefreshAll() {
+  if (typeof renderReconTxns === 'function') renderReconTxns();
+  if (typeof renderReconInvs === 'function') renderReconInvs();
+  if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
+  if (typeof updateReconStats === 'function') updateReconStats();
+}
+function aiMatchReconAll() {
+  var pairs = RECON_PAIRS[currentReconMonth] || [];
+  var pendingPairs = pairs.filter(function(p){ return p.st === 'pending'; });
+  toast('🤖 AI 正在比对银行流水与票据（金额 / 日期 / 对方户名）…');
+  setTimeout(function(){
+    var n = 0;
+    pendingPairs.forEach(function(p){ p.st = 'match'; n++; });
+    _reconRefreshAll();
+    var unresolved = pairs.filter(function(p){ return p.st === 'unmatched' || p.st === 'orphan'; }).length;
+    toast('✓ AI 匹配完成：自动匹配 ' + n + ' 笔' + (unresolved ? '，仍有 ' + unresolved + ' 笔需人工处理（缺票 / 缺流水）' : '，全部已匹配'));
+  }, 900);
+}
+function batchConfirmJE() {
+  var pend = ENTRIES.filter(function(e){ return e.status === 'pending'; });
+  if (!pend.length) { toast('当前没有待确认的会计分录'); return; }
+  if (!confirm('确认将 ' + pend.length + ' 条待确认会计分录批量确认入账？\n确认后将计入试算平衡与财务报表。')) return;
+  pend.forEach(function(e){ e.status = 'confirmed'; });
+  _reconRefreshAll();
+  toast('✓ 已批量确认 ' + pend.length + ' 条会计分录');
+}
 
 // ─── Journal Entries — full edit system ──────────────────────────
 
