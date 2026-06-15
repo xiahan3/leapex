@@ -16,6 +16,7 @@
   --teal:#3B6EA5;                                                 /* 归并到 info */
   --orange:#B45309; --amber:#B45309; --yellow-bg:#FBF3E6;         /* warning / 待办 */
   --red:#D93A3A; --red-bg:#FBEAEA;                                /* error */
+  --purple:#7A5C9E; --purple-bg:#F0EBF4;                          /* 装饰色 */
   --text:#1A1A1A; --text2:#6B6B6B; --text3:#9B9B9B; --text4:#BDBDBD;
   --bg:#F5F5F2; --bg2:#EFEFEC; --card:#FFFFFF; --line:#E5E5E2; --line2:#DDDDD8;
   --shadow:0 1px 3px rgba(0,0,0,.06);
@@ -29,6 +30,7 @@
   --teal:#6F9BD1;
   --orange:#E0A458; --amber:#E0A458; --yellow-bg:#2A2310;
   --red:#F06A6A; --red-bg:#2A1515;
+  --purple:#B79BD6; --purple-bg:#2A2333;
   --text:#F5F5F2; --text2:#A0A0A0; --text3:#7E7E7E; --text4:#5A5A5A;
   --bg:#1A1A1A; --bg2:#262626; --card:#262626; --line:#3A3A3A; --line2:#444444;
   --shadow:0 1px 3px rgba(0,0,0,.4);
@@ -72,7 +74,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .card-pad{padding:14px}
 .cell{display:flex;align-items:center;gap:11px;padding:14px;border-bottom:1px solid var(--line);cursor:pointer}
 .cell:last-child{border-bottom:none}
-.cell-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#fff}
+.cell-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--bg2);color:var(--text2)}
 .cell-main{flex:1;min-width:0}
 .cell-t{font-size:14.5px;font-weight:500}
 .cell-d{font-size:12px;color:var(--text3);margin-top:1px}
@@ -154,7 +156,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .cbox.on{background:var(--accent);border-color:var(--accent)}
 .cbox.on i{color:#fff;font-size:13px}
 .msg-item{display:flex;gap:11px;padding:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;margin-bottom:10px}
-.msg-ic{width:40px;height:40px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.msg-ic{width:40px;height:40px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg2);color:var(--text2)}
 .deliv-row{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line)}
 .deliv-row:last-child{border-bottom:none}
 .deliv-ic{width:34px;height:34px;border-radius:8px;background:#FDEEE2;color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
@@ -193,7 +195,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .order-head{padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer}
 .svc-line{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line)}
 .svc-line:last-child{border-bottom:none}
-.svc-dot{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+.svc-dot{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bg2);color:var(--text2);flex-shrink:0}
 .bill-chip{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
 
 /* ── 电商：套餐报价卡 / 服务行 / 详情 ── */
@@ -208,6 +210,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .svc-row:active{background:var(--bg2)}
 .incl{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:13px}
 .incl i{color:var(--accent);font-size:16px;flex-shrink:0;margin-top:1px}
+.qico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:23px;margin:0 auto 7px;background:var(--accent-bg);color:var(--accent)}
 .buybar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:11px 14px;display:flex;align-items:center;gap:12px;z-index:36}
 .buybar .btn{width:auto;flex:1}
 .qty-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13.5px;border-bottom:1px dashed var(--line)}
@@ -248,7 +251,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <!-- 已绑定渠道 -->
         <div class="card" style="cursor:pointer" onclick="openSplash()">
           <div class="cell" style="border:none">
-            <div class="cell-ic" style="background:var(--green)"><i class="ti ti-ticket"></i></div>
+            <div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-ticket"></i></div>
             <div class="cell-main"><div class="cell-t">渠道码 <span id="home-ch" style="color:var(--green-d)">LEX888</span> 已绑定</div><div class="cell-d" id="home-ch-d">星投资本 · 享渠道专属价格</div></div>
             <span class="cell-arrow"><i class="ti ti-chevron-right"></i></span>
           </div>
@@ -256,14 +259,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
         <div class="sec-t" style="display:flex;justify-content:space-between"><span>核心服务</span><span style="color:var(--accent);font-weight:500;cursor:pointer" onclick="go('s-services')">全部服务 ›</span></div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('reg')"><i class="ti ti-building-plus" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">新公司注册</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('annual')"><i class="ti ti-calendar-check" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">公司年审</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('director')"><i class="ti ti-user-edit" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">董事变更</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('secretary')"><i class="ti ti-user-cog" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">秘书变更</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('address')"><i class="ti ti-map-pin" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">地址变更</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('transfer')"><i class="ti ti-arrows-exchange" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">股份转让</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="openSvc('rename')"><i class="ti ti-forms" style="font-size:24px;color:var(--accent)"></i><div class="svc-t" style="font-size:11.5px">名称变更</div></div>
-          <div class="svc" style="padding:13px 6px" onclick="go('s-services')"><i class="ti ti-dots" style="font-size:24px;color:var(--text3)"></i><div class="svc-t" style="font-size:11.5px">更多</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('reg')"><div class="qico"><i class="ti ti-building-plus"></i></div><div class="svc-t" style="font-size:11.5px">新公司注册</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('annual')"><div class="qico"><i class="ti ti-calendar-check"></i></div><div class="svc-t" style="font-size:11.5px">公司年审</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('director')"><div class="qico"><i class="ti ti-user-edit"></i></div><div class="svc-t" style="font-size:11.5px">董事变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('secretary')"><div class="qico"><i class="ti ti-user-cog"></i></div><div class="svc-t" style="font-size:11.5px">秘书变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('address')"><div class="qico"><i class="ti ti-map-pin"></i></div><div class="svc-t" style="font-size:11.5px">地址变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('transfer')"><div class="qico"><i class="ti ti-arrows-exchange"></i></div><div class="svc-t" style="font-size:11.5px">股份转让</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="openSvc('rename')"><div class="qico"><i class="ti ti-forms"></i></div><div class="svc-t" style="font-size:11.5px">名称变更</div></div>
+          <div class="svc" style="padding:13px 6px" onclick="go('s-services')"><div class="qico" style="background:var(--bg2);color:var(--text3)"><i class="ti ti-dots"></i></div><div class="svc-t" style="font-size:11.5px">更多</div></div>
         </div>
 
         <!-- In-progress order -->
@@ -353,17 +356,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="sec-t">本订单服务（服务 ↔ 账单 一一对应）</div>
         <div class="order-card">
           <div class="svc-line">
-            <div class="svc-dot" style="background:var(--green)"><i class="ti ti-building-plus"></i></div>
+            <div class="svc-dot" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-building-plus"></i></div>
             <div style="flex:1"><div style="font-size:13px;font-weight:600">新公司注册</div><div style="font-size:10.5px;color:var(--text3)">由 Leapex 直接交付</div></div>
             <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 2,800</div><span class="bill-chip t-blue" onclick="go('s-bill')" style="cursor:pointer">查看账单 ›</span></div>
           </div>
           <div class="svc-line">
-            <div class="svc-dot" style="background:var(--teal)"><i class="ti ti-shield-check"></i></div>
+            <div class="svc-dot" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-shield-check"></i></div>
             <div style="flex:1"><div style="font-size:13px;font-weight:600">法定秘书（首年）</div><div style="font-size:10.5px;color:var(--text3)">内嵌服务</div></div>
             <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 0</div><span class="bill-chip t-green">已含</span></div>
           </div>
           <div class="svc-line">
-            <div class="svc-dot" style="background:var(--orange)"><i class="ti ti-stamp"></i></div>
+            <div class="svc-dot" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-stamp"></i></div>
             <div style="flex:1"><div style="font-size:13px;font-weight:600">公司印章套装</div><div style="font-size:10.5px;color:var(--text3)">由供应商「金印堂」交付</div></div>
             <div style="text-align:right"><div style="font-size:12.5px;font-weight:700">HKD 480</div><span class="bill-chip t-gray">待生成</span></div>
           </div>
@@ -383,7 +386,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="sec-t"><i class="ti ti-building-plus" style="font-size:13px;margin-right:4px"></i>新注册套餐</div>
         <div class="pkg-card" onclick="openSvc('pkg-basic')">
           <div style="display:flex;align-items:flex-start;gap:11px">
-            <div class="svc-dot" style="background:var(--text2);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
+            <div class="svc-dot" style="background:var(--bg2);color:var(--text2);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
             <div style="flex:1"><div style="font-weight:700;font-size:14.5px">基础注册套餐</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">注册 + 法定秘书 + 注册地址 + 商业登记证</div></div>
             <div style="text-align:right"><div class="price price-lg">HKD 3,800</div></div>
           </div>
@@ -391,14 +394,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="pkg-card rec" onclick="openSvc('pkg-std')">
           <div class="pkg-badge">推荐</div>
           <div style="display:flex;align-items:flex-start;gap:11px">
-            <div class="svc-dot" style="background:var(--accent);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
+            <div class="svc-dot" style="background:var(--accent-bg);color:var(--accent-d);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
             <div style="flex:1"><div style="font-weight:700;font-size:14.5px">标准注册套餐</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">基础套餐 + 首年年审 + 公司文件册 + 印章</div></div>
             <div style="text-align:right"><div class="price price-lg">HKD 5,800</div><div class="price-old">6,800</div></div>
           </div>
         </div>
         <div class="pkg-card" onclick="openSvc('pkg-pro')">
           <div style="display:flex;align-items:flex-start;gap:11px">
-            <div class="svc-dot" style="background:var(--teal);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
+            <div class="svc-dot" style="background:var(--blue-bg);color:var(--blue);width:38px;height:38px;border-radius:9px;font-size:18px"><i class="ti ti-package"></i></div>
             <div style="flex:1"><div style="font-weight:700;font-size:14.5px">高级注册套餐</div><div style="font-size:11.5px;color:var(--text3);margin-top:2px">标准套餐 + 银行开户协助 + SCR + 公证认证</div></div>
             <div style="text-align:right"><div class="price price-lg">HKD 8,800</div></div>
           </div>
@@ -406,14 +409,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
         <div class="sec-t" style="margin-top:6px"><i class="ti ti-tools" style="font-size:13px;margin-right:4px"></i>其他服务</div>
         <div class="card" style="padding:0">
-          <div class="svc-row" onclick="openSvc('annual')"><div class="svc-dot" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">年审服务</div><div class="price">HKD 2,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('director')"><div class="svc-dot" style="background:var(--orange)"><i class="ti ti-user-edit"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">董事变更</div><div class="price">HKD 1,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('secretary')"><div class="svc-dot" style="background:var(--teal)"><i class="ti ti-user-cog"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">秘书变更 / 转入</div><div class="price">HKD 1,200</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('address')"><div class="svc-dot" style="background:#B45309"><i class="ti ti-map-pin"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">注册地址变更</div><div class="price">HKD 800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('transfer')"><div class="svc-dot" style="background:#7A5C9E"><i class="ti ti-arrows-exchange"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份转让</div><div class="price">HKD 2,000<span style="font-size:11px">起</span></div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('rename')"><div class="svc-dot" style="background:var(--green)"><i class="ti ti-forms"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司名称变更</div><div class="price">HKD 2,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" onclick="openSvc('allot')"><div class="svc-dot" style="background:#3B6EA5"><i class="ti ti-chart-pie"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份配发</div><div class="price">HKD 1,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" style="border-bottom:none" onclick="openSvc('deregister')"><div class="svc-dot" style="background:var(--text3)"><i class="ti ti-building-off"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司注销</div><div class="price">HKD 2,000</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('annual')"><div class="svc-dot" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-calendar-check"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">年审服务</div><div class="price">HKD 2,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('director')"><div class="svc-dot" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-user-edit"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">董事变更</div><div class="price">HKD 1,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('secretary')"><div class="svc-dot" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-user-cog"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">秘书变更 / 转入</div><div class="price">HKD 1,200</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('address')"><div class="svc-dot" style="background:var(--yellow-bg);color:#B45309"><i class="ti ti-map-pin"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">注册地址变更</div><div class="price">HKD 800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('transfer')"><div class="svc-dot" style="background:var(--purple-bg);color:#7A5C9E"><i class="ti ti-arrows-exchange"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份转让</div><div class="price">HKD 2,000<span style="font-size:11px">起</span></div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('rename')"><div class="svc-dot" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-forms"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司名称变更</div><div class="price">HKD 2,500</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('allot')"><div class="svc-dot" style="background:var(--blue-bg);color:#3B6EA5"><i class="ti ti-chart-pie"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份配发</div><div class="price">HKD 1,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" style="border-bottom:none" onclick="openSvc('deregister')"><div class="svc-dot" style="background:var(--bg2);color:var(--text3)"><i class="ti ti-building-off"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司注销</div><div class="price">HKD 2,000</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
         </div>
         <div class="card card-pad" style="background:var(--bg2)">
           <div class="note"><i class="ti ti-discount-2" style="color:var(--accent)"></i> 您的渠道码 <b style="color:var(--accent)">LEX888</b> 享专属价格，详情页显示渠道优惠后价格。</div>
@@ -472,7 +475,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="screen has-buybar" id="s-svcform" data-title="填写服务信息" data-back="s-svcdetail">
       <div class="body-pad">
         <div class="card card-pad" style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <div class="svc-dot" style="background:var(--accent)" id="sf-icon"><i class="ti ti-package"></i></div>
+          <div class="svc-dot" style="background:var(--accent-bg);color:var(--accent-d)" id="sf-icon"><i class="ti ti-package"></i></div>
           <div style="flex:1"><div id="sf-name" style="font-weight:600;font-size:14px">标准注册套餐</div><div class="note">请填写办理所需的必要信息</div></div>
         </div>
         <div id="sf-fields"></div>
@@ -492,7 +495,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         <div class="sec-t">服务清单</div>
         <div class="card" style="padding:0">
           <div class="svc-row" style="cursor:default">
-            <div class="svc-dot" style="background:var(--accent)" id="so-icon"><i class="ti ti-package"></i></div>
+            <div class="svc-dot" style="background:var(--accent-bg);color:var(--accent-d)" id="so-icon"><i class="ti ti-package"></i></div>
             <div style="flex:1"><div id="so-name" style="font-size:13.5px;font-weight:600">标准注册套餐</div><div class="note" id="so-desc">含 4 项服务</div></div>
             <div class="price" id="so-price">HKD 5,800</div>
           </div>
@@ -598,7 +601,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div style="font-size:16px;font-weight:700;margin-bottom:4px">地址证明</div>
           <div class="note" style="margin-bottom:12px">请上传 3 个月内有效的地址证明（水/电/煤气/银行对账单）</div>
           <div class="uz" onclick="toast('上传地址证明截图')"><i class="ti ti-file-text"></i><div style="font-size:13px;margin-top:8px;font-weight:500">上传地址证明</div><div class="note">支持电子账单截图</div></div>
-          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-file-check"></i></div><div class="cell-main"><div class="cell-t">HSBC 银行对账单.pdf</div><div class="cell-d">2026-05 · 已上传</div></div><span class="tag t-green">✓</span></div></div>
+          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-file-check"></i></div><div class="cell-main"><div class="cell-t">HSBC 银行对账单.pdf</div><div class="cell-d">2026-05 · 已上传</div></div><span class="tag t-green">✓</span></div></div>
           <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="kycStep(2)">上一步</button><button class="btn" onclick="kycStep(4)">下一步</button></div>
         </div>
 
@@ -705,14 +708,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="radio-card on" onclick="pickArt(this)"><div class="radio-dot"></div><div style="flex:1"><div style="display:flex;justify-content:space-between"><div style="font-weight:600;font-size:14px">标准章程 Sample A</div><span class="tag t-green">推荐</span></div><div class="note">基于《公司条例》附表 1，简单股权结构</div></div></div>
           <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">增强版章程 Sample B</div><div class="note">含优先购买权、转让限制、董事权限细化</div></div></div>
           <div class="radio-card" onclick="pickArt(this)"><div class="radio-dot"></div><div><div style="font-weight:600;font-size:14px">自定义章程</div><div class="note">复杂股权 / 特殊条款，由 Leapex 法务起草</div></div></div>
-          <div class="card" onclick="toast('打开 ZAA_Sample_A.pdf 全文预览')" style="cursor:pointer"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--red)"><i class="ti ti-file-type-pdf"></i></div><div class="cell-main"><div class="cell-t">预览章程全文</div><div class="cell-d">ZAA_Sample_A.pdf · v1.2</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div></div>
+          <div class="card" onclick="toast('打开 ZAA_Sample_A.pdf 全文预览')" style="cursor:pointer"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--red-bg);color:var(--red)"><i class="ti ti-file-type-pdf"></i></div><div class="cell-main"><div class="cell-t">预览章程全文</div><div class="cell-d">ZAA_Sample_A.pdf · v1.2</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div></div>
           <div class="check-row" onclick="toggleCheck('art-agree')"><div class="cbox" id="art-agree"><i class="ti ti-check"></i></div><div style="font-size:13px">本人确认已阅读并同意以上章程细则</div></div>
           <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(2)">上一步</button><button class="btn" id="reg-3-btn" disabled onclick="regStep(4)">下一步</button></div>
         </div>
 
         <div class="reg-pane" id="reg-4" style="display:none">
           <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 4 · 董事与秘书</div>
-          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--green)"><i class="ti ti-user"></i></div><div class="cell-main"><div class="cell-t">陳大文（董事）</div><div class="cell-d">身份信息复用 KYC · 已认证</div></div><span class="tag t-green">✓</span></div></div>
+          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-user"></i></div><div class="cell-main"><div class="cell-t">陳大文（董事）</div><div class="cell-d">身份信息复用 KYC · 已认证</div></div><span class="tag t-green">✓</span></div></div>
           <button class="btn ghost btn-sm" style="width:100%;margin-bottom:12px" onclick="toast('添加董事（至少 1 名自然人）')">+ 添加董事</button>
           <div class="card card-pad" style="background:var(--green-bg)"><div style="font-size:13px;color:var(--green-d);font-weight:600"><i class="ti ti-shield-check"></i> 法定秘书：Leapex 利柏思（内嵌服务）</div><div class="note" style="color:var(--green-d);margin-top:3px">已含于注册套餐，自动担任公司法定秘书</div></div>
           <div class="fixed-foot" style="display:flex;gap:8px"><button class="btn ghost" style="width:90px" onclick="regStep(3)">上一步</button><button class="btn" onclick="regStep(5)">下一步</button></div>
@@ -720,7 +723,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
         <div class="reg-pane" id="reg-5" style="display:none">
           <div style="font-size:16px;font-weight:700;margin-bottom:10px">Step 5 · 创办成员（股东）</div>
-          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-user-star"></i></div><div class="cell-main"><div class="cell-t">陳大文</div><div class="cell-d">持股 10,000 股 · 100%</div></div><span class="tag t-green">✓</span></div></div>
+          <div class="card"><div class="cell" style="border:none"><div class="cell-ic" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-user-star"></i></div><div class="cell-main"><div class="cell-t">陳大文</div><div class="cell-d">持股 10,000 股 · 100%</div></div><span class="tag t-green">✓</span></div></div>
           <button class="btn ghost btn-sm" style="width:100%;margin-bottom:12px" onclick="toast('添加创办成员')">+ 添加创办成员</button>
           <div class="card"><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">股份总数</span><span>10,000 股</span></div><div class="label-line" style="padding:12px 14px"><span style="color:var(--text3)">已分配</span><span style="color:var(--green-d)">10,000 股（100%）</span></div></div>
           <div class="card card-pad" style="background:var(--bg2)"><div class="note">提交后系统将依 NNC1 表格汇总信息，生成首付款账单。</div></div>
@@ -784,7 +787,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
             </div>
             <div class="note" style="margin-top:3px">Star Tech Limited</div>
           </div>
-          <div class="cell" style="border:none"><div class="cell-ic" style="background:var(--orange)"><i class="ti ti-files"></i></div><div class="cell-main"><div class="cell-t">交付物中心</div><div class="cell-d">17 项可见 · 6 项已就绪</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" style="border:none"><div class="cell-ic" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-files"></i></div><div class="cell-main"><div class="cell-t">交付物中心</div><div class="cell-d">17 项可见 · 6 项已就绪</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
 
         <div class="card">
@@ -795,8 +798,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
             </div>
             <div class="note" style="margin-top:3px">CI: 78451236 · BR: 12345678 · 下次年审 2026-09-15</div>
           </div>
-          <div class="cell" onclick="toast('年审即将到期，6 轮递进提醒中')"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-calendar-check"></i></div><div class="cell-main"><div class="cell-t">公司年审</div><div class="cell-d" style="color:var(--orange)">距到期 96 天 · 提醒中</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
-          <div class="cell" onclick="go('s-deliverables')"><div class="cell-ic" style="background:var(--orange)"><i class="ti ti-files"></i></div><div class="cell-main"><div class="cell-t">公司文件</div><div class="cell-d">CI / BR / 章程 / 名册 / SCR</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('年审即将到期，6 轮递进提醒中')"><div class="cell-ic" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-calendar-check"></i></div><div class="cell-main"><div class="cell-t">公司年审</div><div class="cell-d" style="color:var(--orange)">距到期 96 天 · 提醒中</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="go('s-deliverables')"><div class="cell-ic" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-files"></i></div><div class="cell-main"><div class="cell-t">公司文件</div><div class="cell-d">CI / BR / 章程 / 名册 / SCR</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
       </div>
     </div>
@@ -835,12 +838,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     <div class="screen" id="s-messages" data-title="消息中心" data-tab="messages">
       <div class="body-pad">
         <div class="sec-t">合规通知 · 不可关闭</div>
-        <div class="msg-item"><div class="msg-ic" style="background:var(--green)"><i class="ti ti-circle-check"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">KYC 审核已通过</div><div class="note" style="margin-top:2px">您的尽职调查已通过，可继续核名与注册流程</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 09:32</div></div></div>
-        <div class="msg-item"><div class="msg-ic" style="background:var(--amber)"><i class="ti ti-alert-triangle"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">核名结果：Yellow 轻微近似</div><div class="note" style="margin-top:2px">「星辰科技有限公司」可使用，请确认后锁定</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 10:15</div></div></div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-circle-check"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">KYC 审核已通过</div><div class="note" style="margin-top:2px">您的尽职调查已通过，可继续核名与注册流程</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 09:32</div></div></div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--yellow-bg);color:var(--amber)"><i class="ti ti-alert-triangle"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">核名结果：Yellow 轻微近似</div><div class="note" style="margin-top:2px">「星辰科技有限公司」可使用，请确认后锁定</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 10:15</div></div></div>
         <div class="sec-t">流程通知</div>
-        <div class="msg-item"><div class="msg-ic" style="background:var(--orange)"><i class="ti ti-file-invoice"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">首付款账单已生成</div><div class="note" style="margin-top:2px">LEA-2026-0188-1 · HKD 2,800 · 7 天内有效</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 10:20</div></div></div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-file-invoice"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">首付款账单已生成</div><div class="note" style="margin-top:2px">LEA-2026-0188-1 · HKD 2,800 · 7 天内有效</div><div style="font-size:11px;color:var(--text4);margin-top:4px">今天 10:20</div></div></div>
         <div class="sec-t">年审提醒 · 6 轮递进</div>
-        <div class="msg-item"><div class="msg-ic" style="background:var(--blue)"><i class="ti ti-calendar-due"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">恒丰贸易：年审到期前 60 天</div><div class="note" style="margin-top:2px">第 1 轮提醒 · 到期日 2026-09-15，请及时处理</div><div style="font-size:11px;color:var(--text4);margin-top:4px">昨天</div></div></div>
+        <div class="msg-item"><div class="msg-ic" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-calendar-due"></i></div><div style="flex:1"><div style="font-weight:600;font-size:14px">恒丰贸易：年审到期前 60 天</div><div class="note" style="margin-top:2px">第 1 轮提醒 · 到期日 2026-09-15，请及时处理</div><div style="font-size:11px;color:var(--text4);margin-top:4px">昨天</div></div></div>
       </div>
     </div>
 
@@ -853,14 +856,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <span class="tag t-green">KYC 已认证</span>
         </div>
         <div class="card" style="margin-top:12px">
-          <div class="cell" onclick="go('s-mycompany')"><div class="cell-ic" style="background:var(--green)"><i class="ti ti-building"></i></div><div class="cell-main"><div class="cell-t">我的公司</div></div><span style="color:var(--text3);font-size:13px">2 家</span><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
-          <div class="cell" onclick="go('s-bill')"><div class="cell-ic" style="background:var(--orange)"><i class="ti ti-file-invoice"></i></div><div class="cell-main"><div class="cell-t">我的账单</div></div><span class="tag t-orange" style="margin-right:4px">1 待付</span><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
-          <div class="cell" onclick="toast('KYC 资料已加密保存')"><div class="cell-ic" style="background:var(--blue)"><i class="ti ti-shield-check"></i></div><div class="cell-main"><div class="cell-t">KYC 资料</div><div class="cell-d">已认证 · AMLO 保存 7 年</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="go('s-mycompany')"><div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-building"></i></div><div class="cell-main"><div class="cell-t">我的公司</div></div><span style="color:var(--text3);font-size:13px">2 家</span><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="go('s-bill')"><div class="cell-ic" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-file-invoice"></i></div><div class="cell-main"><div class="cell-t">我的账单</div></div><span class="tag t-orange" style="margin-right:4px">1 待付</span><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('KYC 资料已加密保存')"><div class="cell-ic" style="background:var(--blue-bg);color:var(--blue)"><i class="ti ti-shield-check"></i></div><div class="cell-main"><div class="cell-t">KYC 资料</div><div class="cell-d">已认证 · AMLO 保存 7 年</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
         <div class="card">
-          <div class="cell" onclick="toast('通知订阅设置')"><div class="cell-ic" style="background:#7A5C9E"><i class="ti ti-bell"></i></div><div class="cell-main"><div class="cell-t">通知订阅</div><div class="cell-d">合规通知不可关闭</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
-          <div class="cell" onclick="toast('《个人资料（私隐）条例》PDPO 保障')"><div class="cell-ic" style="background:var(--text3)"><i class="ti ti-lock"></i></div><div class="cell-main"><div class="cell-t">隐私与数据</div><div class="cell-d">可查阅 / 更正个人资料</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
-          <div class="cell" onclick="toast('Leapex 利柏思商务 · 持牌 TCSP')"><div class="cell-ic" style="background:var(--green-d)"><i class="ti ti-info-circle"></i></div><div class="cell-main"><div class="cell-t">关于 Leapex</div><div class="cell-d">持牌 TCSP · 牌照号 TC0012XX</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('通知订阅设置')"><div class="cell-ic" style="background:var(--purple-bg);color:#7A5C9E"><i class="ti ti-bell"></i></div><div class="cell-main"><div class="cell-t">通知订阅</div><div class="cell-d">合规通知不可关闭</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('《个人资料（私隐）条例》PDPO 保障')"><div class="cell-ic" style="background:var(--bg2);color:var(--text3)"><i class="ti ti-lock"></i></div><div class="cell-main"><div class="cell-t">隐私与数据</div><div class="cell-d">可查阅 / 更正个人资料</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
+          <div class="cell" onclick="toast('Leapex 利柏思商务 · 持牌 TCSP')"><div class="cell-ic" style="background:var(--green-bg);color:var(--green-d)"><i class="ti ti-info-circle"></i></div><div class="cell-main"><div class="cell-t">关于 Leapex</div><div class="cell-d">持牌 TCSP · 牌照号 TC0012XX</div></div><span class="cell-arrow"><i class="ti ti-chevron-right"></i></span></div>
         </div>
       </div>
     </div>
@@ -1232,7 +1235,11 @@ function submitOrder(){
 /* ═══════════ 订单列表（清晰状态体系）═══════════ */
 var ORD_STATUS = { '待支付':'t-orange', '服务中':'t-blue', '已完成':'t-green', '已取消':'t-gray' };
 var BS_CHIP = { '待支付':'t-orange','待确认':'t-blue','已到账':'t-green','已含':'t-green','办理中':'t-blue','已交付':'t-green','已作废':'t-gray' };
-var COLOR_VAR = { accent:'var(--accent)', green:'var(--green)', teal:'var(--teal)', blue:'var(--blue)', orange:'var(--orange)' };
+var COLOR_VAR = {
+  accent:['var(--accent-bg)','var(--accent-d)'], green:['var(--green-bg)','var(--green-d)'],
+  teal:['var(--blue-bg)','var(--blue)'], blue:['var(--blue-bg)','var(--blue)'],
+  orange:['var(--yellow-bg)','var(--orange)'], purple:['var(--purple-bg)','var(--purple)']
+};
 var ORDERS = [
   { no:'ORD-2026-0188', company:'星辰科技有限公司', pkg:'标准注册套餐', channel:'LEX888', status:'服务中', total:5800,
     services:[
@@ -1261,7 +1268,7 @@ function renderOrders(){
     var svcRows = o.services.map(function(s){
       var amt = s.amt>0 ? 'HKD '+fmtMoney(s.amt) : 'HKD 0';
       return '<div class="svc-line">'
-        + '<div class="svc-dot" style="background:'+(COLOR_VAR[s.color]||'var(--accent)')+'"><i class="ti '+s.icon+'"></i></div>'
+        + '<div class="svc-dot" style="background:'+((COLOR_VAR[s.color]||COLOR_VAR.accent)[0])+';color:'+((COLOR_VAR[s.color]||COLOR_VAR.accent)[1])+'"><i class="ti '+s.icon+'"></i></div>'
         + '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+s.name+'</div>'
         + '<div style="font-size:10.5px;color:var(--text3)">'+(s.bill?'账单 '+s.bill:'内嵌服务')+'</div></div>'
         + '<div style="text-align:right"><div style="font-size:12.5px;font-weight:700">'+amt+'</div>'
