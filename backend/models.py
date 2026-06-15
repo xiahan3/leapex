@@ -141,6 +141,93 @@ class AdjEntry(SQLModel, table=True):
     status: str = "pending"
 
 
+# ═══════════════════════════════════════════════════════════════════
+#  平台管理 (Platform Management) — 超级管理员 / 多租户 SaaS 运营
+# ═══════════════════════════════════════════════════════════════════
+
+# ─── Tenant 租户 ─────────────────────────────────────────────────────
+class Tenant(SQLModel, table=True):
+    __tablename__ = "tenant"
+    id: str = Field(primary_key=True)              # T-2026-NNNN
+    name: str
+    type: str = "CPA Firm"                          # CPA Firm / 独立 SME / 企业集团 / 个人
+    plan: str = "Professional"
+    companies: int = 0
+    users: int = 1
+    token_used: int = 0
+    token_quota: int = 200000
+    mrr: float = 0
+    status: str = "trial"                           # active / trial / suspended
+    status_pill: str = "p-blue"
+    br_no: Optional[str] = None
+    contact: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    created_at: Optional[str] = None
+    expire_at: Optional[str] = None
+
+
+# ─── Tenant User 平台员工账号 ────────────────────────────────────────
+class TenantUser(SQLModel, table=True):
+    __tablename__ = "tenant_user"
+    id: str = Field(primary_key=True)              # U-2026-NNNNN
+    tenant_id: str = Field(default="T-2026-0001", index=True)
+    name: str
+    email: str
+    phone: Optional[str] = None
+    role: str = "bookkeeper"                        # tenant_admin/senior/bookkeeper/reviewer/viewer
+    companies: int = 0
+    last: Optional[str] = None
+    status: str = "active"                          # active / invited / disabled
+    twofa: bool = False
+    is_self: bool = False
+
+
+# ─── Plan 套餐 ───────────────────────────────────────────────────────
+class Plan(SQLModel, table=True):
+    __tablename__ = "plan"
+    key: str = Field(primary_key=True)
+    name: str
+    price: Optional[float] = None                  # None = 商谈
+    unit: str = "/ 月"
+    max_companies: str = "0"                        # str 以容纳 "不限"
+    max_users: str = "0"
+    token_quota: str = "0"                          # str 以容纳 "按需"
+    features: List[Any] = Field(default_factory=list, sa_column=Column(JSON))
+    rec: bool = False
+    sort_order: int = 0
+
+
+# ─── Billing Invoice 平台账单 (区别于会计 Invoice) ───────────────────
+class BillingInvoice(SQLModel, table=True):
+    __tablename__ = "billing_invoice"
+    no: str = Field(primary_key=True)              # INV-YYYY-MM-TNNNN
+    tenant: str
+    plan: Optional[str] = None
+    total: float = 0
+    subtotal: float = 0
+    discount: float = 0
+    method: Optional[str] = "—"
+    channel: str = "offline"                        # online / offline
+    status: str = "issued"                          # draft/issued/proof_uploaded/paid/overdue/rejected/receipted
+    period: Optional[str] = None
+    items: List[Any] = Field(default_factory=list, sa_column=Column(JSON))
+
+
+# ─── Audit Report 审计报告记录 ───────────────────────────────────────
+class AuditReport(SQLModel, table=True):
+    __tablename__ = "audit_report"
+    no: str = Field(primary_key=True)              # AR-YYYY-NNNN
+    company_id: Optional[str] = None
+    company: str
+    period: Optional[str] = None
+    report_type: str = "审前分析报告"
+    framework: str = "SME-FRS"
+    score: int = 0
+    payload: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
 # ─── Company Profile / Init ──────────────────────────────────────────
 class CompanyProfile(SQLModel, table=True):
     __tablename__ = "company_profile"

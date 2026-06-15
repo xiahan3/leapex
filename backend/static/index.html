@@ -377,12 +377,9 @@
   <!-- ─── Sidebar ─── -->
   <div class="sb">
     <div class="sb-logo">
-      <div class="sb-icon">
-        <svg viewBox="0 0 16 16"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" fill-rule="evenodd"/></svg>
-      </div>
       <div>
-        <div style="font-size:14px;font-weight:700;letter-spacing:-.3px">EasybookX</div>
-        <div style="font-size:10px;color:var(--text3);letter-spacing:.3px">EasybookX</div>
+        <div style="font-size:19px;font-weight:800;letter-spacing:-.4px;line-height:1;color:#26233F">Easybook<sup style="color:#E0218A;font-weight:800;font-size:.62em;top:-.55em">x</sup></div>
+        <div style="font-size:10px;color:var(--text3);letter-spacing:.3px;margin-top:3px">Leapex</div>
       </div>
     </div>
     <nav class="nav">
@@ -8902,6 +8899,7 @@ function handleInvDrop(evt) {
     t.status = t.status === 'suspended' ? 'active' : 'suspended';
     t.statusPill = t.status === 'suspended' ? 'p-red' : 'p-green';
     renderTenants();
+    if(window.pSaveTenant) window.pSaveTenant(id);
     window.toast && window.toast('已' + (t.status==='suspended'?'暂停':'恢复') + '租户：' + t.name);
   };
   window.openTenantModal  = function(){ document.getElementById('tenant-modal').classList.add('open'); };
@@ -8922,6 +8920,7 @@ function handleInvDrop(evt) {
       status:plan==='trial'?'trial':'active', statusPill:plan==='trial'?'p-blue':'p-green',
     });
     renderTenants();
+    if(window.pSaveTenant) window.pSaveTenant(newId);
     closeTenantModal();
     window.toast && window.toast('✓ 已创建租户 ' + newId + '，邀请邮件已发至 ' + email);
     // clear form
@@ -9016,6 +9015,7 @@ function handleInvDrop(evt) {
     var newId = 'U-2026-' + String(USER_LIST.length+1).padStart(5,'0');
     USER_LIST.push({ id:newId, name:name, email:email, phone:'', role:role, companies:companies, last:'未激活', status:'invited', twofa:false });
     renderUsers();
+    if(window.pSaveUser) window.pSaveUser(newId);
     closeInviteUserModal();
     window.toast && window.toast('✓ 已发送邀请邮件至 ' + email + '（7 天有效）');
     ['inv-name','inv-email','inv-phone','inv-note'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
@@ -9034,6 +9034,7 @@ function handleInvDrop(evt) {
     if (confirm('确认停用 ' + u.name + '？\n停用后该员工无法登录，数据保留。')) {
       u.status = 'disabled';
       renderUsers();
+      if(window.pSaveUser) window.pSaveUser(id);
       window.toast && window.toast('已停用 ' + u.name + '，并撤销其所有会话');
     }
   };
@@ -9042,6 +9043,7 @@ function handleInvDrop(evt) {
     if (!u) return;
     u.status = 'active';
     renderUsers();
+    if(window.pSaveUser) window.pSaveUser(id);
     window.toast && window.toast('已恢复 ' + u.name + '，下次登录需重新激活');
   };
   window.resendInvite = function(id) {
@@ -9054,6 +9056,7 @@ function handleInvDrop(evt) {
     var idx = USER_LIST.findIndex(function(x){return x.id===id;});
     if (idx >= 0) USER_LIST.splice(idx, 1);
     renderUsers();
+    if(window.pDelUser) window.pDelUser(id);
     window.toast && window.toast('已撤销邀请');
   };
   window.viewUserCompanies = function(id) { window.toast && window.toast('查看 ' + id + ' 的公司授权清单（演示）'); };
@@ -9296,7 +9299,7 @@ function handleInvDrop(evt) {
   window.confirmOnlinePay = function() {
     var inv = _currentInvoice; if (!inv) return;
     inv.status = 'paid'; inv.method = 'FPS 转数快'; inv.channel = 'online';
-    closeOnlinePayModal(); renderBilling();
+    closeOnlinePayModal(); renderBilling(); if(window.pSaveBill) window.pSaveBill(inv.no);
     window.toast && window.toast('✓ 支付成功（模拟网关回调）· 账单已结清 · 收据已生成');
   };
 
@@ -9316,7 +9319,7 @@ function handleInvDrop(evt) {
   window.submitProof = function() {
     var inv = _currentInvoice; if (!inv) return;
     inv.status = 'proof_uploaded'; inv.method = '线下转账'; inv.channel = 'offline';
-    closeProofModal(); renderBilling();
+    closeProofModal(); renderBilling(); if(window.pSaveBill) window.pSaveBill(inv.no);
     window.toast && window.toast('✓ 凭证已提交，等待平台财务核对到账');
   };
 
@@ -9333,7 +9336,7 @@ function handleInvDrop(evt) {
     if (!bankref) { window.toast && window.toast('请填写网银到账流水号'); return; }
     var inv = _currentInvoice; if (!inv) return;
     inv.status = 'paid';
-    closeConfirmPayModal(); renderBilling();
+    closeConfirmPayModal(); renderBilling(); if(window.pSaveBill) window.pSaveBill(inv.no);
     document.getElementById('cp-bankref').value = '';
     window.toast && window.toast('✓ 已确认收款 · 账单结清 · 收据已生成并通知租户');
   };
@@ -9342,7 +9345,7 @@ function handleInvDrop(evt) {
     if (reason === null) return;
     var inv = _currentInvoice; if (!inv) return;
     inv.status = 'issued'; inv.method = '—';
-    closeConfirmPayModal(); renderBilling();
+    closeConfirmPayModal(); renderBilling(); if(window.pSaveBill) window.pSaveBill(inv.no);
     window.toast && window.toast('已驳回凭证，账单退回待支付，已通知租户重新上传');
   };
 
@@ -9612,6 +9615,7 @@ function handleInvDrop(evt) {
     t.mrr = planMrr[t.plan]!==undefined?planMrr[t.plan]:t.mrr;
     t.tokenQuota = parseInt(document.getElementById('et-quota').value,10)||t.tokenQuota;
     renderTenants(); renderPlans();
+    if(window.pSaveTenant) window.pSaveTenant(t.id);
     auditPush('andy@abccpa.hk','TENANT_UPDATED',true,t.id+' ('+t.name+')','platform','成功','p-green');
     gxClose(); window.toast('✓ 已保存租户 '+t.name+' · 已写入审计日志');
   };
@@ -9652,6 +9656,7 @@ function handleInvDrop(evt) {
     u.companies = document.querySelectorAll('.eu-co:checked').length;
     u.twofa = document.getElementById('eu-2fa').checked;
     renderUsers();
+    if(window.pSaveUser) window.pSaveUser(u.id);
     auditPush('andy@abccpa.hk','USER_ROLE_CHANGED',true,u.email+' → '+ROLE_LABEL[u.role],'account','成功','p-green');
     gxClose(); window.toast('✓ 已更新员工 '+u.name+' · 已写入审计日志');
   };
@@ -9766,6 +9771,7 @@ function handleInvDrop(evt) {
     });
     PLAN_NAME_MATCH[key] = name;
     renderPlans();
+    if(window.pSavePlan) window.pSavePlan(key);
     auditPush('andy@abccpa.hk','PLAN_CREATED',true,name,'platform','成功','p-green');
     gxClose(); window.toast('✓ 已创建套餐 '+name);
   };
@@ -9929,7 +9935,7 @@ function handleInvDrop(evt) {
   window.confirmClaim = function(){
     var no = (document.getElementById('claim-bill')||{}).value;
     var inv = INVOICE_LIST.find(function(x){return x.no===no;});
-    if(inv){ inv.status='paid'; inv.method='线下转账'; inv.channel='offline'; renderBilling(); }
+    if(inv){ inv.status='paid'; inv.method='线下转账'; inv.channel='offline'; renderBilling(); if(window.pSaveBill) window.pSaveBill(no); }
     auditPush('andy@abccpa.hk','PAYMENT_CONFIRMED',true,no+' · 认领核销 HKD 980','platform','成功','p-green');
     gxClose(); window.toast('✓ 已认领核销 '+no+' · 账单结清');
   };
@@ -10024,8 +10030,9 @@ function handleInvDrop(evt) {
       if(i>0){ var prev=document.getElementById('ar-st-'+(i-1)); prev.querySelector('i').className='ti ti-circle-check'; prev.querySelector('i').style.color='var(--green)'; prev.querySelector('span').style.color='var(--text)'; }
       if(i>=stages.length){
         renderReportOutput(c); report.style.display='';
-        AR_HISTORY.unshift({no:'AR-2026-'+String(8+AR_HISTORY.length).padStart(4,'0'),company:c.name,period:'FY'+c.fy.slice(2,4)+'/'+c.fy.slice(-2),type:AR_TYPE_LABEL[_arType],score:computeScore(c)});
+        AR_HISTORY.unshift({no:'AR-2026-'+String(8+AR_HISTORY.length).padStart(4,'0'),company:c.name,company_id:c.id,framework:_arFramework,period:'FY'+c.fy.slice(2,4)+'/'+c.fy.slice(-2),type:AR_TYPE_LABEL[_arType],score:computeScore(c)});
         renderArHistory();
+        if(window.pSaveReport) window.pSaveReport(AR_HISTORY[0]);
         auditPush('andy@abccpa.hk','AUDIT_REPORT_GENERATED',true,c.name+' · '+AR_TYPE_LABEL[_arType],'platform','成功','p-green');
         window.toast('✓ 审计报告已生成 · 计费 5,000 Token · 已写入审计日志');
         report.scrollIntoView({behavior:'smooth',block:'start'});
@@ -10138,6 +10145,57 @@ function handleInvDrop(evt) {
         + '<td><div style="display:flex;gap:4px"><button class="btn btn-xs" onclick="window.toast(\'查看报告 '+h.no+'\')">查看</button><button class="btn btn-xs" onclick="exportReport()">导出</button><button class="btn btn-xs" onclick="window.toast(\'重新生成 '+h.no+'\')">重生成</button></div></td></tr>';
     }).join('');
   }
+
+  // ════════════════════════════════════════════════════════════════
+  //  平台管理后端持久化数据层 (hydrate + persist；失败回退本地假数据)
+  // ════════════════════════════════════════════════════════════════
+  var PAPI = '/api';
+  function pGet(path){ return fetch(PAPI+path).then(function(r){ if(!r.ok) throw 0; return r.json(); }); }
+  function pPost(path,obj){ return fetch(PAPI+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)}).catch(function(){}); }
+  function pPatch(path,obj){ return fetch(PAPI+path,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)}).catch(function(){}); }
+  function pDel(path){ return fetch(PAPI+path,{method:'DELETE'}).catch(function(){}); }
+  function _numStr(v){ return (typeof v==='string' && /^\d+$/.test(v)) ? parseInt(v,10) : v; }
+
+  // ── mappers: backend(snake) <-> frontend(camel) ──
+  function tenantFromApi(t){ return {id:t.id,name:t.name,type:t.type,plan:t.plan,companies:t.companies,users:t.users,tokenUsed:t.token_used,tokenQuota:t.token_quota,mrr:t.mrr,status:t.status,statusPill:t.status_pill,brNo:t.br_no,contact:t.contact,email:t.email,phone:t.phone,createdAt:t.created_at,expireAt:t.expire_at}; }
+  function tenantToApi(t){ return {id:t.id,name:t.name,type:t.type,plan:t.plan,companies:t.companies,users:t.users,token_used:t.tokenUsed,token_quota:t.tokenQuota,mrr:t.mrr,status:t.status,status_pill:t.statusPill,br_no:t.brNo,contact:t.contact,email:t.email,phone:t.phone,created_at:t.createdAt,expire_at:t.expireAt}; }
+  function userFromApi(u){ return {id:u.id,name:u.name,email:u.email,phone:u.phone,role:u.role,companies:u.companies,last:u.last,status:u.status,twofa:u.twofa,self:u.is_self}; }
+  function userToApi(u){ return {id:u.id,tenant_id:'T-2026-0001',name:u.name,email:u.email,phone:u.phone||'',role:u.role,companies:u.companies,last:u.last,status:u.status,twofa:!!u.twofa,is_self:!!u.self}; }
+  function planFromApi(p){ return {key:p.key,name:p.name,price:p.price,unit:p.unit,maxCompanies:_numStr(p.max_companies),maxUsers:_numStr(p.max_users),tokenQuota:_numStr(p.token_quota),features:p.features||[],rec:p.rec}; }
+  function planToApi(p){ return {key:p.key,name:p.name,price:p.price,unit:p.unit,max_companies:String(p.maxCompanies),max_users:String(p.maxUsers),token_quota:String(p.tokenQuota),features:p.features||[],rec:!!p.rec}; }
+  function reportToApi(h){ return {no:h.no,company:h.company,company_id:h.company_id||null,period:h.period,report_type:h.type,framework:h.framework||'SME-FRS',score:h.score,payload:h.payload||null}; }
+
+  function _replace(arr, items){ arr.length=0; items.forEach(function(x){ arr.push(x); }); }
+  function _curPage(){ var p=document.querySelector('.page.on'); return p?p.id.replace('page-',''):''; }
+  function _rerenderCurrent(){
+    var id=_curPage();
+    if(id==='tenants') renderTenants();
+    else if(id==='users') renderUsers();
+    else if(id==='plans') renderPlans();
+    else if(id==='billing') renderBilling();
+    else if(id==='auditrpt') renderArHistory();
+  }
+
+  // ── hydrate：拉取后端真实数据填充各数组（失败则保留种子假数据）──
+  window.platformHydrate = function(){
+    pGet('/tenants').then(function(d){ if(d&&d.length){ _replace(TENANT_LIST, d.map(tenantFromApi)); _rerenderCurrent(); } }).catch(function(){});
+    pGet('/tenant-users').then(function(d){ if(d&&d.length){ _replace(USER_LIST, d.map(userFromApi)); _rerenderCurrent(); } }).catch(function(){});
+    pGet('/plans').then(function(d){ if(d&&d.length){ _replace(PLAN_LIST, d.map(planFromApi)); PLAN_LIST.forEach(function(p){ PLAN_NAME_MATCH[p.key]=p.name; }); _rerenderCurrent(); } }).catch(function(){});
+    pGet('/billing-invoices').then(function(d){ if(d&&d.length){ _replace(INVOICE_LIST, d); _rerenderCurrent(); } }).catch(function(){});
+    pGet('/audit-reports').then(function(d){ if(d&&d.length){ _replace(AR_HISTORY, d.map(function(r){ return {no:r.no,company:r.company,period:r.period,type:r.report_type,score:r.score,company_id:r.company_id,framework:r.framework}; })); _rerenderCurrent(); } }).catch(function(){});
+  };
+
+  // ── persist helpers（供各变更函数调用，fire-and-forget）──
+  window.pSaveTenant = function(id){ var t=TENANT_LIST.find(function(x){return x.id===id;}); if(t) pPost('/tenants', tenantToApi(t)); };
+  window.pDelTenant  = function(id){ pDel('/tenants/'+id); };
+  window.pSaveUser   = function(id){ var u=USER_LIST.find(function(x){return x.id===id;}); if(u) pPost('/tenant-users', userToApi(u)); };
+  window.pDelUser    = function(id){ pDel('/tenant-users/'+id); };
+  window.pSavePlan   = function(key){ var p=PLAN_LIST.find(function(x){return x.key===key;}); if(p) pPost('/plans', planToApi(p)); };
+  window.pSaveBill   = function(no){ var b=INVOICE_LIST.find(function(x){return x.no===no;}); if(b) pPost('/billing-invoices', b); };
+  window.pSaveReport = function(h){ pPost('/audit-reports', reportToApi(h)); };
+
+  // 启动时 hydrate（延迟以待其它初始化完成）
+  setTimeout(function(){ try { window.platformHydrate(); } catch(e){} }, 400);
 
   // Refresh state from backend so 待解析列表 (STAGED_BK) reflects new rows
   if (window.__easybookx && window.__easybookx.hydrate) window.__easybookx.hydrate();

@@ -253,4 +253,75 @@ def run(s: Session):
         base_currency="HKD", closing_freq="quarterly",
     ))
     s.commit()
+
+    # ── 平台管理：Tenants ───────────────────────────────────────────
+    tenants = [
+        dict(id="T-2026-0001", name="ABC CPA Limited", type="CPA Firm", plan="Professional", companies=8, users=12, token_used=124700, token_quota=200000, mrr=980, status="active", status_pill="p-green", br_no="1234567", contact="陈大文 Andy Chan", email="andy@abccpa.hk", phone="+852 9123 4567", created_at="2025-08-12", expire_at="2026-06-22"),
+        dict(id="T-2026-0002", name="Sunrise CPA Limited", type="CPA Firm", plan="Professional", companies=10, users=14, token_used=183600, token_quota=200000, mrr=980, status="active", status_pill="p-amber", br_no="2345678", contact="李明 Sunny Lee", email="admin@sunrisecpa.hk", phone="+852 9234 5678", created_at="2025-09-01", expire_at="2026-07-01"),
+        dict(id="T-2026-0003", name="Vantage CPA Group", type="CPA Firm", plan="Firm", companies=42, users=48, token_used=93950, token_quota=800000, mrr=2580, status="active", status_pill="p-green", br_no="3456789", contact="黄国强 K.K. Wong", email="ops@vantage.hk", phone="+852 9345 6789", created_at="2025-05-20", expire_at="2026-09-15"),
+        dict(id="T-2026-0004", name="HK Bookkeep Co.", type="独立 SME", plan="Starter", companies=3, users=5, token_used=26000, token_quota=50000, mrr=380, status="suspended", status_pill="p-red", br_no="4567890", contact="张伟 Wilson Cheung", email="info@hkbookkeep.hk", phone="+852 9456 7890", created_at="2026-01-10", expire_at="2026-06-06"),
+        dict(id="T-2026-0005", name="Peak Finance Ltd", type="企业集团", plan="Starter", companies=2, users=4, token_used=8200, token_quota=50000, mrr=380, status="active", status_pill="p-green", br_no="5678901", contact="刘德 Derek Lau", email="finance@peakfin.hk", phone="+852 9567 8901", created_at="2026-02-15", expire_at="2026-08-01"),
+        dict(id="T-2026-0006", name="TaiKai 太楷簿记", type="CPA Firm", plan="Trial", companies=1, users=2, token_used=1200, token_quota=5000, mrr=0, status="trial", status_pill="p-blue", br_no="6789012", contact="陈太楷 Taikai Chan", email="hello@taikai.hk", phone="+852 9678 9012", created_at="2026-06-01", expire_at="2026-06-15"),
+    ]
+    for t in tenants:
+        s.add(M.Tenant(**t))
+    s.commit()
+
+    # ── 平台管理：Tenant Users ──────────────────────────────────────
+    users = [
+        dict(id="U-2026-00001", name="陈大文 Andy Chan", email="andy@abccpa.hk", phone="+852 9123 4567", role="tenant_admin", companies=8, last="刚刚", status="active", twofa=True, is_self=True),
+        dict(id="U-2026-00002", name="李四 Sue Li", email="siu@abccpa.hk", phone="+852 9234 5678", role="bookkeeper", companies=3, last="5 分钟前", status="active", twofa=False),
+        dict(id="U-2026-00003", name="王五 Wang Wu", email="wang@abccpa.hk", phone="+852 9345 6789", role="reviewer", companies=2, last="3 天前", status="active", twofa=True),
+        dict(id="U-2026-00004", name="周六 Joe Chow", email="joe@abccpa.hk", phone="", role="senior", companies=5, last="1 小时前", status="active", twofa=False),
+        dict(id="U-2026-00005", name="吴七 Vivian Ng", email="vivian@abccpa.hk", phone="+852 9456 7890", role="bookkeeper", companies=2, last="昨天", status="active", twofa=False),
+        dict(id="U-2026-00006", name="郑八 Tony Cheng", email="tony@abccpa.hk", phone="", role="viewer", companies=1, last="5 天前", status="active", twofa=False),
+        dict(id="U-2026-00007", name="刘九 Linda Liu", email="linda@abccpa.hk", phone="", role="reviewer", companies=3, last="8 小时前", status="active", twofa=True),
+        dict(id="U-2026-00008", name="张三 Cody Cheung", email="cody@abccpa.hk", phone="", role="viewer", companies=1, last="30 天前", status="disabled", twofa=False),
+        dict(id="U-2026-00009", name="Mary 新员工", email="mary@abccpa.hk", phone="", role="bookkeeper", companies=1, last="未激活", status="invited", twofa=False),
+        dict(id="U-2026-00010", name="Peter (邀请中)", email="peter@abccpa.hk", phone="", role="viewer", companies=2, last="未激活", status="invited", twofa=False),
+    ]
+    for u in users:
+        s.add(M.TenantUser(**u))
+    s.commit()
+
+    # ── 平台管理：Plans ─────────────────────────────────────────────
+    plans = [
+        dict(key="trial", name="Trial 试用", price=0, unit="/ 14 天", max_companies="1", max_users="2", token_quota="5000", features=["全部 AI 功能"], rec=False, sort_order=1),
+        dict(key="starter", name="Starter", price=380, unit="/ 月", max_companies="3", max_users="5", token_quota="50000", features=["全部 AI 功能"], rec=False, sort_order=2),
+        dict(key="pro", name="Professional", price=980, unit="/ 月", max_companies="10", max_users="15", token_quota="200000", features=["优先客服 + 培训"], rec=True, sort_order=3),
+        dict(key="firm", name="Firm", price=2580, unit="/ 月", max_companies="50", max_users="50", token_quota="800000", features=["专属客户经理"], rec=False, sort_order=4),
+        dict(key="ent", name="Enterprise", price=None, unit="", max_companies="不限", max_users="不限", token_quota="按需", features=["私有部署可选"], rec=False, sort_order=5),
+    ]
+    for p in plans:
+        s.add(M.Plan(**p))
+    s.commit()
+
+    # ── 平台管理：Billing Invoices ──────────────────────────────────
+    bills = [
+        dict(no="INV-2026-05-T0001", tenant="ABC CPA Limited", plan="Professional", total=1182.69, subtotal=1314.10, discount=131.41, method="线下转账", channel="offline", status="proof_uploaded", period="2026-05",
+             items=[["订阅费 · Professional 套餐","月费","980.00"],["银行流水 OCR 超额","320 页 × HKD 0.005","1.60"],["票据 OCR 超额","1,240 张 × 50 × 0.005","310.00"],["AI 财务分析报告","2 份 × 2000 × 0.005","20.00"],["AI 异常检测","1 次 × 500 × 0.005","2.50"]]),
+        dict(no="INV-2026-05-T0002", tenant="Sunrise CPA Limited", plan="Professional", total=1458.00, subtotal=1458.00, discount=0, method="FPS 转数快", channel="online", status="paid", period="2026-05",
+             items=[["订阅费 · Professional 套餐","月费","980.00"],["票据 OCR 超额","1,840 张 × 50 × 0.005","460.00"],["AI 异常检测","—","18.00"]]),
+        dict(no="INV-2026-05-T0003", tenant="Vantage CPA Group", plan="Firm", total=2580.00, subtotal=2580.00, discount=0, method="信用卡", channel="online", status="paid", period="2026-05",
+             items=[["订阅费 · Firm 套餐","月费","2,580.00"]]),
+        dict(no="INV-2026-05-T0004", tenant="Peak Finance Ltd", plan="Starter", total=380.00, subtotal=380.00, discount=0, method="—", channel="offline", status="issued", period="2026-05",
+             items=[["订阅费 · Starter 套餐","月费","380.00"]]),
+        dict(no="INV-2026-05-T0005", tenant="HK Bookkeep Co.", plan="Starter", total=980.00, subtotal=980.00, discount=0, method="—", channel="offline", status="overdue", period="2026-04",
+             items=[["订阅费 · Starter 套餐（含上期欠款）","月费 380 + 上期 600","980.00"]]),
+        dict(no="INV-2026-05-T0006", tenant="ABC CPA Limited", plan="Professional", total=980.00, subtotal=980.00, discount=0, method="FPS 转数快", channel="online", status="paid", period="2026-04",
+             items=[["订阅费 · Professional 套餐","月费","980.00"]]),
+    ]
+    for b in bills:
+        s.add(M.BillingInvoice(**b))
+    s.commit()
+
+    # ── 平台管理：Audit Reports（历史记录）─────────────────────────
+    reports = [
+        dict(no="AR-2026-0007", company="ABC Trading Co. Ltd", company_id="abc", period="FY2025/26", report_type="审前分析报告", framework="SME-FRS", score=87),
+        dict(no="AR-2026-0005", company="HK Ventures Ltd", company_id="hkv", period="FY2025/26", report_type="审计辅助底稿", framework="HKFRS", score=93),
+    ]
+    for r in reports:
+        s.add(M.AuditReport(**r))
+    s.commit()
+
     print("[seed] done")

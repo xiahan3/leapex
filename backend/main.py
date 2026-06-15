@@ -430,6 +430,160 @@ def save_company(payload: dict, session: Session = Depends(get_session)):
     return upsert(session, M.CompanyProfile, "company_id", payload).model_dump()
 
 
+# ═══════════════════════════════════════════════════════════════════
+#  平台管理 (Platform Management) APIs
+# ═══════════════════════════════════════════════════════════════════
+
+# ─── Tenants ───────────────────────────────────────────────────────
+@app.get("/api/tenants")
+def list_tenants(status: Optional[str] = None, session: Session = Depends(get_session)):
+    q = select(M.Tenant)
+    if status:
+        q = q.where(M.Tenant.status == status)
+    return [r.model_dump() for r in session.exec(q).all()]
+
+
+@app.post("/api/tenants")
+def upsert_tenant(payload: dict, session: Session = Depends(get_session)):
+    return upsert(session, M.Tenant, "id", payload).model_dump()
+
+
+@app.patch("/api/tenants/{tid}")
+def patch_tenant(tid: str, payload: dict, session: Session = Depends(get_session)):
+    payload["id"] = tid
+    return upsert(session, M.Tenant, "id", payload).model_dump()
+
+
+@app.delete("/api/tenants/{tid}")
+def del_tenant(tid: str, session: Session = Depends(get_session)):
+    row = session.get(M.Tenant, tid)
+    if not row:
+        raise HTTPException(404, "not found")
+    session.delete(row)
+    session.commit()
+    return {"ok": True}
+
+
+# ─── Tenant Users ──────────────────────────────────────────────────
+@app.get("/api/tenant-users")
+def list_tenant_users(tenant_id: Optional[str] = None, role: Optional[str] = None,
+                      status: Optional[str] = None, session: Session = Depends(get_session)):
+    q = select(M.TenantUser)
+    if tenant_id:
+        q = q.where(M.TenantUser.tenant_id == tenant_id)
+    if role:
+        q = q.where(M.TenantUser.role == role)
+    if status:
+        q = q.where(M.TenantUser.status == status)
+    return [r.model_dump() for r in session.exec(q).all()]
+
+
+@app.post("/api/tenant-users")
+def upsert_tenant_user(payload: dict, session: Session = Depends(get_session)):
+    return upsert(session, M.TenantUser, "id", payload).model_dump()
+
+
+@app.patch("/api/tenant-users/{uid}")
+def patch_tenant_user(uid: str, payload: dict, session: Session = Depends(get_session)):
+    payload["id"] = uid
+    return upsert(session, M.TenantUser, "id", payload).model_dump()
+
+
+@app.delete("/api/tenant-users/{uid}")
+def del_tenant_user(uid: str, session: Session = Depends(get_session)):
+    row = session.get(M.TenantUser, uid)
+    if not row:
+        raise HTTPException(404, "not found")
+    session.delete(row)
+    session.commit()
+    return {"ok": True}
+
+
+# ─── Plans ─────────────────────────────────────────────────────────
+@app.get("/api/plans")
+def list_plans(session: Session = Depends(get_session)):
+    rows = session.exec(select(M.Plan).order_by(M.Plan.sort_order)).all()
+    return [r.model_dump() for r in rows]
+
+
+@app.post("/api/plans")
+def upsert_plan(payload: dict, session: Session = Depends(get_session)):
+    return upsert(session, M.Plan, "key", payload).model_dump()
+
+
+@app.patch("/api/plans/{key}")
+def patch_plan(key: str, payload: dict, session: Session = Depends(get_session)):
+    payload["key"] = key
+    return upsert(session, M.Plan, "key", payload).model_dump()
+
+
+@app.delete("/api/plans/{key}")
+def del_plan(key: str, session: Session = Depends(get_session)):
+    row = session.get(M.Plan, key)
+    if not row:
+        raise HTTPException(404, "not found")
+    session.delete(row)
+    session.commit()
+    return {"ok": True}
+
+
+# ─── Billing Invoices ──────────────────────────────────────────────
+@app.get("/api/billing-invoices")
+def list_billing(status: Optional[str] = None, period: Optional[str] = None,
+                 session: Session = Depends(get_session)):
+    q = select(M.BillingInvoice)
+    if status:
+        q = q.where(M.BillingInvoice.status == status)
+    if period:
+        q = q.where(M.BillingInvoice.period == period)
+    return [r.model_dump() for r in session.exec(q).all()]
+
+
+@app.post("/api/billing-invoices")
+def upsert_billing(payload: dict, session: Session = Depends(get_session)):
+    return upsert(session, M.BillingInvoice, "no", payload).model_dump()
+
+
+@app.patch("/api/billing-invoices/{no}")
+def patch_billing(no: str, payload: dict, session: Session = Depends(get_session)):
+    payload["no"] = no
+    return upsert(session, M.BillingInvoice, "no", payload).model_dump()
+
+
+@app.delete("/api/billing-invoices/{no}")
+def del_billing(no: str, session: Session = Depends(get_session)):
+    row = session.get(M.BillingInvoice, no)
+    if not row:
+        raise HTTPException(404, "not found")
+    session.delete(row)
+    session.commit()
+    return {"ok": True}
+
+
+# ─── Audit Reports ─────────────────────────────────────────────────
+@app.get("/api/audit-reports")
+def list_audit_reports(company_id: Optional[str] = None, session: Session = Depends(get_session)):
+    q = select(M.AuditReport).order_by(M.AuditReport.created_at.desc())
+    if company_id:
+        q = q.where(M.AuditReport.company_id == company_id)
+    return [r.model_dump() for r in session.exec(q).all()]
+
+
+@app.post("/api/audit-reports")
+def create_audit_report(payload: dict, session: Session = Depends(get_session)):
+    return upsert(session, M.AuditReport, "no", payload).model_dump()
+
+
+@app.delete("/api/audit-reports/{no}")
+def del_audit_report(no: str, session: Session = Depends(get_session)):
+    row = session.get(M.AuditReport, no)
+    if not row:
+        raise HTTPException(404, "not found")
+    session.delete(row)
+    session.commit()
+    return {"ok": True}
+
+
 # ═══════════ Static frontend (HTML) ═══════════
 @app.get("/")
 def root():
