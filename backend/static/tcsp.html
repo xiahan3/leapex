@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Leapex TCSP 公司秘书 · 小程序原型</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -444,7 +444,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 
         <div class="sec-t">办理流程</div>
         <div class="card card-pad">
-          <div id="sd-process" style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text2)"></div>
+          <div id="sd-process" class="steps" style="padding:6px 4px 2px"></div>
         </div>
 
         <div class="sec-t">办理时效 / 所需材料</div>
@@ -1179,7 +1179,9 @@ function openSvc(key){
   document.getElementById('sd-incl').innerHTML = s.incl.map(function(x){
     return '<div class="incl"><i class="ti ti-circle-check"></i><span>'+x+'</span></div>'; }).join('');
   document.getElementById('sd-process').innerHTML = s.process.map(function(p,i){
-    return (i?'<i class="ti ti-chevron-right" style="color:var(--text4)"></i>':'')+'<span style="text-align:center"><span style="display:block;width:24px;height:24px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font-weight:700;line-height:24px;margin:0 auto 3px">'+(i+1)+'</span>'+p+'</span>'; }).join('');
+    return (i ? '<div class="step-line done"></div>' : '')
+      + '<div class="step-i done"><div class="step-dot">'+(i+1)+'</div><div class="step-lab">'+p+'</div></div>';
+  }).join('');
   document.getElementById('sd-meta').innerHTML = s.meta;
   go('s-svcdetail');
 }
