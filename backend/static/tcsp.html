@@ -419,10 +419,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="svc-row" style="border-bottom:none" onclick="openSvc('deregister')"><div class="svc-dot" style="background:var(--bg2);color:var(--text3)"><i class="ti ti-building-off"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司注销</div><div class="price">HKD 2,000</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
         </div>
 
-        <div class="sec-t" style="margin-top:6px"><i class="ti ti-affiliate" style="font-size:13px;margin-right:4px"></i>增值服务 · 合作方提供</div>
+        <div class="sec-t" style="margin-top:6px"><i class="ti ti-sparkles" style="font-size:13px;margin-right:4px"></i>增值服务</div>
         <div class="card" style="padding:0">
-          <div class="svc-row" onclick="openSvc('office')"><div class="svc-dot" style="background:var(--accent-bg);color:var(--accent-d)"><i class="ti ti-building-skyscraper"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">办公租赁 / 注册地址 <span class="tag t-blue" style="font-size:9px">ISV 联名</span></div><div style="font-size:10.5px;color:var(--text3)">上市公司一手房源 · 客户直签房东</div></div><div class="price" style="font-size:12.5px">面议</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
-          <div class="svc-row" style="border-bottom:none" onclick="openSvc('immigration')"><div class="svc-dot" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-plane-departure"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">香港移民 / 身份规划 <span class="tag t-yellow" style="font-size:9px">顾问</span></div><div style="font-size:10.5px;color:var(--text3)">优才 / 专才 / 高才通 · 一对一规划</div></div><div class="price" style="font-size:12.5px">面议</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" onclick="openSvc('office')"><div class="svc-dot" style="background:var(--accent-bg);color:var(--accent-d)"><i class="ti ti-building-skyscraper"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">办公租赁 / 注册地址</div><div style="font-size:10.5px;color:var(--text3)">甲级商厦地址 · 可作公司注册地址</div></div><div class="price" style="font-size:12.5px">面议</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" style="border-bottom:none" onclick="openSvc('immigration')"><div class="svc-dot" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-plane-departure"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">香港移民 / 身份规划</div><div style="font-size:10.5px;color:var(--text3)">优才 / 专才 / 高才通 · 一对一规划</div></div><div class="price" style="font-size:12.5px">面议</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
         </div>
 
         <div class="card card-pad" style="background:var(--bg2)">
@@ -1185,12 +1185,12 @@ var SVC_DATA = {
   'deregister':{name:'公司注销',icon:'ti-building-off',price:2000,old:0,form:'deregister',tags:'DR1 · 6 项交付物',
     incl:['注销申请书 DR1','税务局不反对注销证明','公司注册处注销证明','董事会注销决议','股东同意注销决议','注销完成通知书'],
     process:['税务结清','决议','提交DR1','政府审批'],meta:'办理时效：3-6 个月（政府审批）<br>需先结清税务并取得不反对通知书'},
-  // 增值服务 · 合作方（联名/顾问，走预约咨询 → 企微承接，不直接下单）
+  // 增值服务（顾问类，走预约咨询 → 企微承接，不直接下单）
   'office':{name:'办公租赁 / 注册地址',icon:'ti-building-skyscraper',price:0,old:0,consult:true,
-    tags:'ISV 联名 · 上市公司一手房源',
-    incl:['上市公司一手商厦地址','可作公司注册地址','出具水电煤 / 房产证明','灵活工位 / 整层可选','联名签约协助'],
-    process:['提交需求','看房选址','客户直签房东','配置注册地址'],
-    meta:'合作方：香港 60 年老牌上市公司（ISV 联名）<br><b>签约关系：客户直接与房东签约</b>（房东出水电煤账单/房产证），EasybookX 为引流渠道并协助。<br>价格按面积/楼层面议，预约顾问报价。'},
+    tags:'甲级商厦 · 可作注册地址',
+    incl:['核心商业区甲级商厦地址','可作公司注册地址','可出具水电煤 / 地址证明','灵活工位 / 整层可选','签约与入驻协助'],
+    process:['提交需求','看房选址','确认签约','配置注册地址'],
+    meta:'香港核心商业区甲级写字楼，可作公司注册地址并出具地址证明。<br>支持灵活工位至整层办公，按面积 / 楼层报价。<br>预约顾问安排看房与报价。'},
   'immigration':{name:'香港移民 / 身份规划',icon:'ti-plane-departure',price:0,old:0,consult:true,
     tags:'优才 / 专才 / 高才通',
     incl:['资格评估与方案规划','优才计划（QMAS）','输入内地人才（专才）','高端人才通行证（高才通）','续签 / 永居路径规划','配合公司注册落地'],
