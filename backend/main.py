@@ -595,11 +595,20 @@ def root():
 
 @app.get("/tcsp")
 def tcsp():
-    """EasybookX TCSP 公司秘书小程序原型 demo."""
+    """Leapexbiz 公司秘书小程序原型 demo."""
     page = STATIC_DIR / "tcsp.html"
     if page.exists():
         return FileResponse(page)
     return JSONResponse({"msg": "tcsp prototype not uploaded."})
+
+
+@app.get("/admin")
+def admin():
+    """Leapexbiz 管理后台原型 demo."""
+    page = STATIC_DIR / "admin.html"
+    if page.exists():
+        return FileResponse(page)
+    return JSONResponse({"msg": "admin prototype not uploaded."})
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

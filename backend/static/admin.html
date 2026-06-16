@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leapexbiz 管理后台 · 原型</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F4F4F2; --card:#FFFFFF; --sb:#1C1B19; --sb2:#262420;
+  --text:#1A1A1A; --text2:#6B6B6B; --text3:#9B9B9B; --line:#E7E6E2; --line2:#DEDDD8;
+  --gold:#B8860B; --gold-bg:#FBF3E0; --accent:#1A1A1A;
+  --green:#2E8B57; --green-bg:#E7F2EC; --blue:#3B6EA5; --blue-bg:#EAF1F8;
+  --amber:#B45309; --amber-bg:#FBF3E6; --red:#D93A3A; --red-bg:#FBEAEA;
+  --purple:#7A5C9E; --purple-bg:#F0EBF4;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* Sidebar */
+.sb{width:230px;flex-shrink:0;background:var(--sb);color:#cfcdc7;display:flex;flex-direction:column;overflow:hidden}
+.sb-logo{padding:16px 18px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo b{color:#D4A853;font-size:17px;font-weight:800;letter-spacing:.3px}
+.sb-logo span{font-size:10px;color:rgba(255,255,255,.4)}
+.nav{flex:1;overflow-y:auto;padding:8px 8px 20px}
+.nav::-webkit-scrollbar{width:5px}.nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+.ng{font-size:10px;color:rgba(255,255,255,.32);font-weight:600;letter-spacing:.6px;padding:12px 10px 4px;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;color:#bdbbb4;font-size:12.5px;margin:1px 0}
+.ni:hover{background:var(--sb2);color:#fff}
+.ni.on{background:var(--gold);color:#1A1A1A;font-weight:600}
+.ni i{font-size:16px}
+.ni .nb{margin-left:auto;font-size:10px;font-weight:700;background:var(--red);color:#fff;border-radius:9px;padding:0 6px}
+.ni.on .nb{background:rgba(0,0,0,.2)}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.top{height:54px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:14px;flex-shrink:0}
+.top h1{font-size:15px;font-weight:600}
+.top .sub{font-size:11.5px;color:var(--text3)}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.role-pill{font-size:11px;background:var(--gold-bg);color:var(--gold);padding:3px 10px;border-radius:11px;font-weight:600}
+.avatar{width:32px;height:32px;border-radius:50%;background:#1A1A1A;color:#D4A853;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.content{flex:1;overflow-y:auto;padding:20px 22px}
+.page{display:none}.page.on{display:block}
+
+/* Components */
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:16px}
+.ch{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:13.5px;font-weight:600}
+.cp{padding:16px}
+.grid{display:grid;gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi .l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.kpi .v{font-size:24px;font-weight:700;margin-top:4px}
+.kpi .d{font-size:11px;margin-top:3px;color:var(--text3)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10.5px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:9px 14px;border-bottom:1px solid var(--line);background:#FAFAF8;white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:12.5px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#FAFAF8}
+.pill{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:11px;white-space:nowrap}
+.p-green{background:var(--green-bg);color:var(--green)}.p-blue{background:var(--blue-bg);color:var(--blue)}
+.p-amber{background:var(--amber-bg);color:var(--amber)}.p-red{background:var(--red-bg);color:var(--red)}
+.p-gray{background:#EEEDEA;color:var(--text2)}.p-gold{background:var(--gold-bg);color:var(--gold)}.p-purple{background:var(--purple-bg);color:var(--purple)}
+.btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:7px 13px;border-radius:7px;border:1px solid var(--line2);background:var(--card);color:var(--text);cursor:pointer;font-family:inherit}
+.btn:hover{background:#FAFAF8}
+.btn-p{background:#1A1A1A;color:#fff;border-color:#1A1A1A}.btn-p:hover{opacity:.88}
+.btn-g{background:var(--gold);color:#1A1A1A;border-color:var(--gold)}
+.btn-xs{padding:4px 9px;font-size:11px}
+.btn-green{color:var(--green);border-color:var(--green)}.btn-red{color:var(--red);border-color:var(--red)}
+.inp{padding:7px 11px;border:1px solid var(--line2);border-radius:7px;font-size:12.5px;font-family:inherit;outline:none}
+.inp:focus{border-color:var(--gold)}
+.filters{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.chip{padding:5px 12px;border:1px solid var(--line2);border-radius:14px;font-size:12px;cursor:pointer;background:var(--card);color:var(--text2)}
+.chip.on{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+.mini{width:8px;height:8px;border-radius:50%;display:inline-block}
+.todo{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line)}
+.todo:last-child{border:none}
+.bars{display:flex;align-items:flex-end;gap:8px;height:120px;padding:8px 4px}
+.bar{flex:1;background:var(--gold-bg);border-radius:4px 4px 0 0;position:relative;min-height:6px}
+.bar span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:9px;color:var(--text3)}
+.bar i{position:absolute;bottom:-16px;left:0;right:0;text-align:center;font-size:9px;color:var(--text3);font-style:normal}
+.matrix td,.matrix th{text-align:center}.matrix td:first-child,.matrix th:first-child{text-align:left}
+.cell-in{width:62px;padding:4px 6px;border:1px solid var(--line2);border-radius:5px;font-size:11.5px;text-align:center;font-family:inherit;outline:none}
+.cell-in:focus{border-color:var(--gold)}
+
+/* Modal */
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:24px}
+.mask.on{display:flex}
+.modal{background:var(--card);border-radius:12px;width:100%;max-width:720px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.3)}
+.mh{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.mb{padding:18px;overflow-y:auto}
+.mf{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.x{width:28px;height:28px;border:1px solid var(--line2);border-radius:6px;background:none;cursor:pointer;color:var(--text3);font-size:15px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:12.5px}
+.kv .k{color:var(--text3)}
+.docthumb{width:100%;height:90px;border:1px solid var(--line2);border-radius:7px;background:repeating-linear-gradient(45deg,#F0EFEC,#F0EFEC 8px,#F7F6F3 8px,#F7F6F3 16px);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:11px}
+
+/* Login */
+.login{position:fixed;inset:0;z-index:200;background:linear-gradient(135deg,#1C1B19,#2b2620);display:flex;align-items:center;justify-content:center}
+.login-card{background:var(--card);border-radius:14px;width:380px;padding:32px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
+.login-card .b{color:#D4A853;font-size:24px;font-weight:800;text-align:center}
+.toast{position:fixed;bottom:24px;right:24px;background:#1A1A1A;color:#fff;padding:11px 17px;border-radius:8px;font-size:13px;opacity:0;transform:translateY(8px);transition:.2s;z-index:300}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sb">
+    <div class="sb-logo">
+      <div style="width:30px;height:30px;border-radius:7px;background:#D4A853;color:#1A1A1A;display:flex;align-items:center;justify-content:center;font-weight:800">L</div>
+      <div><b>Leapexbiz</b><br><span>持牌 TCSP · 管理后台</span></div>
+    </div>
+    <nav class="nav">
+      <div class="ng">概览</div>
+      <div class="ni on" data-p="dash" onclick="go(this)"><i class="ti ti-layout-dashboard"></i>数据驾驶舱</div>
+      <div class="ng">运营审核</div>
+      <div class="ni" data-p="customers" onclick="go(this)"><i class="ti ti-users"></i>客户管理</div>
+      <div class="ni" data-p="kyc" onclick="go(this)"><i class="ti ti-id"></i>KYC / EDD 审核<span class="nb">5</span></div>
+      <div class="ni" data-p="namecheck" onclick="go(this)"><i class="ti ti-search"></i>核名查册<span class="nb">3</span></div>
+      <div class="ni" data-p="orders" onclick="go(this)"><i class="ti ti-clipboard-list"></i>订单管理</div>
+      <div class="ni" data-p="bills" onclick="go(this)"><i class="ti ti-receipt"></i>账单 / 回单确认<span class="nb">4</span></div>
+      <div class="ni" data-p="deliver" onclick="go(this)"><i class="ti ti-files"></i>交付物管理</div>
+      <div class="ni" data-p="annual" onclick="go(this)"><i class="ti ti-calendar-repeat"></i>年审 / 变更</div>
+      <div class="ng">商业 / 财务</div>
+      <div class="ni" data-p="pricing" onclick="go(this)"><i class="ti ti-table"></i>定价矩阵</div>
+      <div class="ni" data-p="channel" onclick="go(this)"><i class="ti ti-affiliate"></i>渠道与佣金</div>
+      <div class="ni" data-p="supplier" onclick="go(this)"><i class="ti ti-building-warehouse"></i>供应商与应付</div>
+      <div class="ni" data-p="leads" onclick="go(this)"><i class="ti ti-headset"></i>企微线索</div>
+      <div class="ng">合规 / 系统</div>
+      <div class="ni" data-p="compliance" onclick="go(this)"><i class="ti ti-shield-check"></i>合规与审计</div>
+      <div class="ni" data-p="rbac" onclick="go(this)"><i class="ti ti-lock"></i>员工与角色</div>
+      <div class="ni" data-p="config" onclick="go(this)"><i class="ti ti-settings"></i>系统配置</div>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="top">
+      <div><h1 id="pt">数据驾驶舱</h1><div class="sub" id="ps">实时运营总览</div></div>
+      <div class="right">
+        <span class="role-pill"><i class="ti ti-crown" style="font-size:11px"></i> Super Admin</span>
+        <div class="avatar">陈</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- ════ Dashboard ════ -->
+      <div class="page on" id="p-dash">
+        <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+          <div class="kpi"><div class="l">今日新增订单</div><div class="v">12</div><div class="d" style="color:var(--green)">较昨日 +3</div></div>
+          <div class="kpi"><div class="l">待处理 KYC</div><div class="v">5</div><div class="d" style="color:var(--amber)">2 笔超时</div></div>
+          <div class="kpi"><div class="l">待核名查册</div><div class="v">3</div><div class="d">智能预检通过</div></div>
+          <div class="kpi"><div class="l">待确认回单</div><div class="v">4</div><div class="d" style="color:var(--amber)">需财务核对</div></div>
+          <div class="kpi"><div class="l">本月营收（已到账）</div><div class="v">HKD 286K</div><div class="d" style="color:var(--green)">↑ 18% MoM</div></div>
+          <div class="kpi"><div class="l">渠道转化率</div><div class="v">42.7%</div><div class="d">渠道 / 自然流量</div></div>
+          <div class="kpi"><div class="l">本月应付佣金</div><div class="v">HKD 34.2K</div><div class="d">待结算 28.4K</div></div>
+          <div class="kpi"><div class="l">供应商应付</div><div class="v">HKD 8.6K</div><div class="d">印章 / 公证</div></div>
+        </div>
+        <div class="grid" style="grid-template-columns:1.5fr 1fr">
+          <div class="card">
+            <div class="ch"><span class="ct">营收趋势（近 6 月）</span><span class="pill p-gold">HKD</span></div>
+            <div class="cp"><div class="bars">
+              <div class="bar" style="height:46%"><span>198K</span><i>1月</i></div>
+              <div class="bar" style="height:54%"><span>232K</span><i>2月</i></div>
+              <div class="bar" style="height:50%"><span>215K</span><i>3月</i></div>
+              <div class="bar" style="height:66%"><span>268K</span><i>4月</i></div>
+              <div class="bar" style="height:60%"><span>242K</span><i>5月</i></div>
+              <div class="bar" style="height:72%;background:var(--gold)"><span>286K</span><i>6月</i></div>
+            </div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct">待办事项</span></div>
+            <div>
+              <div class="todo"><span class="mini" style="background:var(--red)"></span><div style="flex:1">KYC 审核超时（&gt;48h）</div><span class="pill p-red">2 高</span></div>
+              <div class="todo"><span class="mini" style="background:var(--red)"></span><div style="flex:1">回单待确认</div><span class="pill p-red">4 高</span></div>
+              <div class="todo"><span class="mini" style="background:var(--red)"></span><div style="flex:1">制裁名单命中待复核</div><span class="pill p-red">1 高</span></div>
+              <div class="todo"><span class="mini" style="background:var(--amber)"></span><div style="flex:1">核名查册待处理</div><span class="pill p-amber">3 中</span></div>
+              <div class="todo"><span class="mini" style="background:var(--amber)"></span><div style="flex:1">年审即将到期（30 天）</div><span class="pill p-amber">6 中</span></div>
+              <div class="todo"><span class="mini" style="background:var(--amber)"></span><div style="flex:1">企微线索待跟进</div><span class="pill p-amber">9 中</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ 客户管理 ════ -->
+      <div class="page" id="p-customers">
+        <div class="filters">
+          <input class="inp" placeholder="搜索 姓名 / 邮箱 / 电话" style="width:240px">
+          <span class="chip on">全部</span><span class="chip">渠道客户</span><span class="chip">自然流量</span><span class="chip">需跟进</span>
+          <button class="btn" style="margin-left:auto"><i class="ti ti-download"></i>导出</button>
+        </div>
+        <div class="card"><table>
+          <thead><tr><th>客户</th><th>来源渠道</th><th>KYC 状态</th><th>公司数</th><th>订单</th><th>标签</th><th>注册时间</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><b>陈大文</b><div style="color:var(--text3);font-size:11px">andy@abc.hk · +852 9123</div></td><td><span class="pill p-gold">AGT001 星投资本</span></td><td><span class="pill p-green">已通过</span></td><td>2</td><td>3</td><td><span class="pill p-amber">高价值</span></td><td>2026-05-12</td><td><button class="btn btn-xs">详情</button></td></tr>
+            <tr><td><b>李美琪</b><div style="color:var(--text3);font-size:11px">mary@xy.hk</div></td><td><span class="pill p-gray">自然流量</span></td><td><span class="pill p-blue">审核中</span></td><td>1</td><td>1</td><td>—</td><td>2026-06-08</td><td><button class="btn btn-xs">详情</button></td></tr>
+            <tr><td><b>王志强</b><div style="color:var(--text3);font-size:11px">wang@fortune.hk</div></td><td><span class="pill p-gold">AGT002</span></td><td><span class="pill p-amber">EDD 中</span></td><td>1</td><td>2</td><td><span class="pill p-purple">PEP</span></td><td>2026-06-01</td><td><button class="btn btn-xs">详情</button></td></tr>
+            <tr><td><b>张倩</b><div style="color:var(--text3);font-size:11px">zhang@peak.hk</div></td><td><span class="pill p-gray">自然流量</span></td><td><span class="pill p-red">已拒绝</span><span style="font-size:10px;color:var(--text3)"> · 留档 7y</span></td><td>0</td><td>1</td><td>—</td><td>2026-05-28</td><td><button class="btn btn-xs">详情</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- ════ KYC 审核 ════ -->
+      <div class="page" id="p-kyc">
+        <div class="filters">
+          <span class="chip on">待审核 5</span><span class="chip">EDD 增强尽调 1</span><span class="chip">制裁命中 1</span><span class="chip">已通过</span><span class="chip">已拒绝</span>
+        </div>
+        <div class="card"><table>
+          <thead><tr><th>客户</th><th>证件</th><th>PEP</th><th>制裁筛查</th><th>提交时间</th><th>SLA</th><th>状态</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><b>李美琪</b></td><td>香港身份证</td><td><span class="pill p-gray">否</span></td><td><span class="pill p-green">未命中</span></td><td>06-08 09:32</td><td><span class="pill p-green">14h</span></td><td><span class="pill p-blue">待审核</span></td><td><button class="btn btn-xs btn-p" onclick="openKyc()">审核</button></td></tr>
+            <tr><td><b>刘建国</b></td><td>中国内地身份证</td><td><span class="pill p-purple">是 · 含家属</span></td><td><span class="pill p-green">未命中</span></td><td>06-07 16:20</td><td><span class="pill p-amber">超时 5h</span></td><td><span class="pill p-amber">EDD 待补</span></td><td><button class="btn btn-xs">审核</button></td></tr>
+            <tr><td><b>Ahmed K.</b></td><td>护照</td><td><span class="pill p-gray">否</span></td><td><span class="pill p-red">命中 · 冻结</span></td><td>06-08 11:05</td><td><span class="pill p-red">合规复核</span></td><td><span class="pill p-red">已冻结</span></td><td><button class="btn btn-xs btn-red">复核</button></td></tr>
+            <tr><td><b>周敏</b></td><td>香港身份证</td><td><span class="pill p-gray">否</span></td><td><span class="pill p-green">未命中</span></td><td>06-08 13:40</td><td><span class="pill p-green">2h</span></td><td><span class="pill p-blue">待审核</span></td><td><button class="btn btn-xs btn-p" onclick="openKyc()">审核</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- ════ 核名查册 ════ -->
+      <div class="page" id="p-namecheck">
+        <div class="filters"><span class="chip on">待查册 3</span><span class="chip">已完成</span><span class="chip">名称锁定中</span></div>
+        <div class="card"><table>
+          <thead><tr><th>拟用名称</th><th>客户</th><th>智能预检</th><th>iCRIS 查册</th><th>风险评级</th><th>重查次数</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><b>Star Tech Limited</b><div style="color:var(--text3);font-size:11px">星辰科技有限公司</div></td><td>陈大文</td><td><span class="pill p-green">通过</span></td><td><span class="pill p-amber">待查册</span></td><td>—</td><td>0 / 3</td><td><button class="btn btn-xs btn-p">查册 + 评级</button></td></tr>
+            <tr><td><b>Global Vision Limited</b></td><td>李美琪</td><td><span class="pill p-amber">近似名 1</span></td><td><span class="pill p-amber">待查册</span></td><td>—</td><td>1 / 3</td><td><button class="btn btn-xs btn-p">查册 + 评级</button></td></tr>
+            <tr><td><b>Royal Trust Limited</b></td><td>王志强</td><td><span class="pill p-red">敏感词「Trust」</span></td><td><span class="pill p-gray">阻断</span></td><td><span class="pill p-blue">Blue 需牌照</span></td><td>2 / 3</td><td><button class="btn btn-xs">合规审批</button></td></tr>
+          </tbody>
+        </table></div>
+        <div class="card cp" style="background:var(--gold-bg);border-color:var(--gold)"><div style="font-size:12px;color:var(--gold)"><i class="ti ti-info-circle"></i> 五级风险：🟢Green 可用 · 🟡Yellow 轻微近似(客户确认) · 🟠Orange 近似冲突(不混淆声明) · 🔴Red 商标/敏感词(合规审批) · 🔵Blue 需牌照。通过后名称锁定 30 天。</div></div>
+      </div>
+
+      <!-- ════ 订单管理 ════ -->
+      <div class="page" id="p-orders">
+        <div class="filters"><span class="chip on">全部</span><span class="chip">待支付</span><span class="chip">服务中</span><span class="chip">已完成</span><span class="chip">已取消</span><input class="inp" placeholder="订单号 / 客户" style="margin-left:auto;width:200px"></div>
+        <div class="card"><table>
+          <thead><tr><th>订单号</th><th>客户</th><th>服务</th><th>渠道</th><th>金额</th><th>状态</th><th>创建时间</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>ORD-2026-0188</td><td>陈大文</td><td>标准注册套餐</td><td><span class="pill p-gold">AGT001</span></td><td>HKD 5,500</td><td><span class="pill p-blue">服务中</span></td><td>06-05</td><td><button class="btn btn-xs">详情</button></td></tr>
+            <tr><td>ORD-2026-0205</td><td>李美琪</td><td>年审服务</td><td><span class="pill p-gray">直营</span></td><td>HKD 2,800</td><td><span class="pill p-amber">待支付</span></td><td>06-08</td><td><button class="btn btn-xs">详情</button></td></tr>
+            <tr><td>ORD-2026-0142</td><td>恒丰贸易</td><td>年审 + 董事变更</td><td><span class="pill p-gold">AGT001</span></td><td>HKD 2,300</td><td><span class="pill p-green">已完成</span></td><td>05-20</td><td><button class="btn btn-xs">详情</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- ════ 账单 / 回单确认 ════ -->
+      <div class="page" id="p-bills">
+        <div class="filters"><span class="chip on">待确认 4</span><span class="chip">待支付</span><span class="chip">已到账</span><span class="chip">已驳回</span><span class="chip">已作废</span>
+          <button class="btn" style="margin-left:auto"><i class="ti ti-plus"></i>手动生成账单</button><button class="btn"><i class="ti ti-download"></i>导出对账</button></div>
+        <div class="card"><table>
+          <thead><tr><th>账单号</th><th>订单 / 服务</th><th>金额</th><th>印花税</th><th>回单</th><th>状态</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>LEA-2026-0188-1</td><td>陈大文 · 标准注册（首付）</td><td>HKD 2,750</td><td>—</td><td><span class="pill p-blue">已上传</span></td><td><span class="pill p-blue">待确认</span></td><td><button class="btn btn-xs btn-p" onclick="openBill()">核对回单</button></td></tr>
+            <tr><td>LEA-2026-0210-1</td><td>科达 · 股份转让</td><td>HKD 2,000</td><td style="color:var(--amber)">HKD 1,200 (0.2%)</td><td><span class="pill p-blue">已上传</span></td><td><span class="pill p-blue">待确认</span></td><td><button class="btn btn-xs btn-p" onclick="openBill()">核对回单</button></td></tr>
+            <tr><td>LEA-2026-0205-1</td><td>李美琪 · 年审</td><td>HKD 2,800</td><td>—</td><td><span class="pill p-gray">未上传</span></td><td><span class="pill p-amber">待支付</span></td><td><button class="btn btn-xs">作废 / 重开</button></td></tr>
+            <tr><td>LEA-2026-0142-2</td><td>恒丰 · 董事变更</td><td>HKD 800</td><td>—</td><td>—</td><td><span class="pill p-green">已到账</span></td><td><button class="btn btn-xs btn-red">退款</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- ════ 交付物 ════ -->
+      <div class="page" id="p-deliver">
+        <div class="filters"><span class="chip on">进行中</span><span class="chip">待政府文件</span><span class="chip">实物制作</span><span class="chip">已就绪</span></div>
+        <div class="card"><table>
+          <thead><tr><th>公司 / 订单</th><th>交付物</th><th>生成方式</th><th>负责</th><th>状态</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>星辰科技 · ORD-0188</td><td>公司注册证书 CI</td><td>政府签发 · 人工上传</td><td>运营</td><td><span class="pill p-amber">等待政府</span></td><td><button class="btn btn-xs">上传扫描件</button></td></tr>
+            <tr><td>星辰科技 · ORD-0188</td><td>公司章程 / 名册（PDF×6）</td><td>Puppeteer 渲染</td><td>系统</td><td><span class="pill p-green">已就绪</span></td><td><button class="btn btn-xs">预览</button></td></tr>
+            <tr><td>星辰科技 · ORD-0188</td><td>公司圆章 + 签字章</td><td>实物 · 供应商</td><td><span class="pill p-purple">金印堂</span></td><td><span class="pill p-blue">制作中</span></td><td><button class="btn btn-xs">查看任务</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- ════ 年审 / 变更 ════ -->
+      <div class="page" id="p-annual">
+        <div class="card"><table>
+          <thead><tr><th>公司</th><th>下次年审到期</th><th>剩余</th><th>提醒进度</th><th>年审账单</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>恒丰贸易有限公司</td><td>2026-09-15</td><td>96 天</td><td><span class="pill p-amber">第 1 轮（60 天前）</span></td><td><span class="pill p-gray">待生成</span></td><td><button class="btn btn-xs">生成账单</button></td></tr>
+            <tr><td>光辉投资有限公司</td><td>2026-07-02</td><td>21 天</td><td><span class="pill p-amber">第 3 轮（14 天前）</span></td><td><span class="pill p-green">已生成</span></td><td><button class="btn btn-xs">查看</button></td></tr>
+            <tr><td>九龙国际有限公司</td><td>2026-06-04</td><td style="color:var(--red)">已逾期 7 天</td><td><span class="pill p-red">第 6 轮（逾期）</span></td><td><span class="pill p-amber">待支付</span></td><td><button class="btn btn-xs btn-red">催办</button></td></tr>
+          </tbody>
+        </table></div>
+        <div class="card cp" style="background:var(--blue-bg);border-color:var(--blue)"><div style="font-size:12px;color:var(--blue)"><i class="ti ti-bell"></i> 年审 6 轮递进提醒：到期前 60 / 30 / 14 / 7 天 + 当天 + 逾期 7 天，三渠道（订阅消息+站内信+邮件）。规则后台可配。</div></div>
+      </div>
+
+      <!-- ════ 定价矩阵 ════ -->
+      <div class="page" id="p-pricing">
+        <div class="filters"><span style="font-size:12px;color:var(--text2)">渠道 × 服务 二维定价（客户可见价 · 留空继承标准价）</span><button class="btn btn-p" style="margin-left:auto" onclick="toast('定价已保存')"><i class="ti ti-check"></i>保存</button></div>
+        <div class="card cp" style="overflow-x:auto"><table class="matrix">
+          <thead><tr><th>服务项</th><th>标准价</th><th>AGT001 星投资本</th><th>AGT002</th><th>AGT003</th><th>自然流量</th></tr></thead>
+          <tbody>
+            <tr><td>公司注册（基础）</td><td>3,800</td><td><input class="cell-in" value="3,500"></td><td><input class="cell-in" value="3,200"></td><td><input class="cell-in" value="3,800"></td><td>3,800</td></tr>
+            <tr><td>公司注册（标准）</td><td>5,800</td><td><input class="cell-in" value="5,500"></td><td><input class="cell-in" value="5,200"></td><td><input class="cell-in" value="5,800"></td><td>5,800</td></tr>
+            <tr><td>年审服务</td><td>2,800</td><td><input class="cell-in" value="2,600"></td><td><input class="cell-in" value="2,400"></td><td><input class="cell-in" value="2,800"></td><td>2,800</td></tr>
+            <tr><td>董事变更</td><td>1,500</td><td><input class="cell-in" value="1,400"></td><td><input class="cell-in" value="1,300"></td><td><input class="cell-in" value="1,500"></td><td>1,500</td></tr>
+            <tr><td>股份转让</td><td>2,000</td><td><input class="cell-in" value="1,900"></td><td><input class="cell-in" value="1,800"></td><td><input class="cell-in" value="2,000"></td><td>2,000</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- ════ 渠道与佣金 ════ -->
+      <div class="page" id="p-channel">
+        <div class="card">
+          <div class="ch"><span class="ct">渠道合作伙伴</span><button class="btn btn-xs"><i class="ti ti-plus"></i>生成 Channel Code</button></div>
+          <table>
+            <thead><tr><th>渠道</th><th>Channel Code</th><th>本月订单</th><th>本月营收</th><th>本月应付佣金</th><th>结算状态</th></tr></thead>
+            <tbody>
+              <tr><td>星投资本</td><td><b>AGT001 / LEX888</b></td><td>18</td><td>HKD 96,000</td><td>HKD 14,200</td><td><span class="pill p-amber">待结算</span></td></tr>
+              <tr><td>正弦咨询</td><td>AGT002</td><td>12</td><td>HKD 64,000</td><td>HKD 11,800</td><td><span class="pill p-amber">待结算</span></td></tr>
+              <tr><td>湾区财税</td><td>AGT003</td><td>9</td><td>HKD 48,000</td><td>HKD 8,200</td><td><span class="pill p-green">已结算</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct">月度佣金台账（2026-06）· 应付分账</span><button class="btn btn-xs"><i class="ti ti-download"></i>导出</button></div>
+          <table>
+            <thead><tr><th>渠道</th><th>服务</th><th>实付（基数）</th><th>佣金率</th><th>单笔佣金</th><th>状态</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>AGT001</td><td>公司注册（基础）</td><td>HKD 3,500</td><td>12%</td><td><b>HKD 420</b></td><td><span class="pill p-amber">待结算</span></td><td><button class="btn btn-xs btn-green">标记已结算</button></td></tr>
+              <tr><td>AGT002</td><td>年审</td><td>HKD 2,400</td><td>10%</td><td><b>HKD 240</b></td><td><span class="pill p-amber">待结算</span></td><td><button class="btn btn-xs btn-green">标记已结算</button></td></tr>
+              <tr><td>AGT003</td><td>董事变更</td><td>HKD 1,500</td><td>4%</td><td><b>HKD 60</b></td><td><span class="pill p-green">已结算</span></td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card cp" style="background:var(--gold-bg);border-color:var(--gold)"><div style="font-size:12px;color:var(--gold)"><i class="ti ti-calculator"></i> 佣金 = 客户实付（渠道专属价）× 渠道×服务佣金率。订单「已到账」时入应付台账，月结线下转账后标记已结算。客户不可见佣金。</div></div>
+      </div>
+
+      <!-- ════ 供应商 ════ -->
+      <div class="page" id="p-supplier">
+        <div class="card">
+          <div class="ch"><span class="ct">供应商</span><button class="btn btn-xs"><i class="ti ti-plus"></i>新建供应商账号</button></div>
+          <table><thead><tr><th>供应商</th><th>服务类型</th><th>进行中任务</th><th>本月应付</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>金印堂</td><td>印章制作</td><td>3</td><td>HKD 4,800</td><td><span class="pill p-green">启用</span></td></tr>
+              <tr><td>正诚公证行</td><td>公证认证</td><td>1</td><td>HKD 3,800</td><td><span class="pill p-green">启用</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct">交付任务</span></div>
+          <table><thead><tr><th>任务</th><th>供应商</th><th>关联订单</th><th>截止</th><th>状态</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>公司圆章 + 签字章 ×1 套</td><td>金印堂</td><td>ORD-0188</td><td>06-13</td><td><span class="pill p-blue">进行中</span></td><td><button class="btn btn-xs">查看</button></td></tr>
+              <tr><td>章程公证 ×1</td><td>正诚公证行</td><td>ORD-0190</td><td>06-15</td><td><span class="pill p-amber">已上传待确认</span></td><td><button class="btn btn-xs btn-green">确认</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct">供应商应付账单（线下结算）</span></div>
+          <table><thead><tr><th>账单号</th><th>供应商</th><th>服务内容</th><th>金额</th><th>周期</th><th>结算</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>SUP-2026-006</td><td>金印堂</td><td>印章制作 ×5 套</td><td>HKD 4,800</td><td>2026-06</td><td><span class="pill p-amber">待结算</span></td><td><button class="btn btn-xs btn-green">标记已结算</button></td></tr>
+              <tr><td>SUP-2026-005</td><td>正诚公证行</td><td>公证 ×2</td><td>HKD 3,800</td><td>2026-06</td><td><span class="pill p-amber">待结算</span></td><td><button class="btn btn-xs btn-green">标记已结算</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════ 企微线索 ════ -->
+      <div class="page" id="p-leads">
+        <div class="filters"><span class="chip on">待跟进 9</span><span class="chip">跟进中</span><span class="chip">已转化</span><span class="chip">关闭</span></div>
+        <div class="card"><table>
+          <thead><tr><th>客户</th><th>来源</th><th>意向服务</th><th>状态</th><th>负责顾问</th><th>时间</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>王先生</td><td><span class="pill p-gold">下单确认页</span></td><td>标准注册套餐</td><td><span class="pill p-amber">待跟进</span></td><td>—</td><td>13:42</td><td><button class="btn btn-xs btn-p">分配跟进</button></td></tr>
+            <tr><td>李女士</td><td><span class="pill p-blue">服务详情</span></td><td>香港移民</td><td><span class="pill p-blue">跟进中</span></td><td>陈顾问</td><td>11:20</td><td><button class="btn btn-xs">记录</button></td></tr>
+            <tr><td>赵总</td><td><span class="pill p-purple">合作方服务</span></td><td>办公租赁</td><td><span class="pill p-green">已转化</span></td><td>陈顾问</td><td>昨天</td><td><button class="btn btn-xs">详情</button></td></tr>
+          </tbody>
+        </table></div>
+        <div class="card cp" style="background:var(--blue-bg);border-color:var(--blue)"><div style="font-size:12px;color:var(--blue)"><i class="ti ti-headset"></i> 小程序「问顾问 / 预约咨询」按来源（服务详情 / 下单确认 / 悬浮 / 合作方）埋点进线索池，用于定位最佳承接时点与转化分析。</div></div>
+      </div>
+
+      <!-- ════ 合规与审计 ════ -->
+      <div class="page" id="p-compliance">
+        <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+          <div class="kpi"><div class="l">制裁名单</div><div class="v">UN/EU/HKMA</div><div class="d">最近更新 2026-06-09</div></div>
+          <div class="kpi"><div class="l">KYC 7 年留存</div><div class="v">1,420</div><div class="d">含被拒 38 份</div></div>
+          <div class="kpi"><div class="l">SCR 登记册</div><div class="v">26</div><div class="d">本月更新 4</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct">操作审计日志（哈希链 · 不可篡改）</span><button class="btn btn-xs"><i class="ti ti-download"></i>导出</button></div>
+          <table><thead><tr><th>时间</th><th>操作人</th><th>动作</th><th>对象</th><th>校验</th></tr></thead>
+            <tbody>
+              <tr><td>06-09 14:23</td><td>chen@leapexbiz</td><td>BILL_CONFIRMED</td><td>LEA-2026-0188-1</td><td><span class="pill p-green">✓ 链完整</span></td></tr>
+              <tr><td>06-09 13:58</td><td>compliance@</td><td>KYC_FROZEN（制裁命中）</td><td>Ahmed K.</td><td><span class="pill p-green">✓</span></td></tr>
+              <tr><td>06-09 11:02</td><td>ops@</td><td>NAME_CHECK_RESULT（Yellow）</td><td>Star Tech Ltd</td><td><span class="pill p-green">✓</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════ 员工与角色 ════ -->
+      <div class="page" id="p-rbac">
+        <div class="card"><div class="ch"><span class="ct">RBAC 角色（7 + 自定义）</span></div>
+          <div class="cp" style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="pill p-gold">Super Admin</span><span class="pill p-blue">Admin</span><span class="pill p-blue">Operations 运营</span><span class="pill p-purple">Compliance 合规</span><span class="pill p-green">Finance 财务</span><span class="pill p-amber">Channel 渠道(只读)</span><span class="pill p-gray">Supplier 供应商(隔离)</span>
+          </div>
+        </div>
+        <div class="card"><div class="ch"><span class="ct">后台员工</span><button class="btn btn-xs"><i class="ti ti-user-plus"></i>邀请员工</button></div>
+          <table><thead><tr><th>员工</th><th>角色</th><th>2FA</th><th>最后登录</th><th>状态</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>陈大文 · chen@leapexbiz</td><td><span class="pill p-gold">Super Admin</span></td><td><span class="pill p-green">已开</span></td><td>刚刚</td><td><span class="pill p-green">活跃</span></td><td>（您）</td></tr>
+              <tr><td>李运营 · ops@</td><td><span class="pill p-blue">Operations</span></td><td><span class="pill p-gray">未开</span></td><td>10 分钟前</td><td><span class="pill p-green">活跃</span></td><td><button class="btn btn-xs">编辑</button></td></tr>
+              <tr><td>王财务 · fin@</td><td><span class="pill p-green">Finance</span></td><td><span class="pill p-green">已开</span></td><td>1 小时前</td><td><span class="pill p-green">活跃</span></td><td><button class="btn btn-xs">编辑</button></td></tr>
+              <tr><td>金印堂 · supplier</td><td><span class="pill p-gray">Supplier</span></td><td>—</td><td>昨天</td><td><span class="pill p-green">活跃</span></td><td><button class="btn btn-xs">编辑</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ════ 系统配置 ════ -->
+      <div class="page" id="p-config">
+        <div class="card"><div class="ch"><span class="ct">系统参数</span><button class="btn btn-xs btn-p" onclick="toast('参数已保存')">保存</button></div>
+          <table><thead><tr><th>参数</th><th>值</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td>payment_deadline_days</td><td><input class="cell-in" style="width:80px" value="7"></td><td>账单支付期限（天）</td></tr>
+              <tr><td>name_lock_days</td><td><input class="cell-in" style="width:80px" value="30"></td><td>核名锁定天数</td></tr>
+              <tr><td>name_check_free_quota</td><td><input class="cell-in" style="width:80px" value="3"></td><td>免费核名重查次数</td></tr>
+              <tr><td>kyc_audit_timeout_hours</td><td><input class="cell-in" style="width:80px" value="48"></td><td>KYC 审核超时</td></tr>
+              <tr><td>data_retention_years</td><td><input class="cell-in" style="width:80px" value="7"></td><td>数据保存年限（AMLO）</td></tr>
+              <tr><td>annual_review_advance_days</td><td><input class="cell-in" style="width:80px" value="60"></td><td>年审提醒提前天数</td></tr>
+              <tr><td>stamp_duty_rate</td><td><input class="cell-in" style="width:80px" value="0.002"></td><td>股份转让印花税率 0.2%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- KYC 审核 Modal -->
+<div class="mask" id="m-kyc" onclick="if(event.target===this)closeM('m-kyc')">
+  <div class="modal">
+    <div class="mh"><div><b style="font-size:14px">KYC 审核 · 李美琪</b><div style="font-size:11px;color:var(--text3)">提交 06-08 09:32 · SLA 剩 34h</div></div><button class="x" onclick="closeM('m-kyc')">×</button></div>
+    <div class="mb">
+      <div class="kv" style="margin-bottom:14px">
+        <span class="k">证件类型</span><span>香港身份证 A123456(7)</span>
+        <span class="k">OCR 识别</span><span>陳美琪 CHAN MEI KEI <span class="pill p-green">置信度 96%</span></span>
+        <span class="k">邮箱</span><span>mary@xy.hk <span class="pill p-green">已验证</span></span>
+        <span class="k">业务性质 / 资金来源</span><span>咨询服务 / 营业收入</span>
+        <span class="k">PEP 自评</span><span><span class="pill p-gray">否</span></span>
+        <span class="k">制裁筛查（UN/EU/HKMA）</span><span><span class="pill p-green">未命中</span></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:5px">身份证件</div><div class="docthumb">身份证扫描件</div></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:5px">地址证明（HSBC 对账单）</div><div class="docthumb">地址证明</div></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeM('m-kyc')">要求补充</button>
+      <button class="btn btn-red" onclick="closeM('m-kyc');toast('已拒绝，资料留档 7 年')">拒绝</button>
+      <button class="btn" onclick="toast('已标记 EDD 增强尽调')">标记 EDD</button>
+      <button class="btn btn-p" onclick="closeM('m-kyc');toast('KYC 已通过，通知客户')">通过</button>
+    </div>
+  </div>
+</div>
+
+<!-- 回单确认 Modal -->
+<div class="mask" id="m-bill" onclick="if(event.target===this)closeM('m-bill')">
+  <div class="modal" style="max-width:560px">
+    <div class="mh"><div><b style="font-size:14px">回单核对 · LEA-2026-0188-1</b><div style="font-size:11px;color:var(--text3)">陈大文 · 标准注册套餐（首付款）</div></div><button class="x" onclick="closeM('m-bill')">×</button></div>
+    <div class="mb">
+      <div class="kv" style="margin-bottom:14px">
+        <span class="k">应收金额</span><span><b>HKD 2,750.00</b>（AGT001 渠道价）</span>
+        <span class="k">客户填报实付</span><span>HKD 2,750.00</span>
+        <span class="k">付款银行 / 日期</span><span>HSBC · 2026-06-08</span>
+        <span class="k">附言</span><span style="color:var(--red)">LEA-2026-0188-1</span>
+      </div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:5px">汇款回单截图</div><div class="docthumb" style="height:140px">银行汇款回单</div></div>
+      <div class="cp" style="background:var(--amber-bg);border-radius:7px;margin-top:12px;font-size:11.5px;color:var(--amber)"><i class="ti ti-alert-circle"></i> 请核对银行实际入账后再确认。确认后订单进入「服务中」并自动生成渠道应付佣金。</div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-red" onclick="closeM('m-bill');toast('已驳回，通知客户重传')">驳回</button>
+      <button class="btn btn-p" onclick="closeM('m-bill');toast('已确认到账 · 订单进入服务中 · 佣金入台账')">确认到账</button>
+    </div>
+  </div>
+</div>
+
+<!-- Login -->
+<div class="login" id="login">
+  <div class="login-card">
+    <div class="b">Leapexbiz</div>
+    <div style="text-align:center;font-size:11px;color:var(--text3);margin:4px 0 22px">持牌 TCSP · 管理后台</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">邮箱</div>
+    <input class="inp" style="width:100%;margin-bottom:12px" value="chen@leapexbiz">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">密码</div>
+    <input class="inp" type="password" style="width:100%;margin-bottom:8px" value="········">
+    <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text2);margin-bottom:16px"><input type="checkbox" checked>启用二步验证（管理端强制）</label>
+    <button class="btn btn-p" style="width:100%;justify-content:center;padding:11px" onclick="document.getElementById('login').style.display='none'">登录</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function go(el){
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  el.classList.add('on');
+  var p=el.dataset.p;
+  document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  var meta={dash:['数据驾驶舱','实时运营总览'],customers:['客户管理','客户与 KYC 档案'],kyc:['KYC / EDD 审核','AMLO 尽职调查'],namecheck:['核名查册','iCRIS + 五级风险'],orders:['订单管理','全流程跟踪'],bills:['账单 / 回单确认','财务核对到账'],deliver:['交付物管理','PDF + 实物 + 供应商'],annual:['年审 / 变更','6 轮递进提醒'],pricing:['定价矩阵','渠道 × 服务'],channel:['渠道与佣金','应付佣金台账'],supplier:['供应商与应付','线下结算记录'],leads:['企微线索','承接转化'],compliance:['合规与审计','制裁 / SCR / 哈希链'],rbac:['员工与角色','RBAC 7 角色'],config:['系统配置','参数']};
+  var m=meta[p]||['',''];document.getElementById('pt').textContent=m[0];document.getElementById('ps').textContent=m[1];
+  document.querySelector('.content').scrollTop=0;
+}
+function openKyc(){document.getElementById('m-kyc').classList.add('on')}
+function openBill(){document.getElementById('m-bill').classList.add('on')}
+function closeM(id){document.getElementById(id).classList.remove('on')}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('show'),1800)}
+</script>
+</body>
+</html>
