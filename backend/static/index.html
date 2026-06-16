@@ -7544,6 +7544,9 @@ function saveReconEdit(type, pairIdx, invIdx) {
     var curEl = document.getElementById('rce-cur-' + cid); if (curEl) p.invs[invIdx].currency  = curEl.value;
     var catEl = document.getElementById('rce-cat-' + cid); if (catEl) p.invs[invIdx].category  = catEl.value;
     var noEl  = document.getElementById('rce-no-'  + cid); if (noEl)  p.invs[invIdx].invoiceNo = noEl.value;
+    var idateEl = document.getElementById('rce-idate-'  + cid); if (idateEl) p.invs[invIdx].date    = idateEl.value;
+    var brEl    = document.getElementById('rce-br-'     + cid); if (brEl)    p.invs[invIdx].brNo    = brEl.value;
+    var sumEl   = document.getElementById('rce-summary-'+ cid); if (sumEl)   p.invs[invIdx].summary = sumEl.value;
 
     if (sels.length > 0) {
       // Link this invoice to ALL selected bank transactions
@@ -7822,6 +7825,16 @@ function _invNo(desc) {
   var m = (desc || '').match(/#?\s*((?:INV|SI|RCP|UPS|RI)[\w\-]*\d[\w\-]*)/i);
   return m ? m[1].replace(/^#/, '') : '—';
 }
+// 对账页票据编辑面板：按当前字段重新生成 AI 摘要
+function regenReconInvSummary(cid) {
+  var g = function(k){ var e = document.getElementById('rce-' + k + '-' + cid); return e ? e.value : ''; };
+  var tmp = { merchant:g('desc'), invoiceNo:g('no'), date:g('idate'), amt:g('amt'), cat:g('cat'), invoiceType:g('type') };
+  var sumEl = document.getElementById('rce-summary-' + cid);
+  if (sumEl && typeof aiInvSummary === 'function') {
+    sumEl.value = aiInvSummary(tmp);
+    if (typeof toast === 'function') toast('✓ 已按当前字段重新生成 AI 摘要');
+  }
+}
 
 function renderReconTxns() {
   var pairs = RECON_PAIRS[currentReconMonth] || [];
@@ -7977,19 +7990,37 @@ function renderReconInvs() {
         + 'onclick="event.stopPropagation();toggleOrphanRow(\'' + item.oid + '\')">'
         + '<i class="ti ti-cash" style="font-size:10px" aria-hidden="true"></i>标注付款方式</button>' : '';
     // Edit panel — P&L 科目放在已关联银行流水的下方
+    // 票据详情字段（对齐「票据上传解析」编辑弹窗）+ 2 列排版
+    var _ivCur  = inv.currency || 'HKD';
+    var _ivCat  = inv.category || _invCat(inv.desc);
+    var _ivNo   = inv.invoiceNo || _invNo(inv.desc);
+    var _ivDate = inv.date || (pairs[item.pi] && pairs[item.pi].txn ? '2026-' + pairs[item.pi].txn.date : '');
+    var _ivBr   = inv.brNo || '';
+    var _ivSum  = inv.summary || '';
+    var _curOpts = ['HKD','USD','CNY','EUR','GBP'].map(function(c){ return '<option' + (c === _ivCur ? ' selected' : '') + '>' + c + '</option>'; }).join('');
+    var _catList = ['Fuel','Telephone','Meals','Travelling expenses','Office supplies','Postage','Entertainment','Sales Invoice','Other'];
+    if (_catList.indexOf(_ivCat) < 0) _catList.unshift(_ivCat);
+    var _catOpts = _catList.map(function(c){ return '<option' + (c === _ivCat ? ' selected' : '') + '>' + c + '</option>'; }).join('');
     var editPanel = '<div class="rce-panel" id="rce-' + cid + '">'
+      + '<div class="rce-panel-hd"><i class="ti ti-file-text" style="font-size:11px" aria-hidden="true"></i>票据信息（可编辑）</div>'
+      + '<div class="rce-field" style="margin-bottom:8px"><label>商户 / 对方公司</label><input class="rce-input" id="rce-desc-' + cid + '" value="' + inv.desc + '"></div>'
       + '<div class="rce-grid">'
-      + '<div class="rce-field"><label>票据描述</label><input class="rce-input" id="rce-desc-' + cid + '" value="' + inv.desc + '"></div>'
-      + '<div class="rce-field"><label>金额 (HKD)</label><input class="rce-input" id="rce-amt-' + cid + '" type="number" step="0.01" value="' + String(inv.amt || '').replace(/[^0-9.]/g,'') + '"></div>'
-      + '<div class="rce-field"><label>票据类型</label><select class="rce-input" id="rce-type-' + cid + '">'
-      + '<option value="expense"' + (inv.type==='expense'?' selected':'') + '>支出票据</option>'
-      + '<option value="income"'  + (inv.type==='income' ?' selected':'') + '>收入发票</option></select></div>'
+      + '<div class="rce-field"><label>发票号</label><input class="rce-input" id="rce-no-' + cid + '" value="' + _ivNo + '"></div>'
+      + '<div class="rce-field"><label>日期</label><input class="rce-input" id="rce-idate-' + cid + '" value="' + _ivDate + '"></div>'
       + '</div>'
       + '<div class="rce-grid">'
-      + '<div class="rce-field"><label>币种</label><input class="rce-input" id="rce-cur-' + cid + '" value="' + (inv.currency || 'HKD') + '"></div>'
-      + '<div class="rce-field"><label>费用类别</label><input class="rce-input" id="rce-cat-' + cid + '" value="' + (inv.category || _invCat(inv.desc)) + '"></div>'
-      + '<div class="rce-field"><label>发票号</label><input class="rce-input" id="rce-no-' + cid + '" value="' + (inv.invoiceNo || _invNo(inv.desc)) + '"></div>'
+      + '<div class="rce-field"><label>金额</label><input class="rce-input" id="rce-amt-' + cid + '" type="number" step="0.01" value="' + String(inv.amt || '').replace(/[^0-9.]/g,'') + '"></div>'
+      + '<div class="rce-field"><label>币种</label><select class="rce-input" id="rce-cur-' + cid + '">' + _curOpts + '</select></div>'
       + '</div>'
+      + '<div class="rce-grid">'
+      + '<div class="rce-field"><label>商业登记号 BR No</label><input class="rce-input" id="rce-br-' + cid + '" value="' + _ivBr + '"></div>'
+      + '<div class="rce-field"><label>费用类别</label><select class="rce-input" id="rce-cat-' + cid + '">' + _catOpts + '</select></div>'
+      + '</div>'
+      + '<div class="rce-field" style="margin-bottom:8px"><label>票据类型</label><select class="rce-input" id="rce-type-' + cid + '">'
+      + '<option value="expense"' + (inv.type==='expense'?' selected':'') + '>支出</option>'
+      + '<option value="income"'  + (inv.type==='income' ?' selected':'') + '>收入</option></select></div>'
+      + '<div class="rce-field" style="margin-bottom:10px"><label>摘要 (AI 总结提取) <a href="javascript:regenReconInvSummary(\'' + cid + '\')" style="color:var(--blue-text);font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;text-decoration:none;margin-left:6px"><i class="ti ti-refresh" style="font-size:10px"></i> 重新生成</a></label>'
+      + '<textarea class="rce-input" id="rce-summary-' + cid + '" style="resize:vertical;min-height:52px">' + _ivSum + '</textarea></div>'
       + '<div class="rce-field" style="margin-top:8px">'
       + '<label>关联至银行流水</label>'
       + '<div class="match-picker" id="mpicker-' + cid + '">'
