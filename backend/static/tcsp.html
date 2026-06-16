@@ -418,6 +418,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           <div class="svc-row" onclick="openSvc('allot')"><div class="svc-dot" style="background:var(--blue-bg);color:#3B6EA5"><i class="ti ti-chart-pie"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">股份配发</div><div class="price">HKD 1,800</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
           <div class="svc-row" style="border-bottom:none" onclick="openSvc('deregister')"><div class="svc-dot" style="background:var(--bg2);color:var(--text3)"><i class="ti ti-building-off"></i></div><div style="flex:1;font-size:13.5px;font-weight:500">公司注销</div><div class="price">HKD 2,000</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
         </div>
+
+        <div class="sec-t" style="margin-top:6px"><i class="ti ti-affiliate" style="font-size:13px;margin-right:4px"></i>增值服务 · 合作方提供</div>
+        <div class="card" style="padding:0">
+          <div class="svc-row" onclick="openSvc('office')"><div class="svc-dot" style="background:var(--accent-bg);color:var(--accent-d)"><i class="ti ti-building-skyscraper"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">办公租赁 / 注册地址 <span class="tag t-blue" style="font-size:9px">ISV 联名</span></div><div style="font-size:10.5px;color:var(--text3)">上市公司一手房源 · 客户直签房东</div></div><div class="price" style="font-size:12.5px">面议</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+          <div class="svc-row" style="border-bottom:none" onclick="openSvc('immigration')"><div class="svc-dot" style="background:var(--yellow-bg);color:var(--orange)"><i class="ti ti-plane-departure"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:500">香港移民 / 身份规划 <span class="tag t-yellow" style="font-size:9px">顾问</span></div><div style="font-size:10.5px;color:var(--text3)">优才 / 专才 / 高才通 · 一对一规划</div></div><div class="price" style="font-size:12.5px">面议</div><i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i></div>
+        </div>
+
         <div class="card card-pad" style="background:var(--bg2)">
           <div class="note"><i class="ti ti-discount-2" style="color:var(--accent)"></i> 您的渠道码 <b style="color:var(--accent)">LEX888</b> 享专属价格，详情页显示渠道优惠后价格。</div>
         </div>
@@ -466,8 +473,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
       </div>
       <div class="buybar">
-        <div><div style="font-size:10px;color:var(--text3)">渠道价</div><div class="price" style="font-size:18px" id="sd-barprice">HKD 5,800</div></div>
-        <button class="btn" onclick="buyNow()">立即办理</button>
+        <div><div style="font-size:10px;color:var(--text3)" id="sd-barlabel">渠道价</div><div class="price" style="font-size:18px" id="sd-barprice">HKD 5,800</div></div>
+        <button class="btn ghost" style="flex:0 0 88px" onclick="openWecom('服务详情')"><i class="ti ti-message-circle" style="font-size:14px"></i>问顾问</button>
+        <button class="btn" id="sd-cta" onclick="buyNow()">立即办理</button>
       </div>
     </div>
 
@@ -508,6 +516,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
         </div>
         <div class="card card-pad">
           <label class="check-row" style="padding:2px" onclick="toggleCheck('so-agree')"><div class="cbox" id="so-agree"><i class="ti ti-check"></i></div><span style="font-size:12.5px">我已阅读并同意《服务条款》及 AMLO 合规说明，确认所填信息真实</span></label>
+        </div>
+        <div class="card card-pad" style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="openWecom('下单确认页')">
+          <div style="width:34px;height:34px;border-radius:9px;background:var(--accent-bg);color:var(--accent-d);display:flex;align-items:center;justify-content:center;font-size:17px"><i class="ti ti-headset"></i></div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600">下单前有疑问？联系专属顾问</div><div class="note">大额服务 / 合规 / 发票，真人 1 对 1 协助</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text4);font-size:16px"></i>
         </div>
       </div>
       <div class="buybar">
@@ -908,6 +921,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     </div>
   </div>
 
+  <!-- 企微承接 · 悬浮客服入口 -->
+  <div id="fab-wecom" onclick="openWecom('悬浮入口')" style="position:absolute;right:12px;bottom:118px;z-index:45;display:flex;flex-direction:column;align-items:center;gap:2px;width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(193,95,60,.45);justify-content:center;cursor:pointer">
+    <i class="ti ti-headset" style="font-size:20px"></i><span style="font-size:8px;font-weight:600">顾问</span>
+  </div>
+
+  <!-- 企微承接 · 底部抽屉 -->
+  <div id="wecom-sheet" style="display:none;position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.45);align-items:flex-end" onclick="if(event.target===this)closeWecom()">
+    <div style="width:100%;background:var(--card);border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));animation:none">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:42px;height:42px;border-radius:11px;background:var(--accent-bg);color:var(--accent-d);display:flex;align-items:center;justify-content:center;font-size:22px"><i class="ti ti-headset"></i></div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:700">联系专属顾问</div><div style="font-size:11.5px;color:var(--text3)" id="wecom-from">EasybookX 香港持牌 TCSP · 真人 1 对 1</div></div>
+        <div onclick="closeWecom()" style="width:28px;height:28px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;color:var(--text3);cursor:pointer"><i class="ti ti-x" style="font-size:15px"></i></div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;background:var(--bg2);border-radius:12px;padding:14px;margin-bottom:12px">
+        <div style="width:96px;height:96px;border-radius:10px;background:linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%),linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%);background-size:12px 12px;background-position:0 0,6px 6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0">企微<br>二维码</div>
+        <div style="flex:1;font-size:12px;line-height:1.7">
+          <div style="font-weight:600;font-size:13px;margin-bottom:2px">陈顾问 · 香港公司服务</div>
+          <div style="color:var(--text3)">长按二维码加企业微信</div>
+          <div style="color:var(--text3)">微信号 <span style="font-family:monospace;color:var(--text)">EasybookX-HK</span></div>
+          <div style="color:var(--green-d);margin-top:3px"><i class="ti ti-clock" style="font-size:11px"></i> 在线 09:00–21:00（港/京时间）</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" onclick="toast('已复制微信号 EasybookX-HK')"><i class="ti ti-copy" style="font-size:14px"></i>复制微信号</button>
+        <button class="btn" onclick="toast('正在打开企业微信…');setTimeout(closeWecom,700)"><i class="ti ti-brand-wechat" style="font-size:15px"></i>加顾问企微</button>
+      </div>
+      <div style="font-size:10.5px;color:var(--text3);text-align:center;margin-top:10px">B 端服务需求复杂，顾问可协助核名、报价、合规与签约</div>
+    </div>
+  </div>
+
   <div class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换深色 / 浅色"><i class="ti ti-moon" id="theme-ic"></i></div>
   <div class="toast" id="toast"></div>
 </div>
@@ -1012,6 +1055,14 @@ function spSkip(){
   _markRegistered(); _hideSplash();
   toast('已以自然流量进入');
 }
+
+/* 企微承接入口 */
+function openWecom(from){
+  var el = document.getElementById('wecom-from');
+  if(el) el.textContent = from ? ('来源：'+from+' · 真人 1 对 1') : 'EasybookX 香港持牌 TCSP · 真人 1 对 1';
+  document.getElementById('wecom-sheet').style.display = 'flex';
+}
+function closeWecom(){ document.getElementById('wecom-sheet').style.display = 'none'; }
 
 /* New registration entry → KYC first */
 function startReg(){ go('s-kyc'); }
@@ -1134,6 +1185,17 @@ var SVC_DATA = {
   'deregister':{name:'公司注销',icon:'ti-building-off',price:2000,old:0,form:'deregister',tags:'DR1 · 6 项交付物',
     incl:['注销申请书 DR1','税务局不反对注销证明','公司注册处注销证明','董事会注销决议','股东同意注销决议','注销完成通知书'],
     process:['税务结清','决议','提交DR1','政府审批'],meta:'办理时效：3-6 个月（政府审批）<br>需先结清税务并取得不反对通知书'},
+  // 增值服务 · 合作方（联名/顾问，走预约咨询 → 企微承接，不直接下单）
+  'office':{name:'办公租赁 / 注册地址',icon:'ti-building-skyscraper',price:0,old:0,consult:true,
+    tags:'ISV 联名 · 上市公司一手房源',
+    incl:['上市公司一手商厦地址','可作公司注册地址','出具水电煤 / 房产证明','灵活工位 / 整层可选','联名签约协助'],
+    process:['提交需求','看房选址','客户直签房东','配置注册地址'],
+    meta:'合作方：香港 60 年老牌上市公司（ISV 联名）<br><b>签约关系：客户直接与房东签约</b>（房东出水电煤账单/房产证），EasybookX 为引流渠道并协助。<br>价格按面积/楼层面议，预约顾问报价。'},
+  'immigration':{name:'香港移民 / 身份规划',icon:'ti-plane-departure',price:0,old:0,consult:true,
+    tags:'优才 / 专才 / 高才通',
+    incl:['资格评估与方案规划','优才计划（QMAS）','输入内地人才（专才）','高端人才通行证（高才通）','续签 / 永居路径规划','配合公司注册落地'],
+    process:['资格评估','方案规划','材料准备','递交跟进'],
+    meta:'一对一顾问规划，按方案报价。<br>可与「公司注册 + 记账报税」打包，满足创业/受雇身份要求。<br>预约顾问做免费评估。'},
 };
 SVC_DATA['reg'] = SVC_DATA['pkg-std'];
 
@@ -1173,9 +1235,23 @@ function openSvc(key){
   document.getElementById('sd-icon').className = 'ti '+s.icon;
   document.getElementById('sd-name').textContent = s.name;
   document.getElementById('sd-tags').textContent = s.tags;
-  document.getElementById('sd-price').textContent = 'HKD '+fmtMoney(cp);
-  document.getElementById('sd-priceold').textContent = op>cp ? 'HKD '+fmtMoney(op) : '';
-  document.getElementById('sd-barprice').textContent = 'HKD '+fmtMoney(cp);
+  // 合作方/顾问类：报价「面议」，主按钮 → 预约咨询（企微承接）
+  var cta = document.getElementById('sd-cta');
+  if(s.consult){
+    document.getElementById('sd-price').textContent = '面议';
+    document.getElementById('sd-priceold').textContent = '';
+    document.getElementById('sd-barprice').textContent = '面议';
+    document.getElementById('sd-barlabel').textContent = '顾问报价';
+    cta.textContent = '预约咨询';
+    cta.setAttribute('onclick', "openWecom('"+s.name+"')");
+  } else {
+    document.getElementById('sd-price').textContent = 'HKD '+fmtMoney(cp);
+    document.getElementById('sd-priceold').textContent = op>cp ? 'HKD '+fmtMoney(op) : '';
+    document.getElementById('sd-barprice').textContent = 'HKD '+fmtMoney(cp);
+    document.getElementById('sd-barlabel').textContent = '渠道价';
+    cta.textContent = '立即办理';
+    cta.setAttribute('onclick', 'buyNow()');
+  }
   document.getElementById('sd-incl').innerHTML = s.incl.map(function(x){
     return '<div class="incl"><i class="ti ti-circle-check"></i><span>'+x+'</span></div>'; }).join('');
   document.getElementById('sd-process').innerHTML = s.process.map(function(p,i){
