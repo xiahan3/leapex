@@ -7773,6 +7773,9 @@ function manualMatchTxn(pairIdx, invId) {
 
 // ─── Updated renderReconTxns with status filter + click-to-edit ──
 // ─── 对账卡片字段辅助：从描述推导更多可辨别字段 ──────────────────
+function _rtag(text) {
+  return '<span style="display:inline-block;font-size:9.5px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;margin:2px 3px 0 0;color:var(--text2);white-space:nowrap">' + text + '</span>';
+}
 function _reconBank() { var d = RECON[currentReconMonth]; return d ? d.bank : 'HSBC'; }
 function _txnTradeType(t) {
   var s = (t.desc || '').toUpperCase();
@@ -7891,18 +7894,19 @@ function renderReconTxns() {
       + '<button class="btn btn-xs btn-p" onclick="saveReconEdit(\'txn\',' + pi + ',null)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>保存</button>'
       + '</div></div>';
     var bc = { match:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
-    // Compact sub-line: 日期 · 银行 · 交易类型 · 对方 · 方向 · 关联票据（便于辨别区分）
-    var subParts = ['2026-' + t.date, _reconBank(), _txnTradeType(t)];
-    var party = _txnParty(t.desc);
-    if (party && party.length <= 18) subParts.push(party);
-    subParts.push(isIn ? '进项 ↑' : '出项 ↓');
-    if (p.invs.length > 1) subParts.push(p.invs.length + ' 张关联票据');
-    else if (p.invs.length === 1) subParts.push('1 张票据');
+    // 扩充可辨别字段（标签形式，可换行不截断）：银行 · 交易类型 · 对方 · 方向 · 日期 · 关联票据
+    var _party = _txnParty(t.desc);
+    var _txnTags = [_reconBank(), _txnTradeType(t)];
+    if (_party && _party.length <= 18) _txnTags.push('对方 ' + _party);
+    _txnTags.push(isIn ? '进项·收入' : '出项·支出');
+    _txnTags.push('2026-' + t.date);
+    if (p.invs.length >= 1) _txnTags.push(p.invs.length + ' 张关联票据');
+    var subParts = _txnTags; // 兼容旧引用
     return '<div>'
       + '<div class="ri-row" onclick="toggleReconCard(\'txn\',' + pi + ',null)" style="border-left:3px solid '+bc+'">'
       + '<div class="ri-body" style="flex:1;min-width:0">'
       + '<div class="ri-name" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px">' + t.desc + '</div>'
-      + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + subParts.join(' · ') + '</div>'
+      + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);line-height:1.5;white-space:normal">' + _txnTags.map(_rtag).join('') + '</div>'
       + '</div>'
       + '<div class="ri-end" style="flex-shrink:0;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
       + '<div class="ri-amt" style="color:' + amtCol + ';font-size:13px;font-weight:700">' + (isIn?'+':'−') + t.amt + '</div>'
@@ -8036,13 +8040,13 @@ function renderReconInvs() {
       var _invMeta = [_invTypeTxt, (inv.currency || 'HKD'), _invCat(inv.desc)];
       if (_invNoV !== '—') _invMeta.push('票号 ' + _invNoV);
       var _invStatusNote = rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '请标注付款方式' : ''));
-      var subNote = _invMeta.join(' · ') + (_invStatusNote ? ' · ' + _invStatusNote : '');
+      var subNote = _invMeta.map(_rtag).join('') + (_invStatusNote ? '<div style="margin-top:3px;font-size:10px;color:var(--text3)">' + _invStatusNote + '</div>' : '');
       return '<div>'
         + '<div class="ri-row" onclick="toggleReconCard(\'inv\',' + item.pi + ',' + item.ii + ')" style="border-left:3px solid '+bci+'">'
         + '<div class="ri-body" style="flex:1;min-width:0">'
         + '<div class="ri-name" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px">'
         + inv.desc + (inv.type==='income' ? ' <span class="pill p-blue" style="font-size:9px">收入</span>' : '') + '</div>'
-        + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + subNote + '</div>'
+        + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);line-height:1.5;white-space:normal">' + subNote + '</div>'
         + '</div>'
         + '<div class="ri-end" style="flex-shrink:0;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
         + '<div class="ri-amt" style="color:var(--text);font-size:13px;font-weight:700">HKD ' + inv.amt + '</div>'
@@ -9881,6 +9885,11 @@ function handleInvDrop(evt) {
       if (id === 'usage')   renderUsage();
       if (id === 'audit')   renderAudit(true);
       if (id === 'auditrpt') initAuditReport();
+      if (id === 'recon') {
+        if (typeof renderReconTxns === 'function') renderReconTxns();
+        if (typeof renderReconInvs === 'function') renderReconInvs();
+        if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
+      }
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
