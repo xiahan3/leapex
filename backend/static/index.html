@@ -994,7 +994,6 @@
               <input type="date" class="dr-input" id="dr-recon-s" value="2026-01-01" onchange="onDRChange('recon')">
               <span class="dr-sep">—</span>
               <input type="date" class="dr-input" id="dr-recon-e" value="2026-01-31" onchange="onDRChange('recon')">
-              <span id="recon-b-badge" class="pill p-teal" style="margin-left:4px;flex-shrink:0">HSBC</span>
             </div>
           </div>
           <!-- 状态筛选 -->
@@ -5384,7 +5383,7 @@ function applyReconMonth(month) {
   const d = RECON[month]; if (!d) return;
   const colors = ['var(--green)','var(--amber)','var(--red)','#3B82F6','var(--text)'];
   document.getElementById('recon-m-badge').textContent = d.badgeM;
-  document.getElementById('recon-b-badge').textContent = d.bank;
+  var _bbadge = document.getElementById('recon-b-badge'); if (_bbadge) _bbadge.textContent = d.bank;
   document.getElementById('recon-txn-lbl').textContent = d.txnLbl;
   document.getElementById('recon-inv-lbl').textContent = d.invLbl;
   var rc = document.getElementById('recon-confirm');
@@ -7773,6 +7772,47 @@ function manualMatchTxn(pairIdx, invId) {
 }
 
 // ─── Updated renderReconTxns with status filter + click-to-edit ──
+// ─── 对账卡片字段辅助：从描述推导更多可辨别字段 ──────────────────
+function _reconBank() { var d = RECON[currentReconMonth]; return d ? d.bank : 'HSBC'; }
+function _txnTradeType(t) {
+  var s = (t.desc || '').toUpperCase();
+  if (t.dir === 'in') {
+    if (/INTEREST|利息/.test(s)) return '利息收入';
+    if (/CUSTOMER|PMT|FPS|REMIT|收款/.test(s)) return '客户收款';
+    return '转账收入';
+  }
+  if (/AUTOPAY|自动转账/.test(s)) return '自动转账支出';
+  if (/BANK CHARGE|手续费|SERVICE/.test(s)) return '银行费用';
+  if (/TAXI|的士|FARE/.test(s)) return '差旅交通';
+  if (/PAYROLL|薪|SALARY/.test(s)) return '薪金代发';
+  if (/MPF|强积金/.test(s)) return '强积金供款';
+  if (/ATM|CASH|提取现金/.test(s)) return '现金提取';
+  return '转账支出';
+}
+function _txnParty(desc) {
+  var s = (desc || '').trim();
+  if (s.indexOf('/') >= 0) return s.split('/').pop().trim();
+  if (s.indexOf('*') >= 0) return s.split('*')[0].trim();
+  return s.replace(/\s+(AUTOPAY|PAYMENT|TRF|TRANSFER).*$/i, '').trim() || s;
+}
+function _invCat(desc) {
+  var s = desc || '';
+  if (/電訊|电讯|PCCW|TELECOM/i.test(s)) return 'Telephone';
+  if (/中石化|加油|SINOPEC|FUEL/i.test(s)) return 'Fuel';
+  if (/UPS|快递|Shipping|Postage|邮/i.test(s)) return 'Postage';
+  if (/商務印書館|商务印书馆|文具|stationery|Office/i.test(s)) return 'Office supplies';
+  if (/手续费|Bank charge|银行费/i.test(s)) return 'Bank charges';
+  if (/的士|TAXI|Travel|差旅|停车|Parking/i.test(s)) return 'Travelling expenses';
+  if (/Sales Invoice|SI-/i.test(s)) return 'Sales Invoice';
+  if (/餐|Meal|茶餐|九記|九记/i.test(s)) return 'Meals';
+  if (/利息|Interest/i.test(s)) return 'Interest income';
+  return 'Other';
+}
+function _invNo(desc) {
+  var m = (desc || '').match(/#?\s*((?:INV|SI|RCP|UPS|RI)[\w\-]*\d[\w\-]*)/i);
+  return m ? m[1].replace(/^#/, '') : '—';
+}
+
 function renderReconTxns() {
   var pairs = RECON_PAIRS[currentReconMonth] || [];
   var items = pairs.filter(function(p){ return p.txn !== null; });
@@ -7851,8 +7891,11 @@ function renderReconTxns() {
       + '<button class="btn btn-xs btn-p" onclick="saveReconEdit(\'txn\',' + pi + ',null)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>保存</button>'
       + '</div></div>';
     var bc = { match:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
-    // Compact sub-line: date + direction + linked invoice count
-    var subParts = ['2026-' + t.date, isIn ? '进项 ↑' : '出项 ↓'];
+    // Compact sub-line: 日期 · 银行 · 交易类型 · 对方 · 方向 · 关联票据（便于辨别区分）
+    var subParts = ['2026-' + t.date, _reconBank(), _txnTradeType(t)];
+    var party = _txnParty(t.desc);
+    if (party && party.length <= 18) subParts.push(party);
+    subParts.push(isIn ? '进项 ↑' : '出项 ↓');
     if (p.invs.length > 1) subParts.push(p.invs.length + ' 张关联票据');
     else if (p.invs.length === 1) subParts.push('1 张票据');
     return '<div>'
@@ -7987,7 +8030,13 @@ function renderReconInvs() {
             ? '<span style="color:' + (inv.type==='income'?'var(--green-text)':'var(--blue-text)') + ';font-weight:600">' + rowSugAcc.c + ' ' + rowSugAcc.en + '</span>'
             : '<span style="color:var(--blue);font-weight:600">✨ AI 推荐 ' + rowSugAcc.c + ' ' + rowSugAcc.en + '</span>')
         : '';
-      var subNote = rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '无对应银行流水 · 请标注付款方式' : '—'));
+      // 票据可辨别字段（参考票据上传解析）：类型 · 币种 · 费用类别 · 发票号
+      var _invTypeTxt = inv.type === 'income' ? '收入发票' : '支出票据';
+      var _invNoV = _invNo(inv.desc);
+      var _invMeta = [_invTypeTxt, (inv.currency || 'HKD'), _invCat(inv.desc)];
+      if (_invNoV !== '—') _invMeta.push('票号 ' + _invNoV);
+      var _invStatusNote = rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '请标注付款方式' : ''));
+      var subNote = _invMeta.join(' · ') + (_invStatusNote ? ' · ' + _invStatusNote : '');
       return '<div>'
         + '<div class="ri-row" onclick="toggleReconCard(\'inv\',' + item.pi + ',' + item.ii + ')" style="border-left:3px solid '+bci+'">'
         + '<div class="ri-body" style="flex:1;min-width:0">'
@@ -8183,7 +8232,11 @@ function renderReconJournalEntries() {
     // Border/accent color follows PAIR status — consistent with bank-flow and invoice columns
     var bcMap = { match:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' };
     var bc = bcMap[p.st] || 'var(--text3)';
-    var html = '<div class="ri-row" style="border-left:3px solid '+bc+'">';
+    var _clickable = (entry && entry.lines && entry.lines.length);
+    var _rowAttr = _clickable
+      ? ' onclick="openJEDetail(\'' + entry.id + '\')" style="border-left:3px solid ' + bc + ';cursor:pointer"'
+      : ' style="border-left:3px solid ' + bc + '"';
+    var html = '<div class="ri-row"' + _rowAttr + '>';
 
     if (entry && entry.lines && entry.lines.length) {
       var isPend   = entry.status === 'pending';
@@ -8253,6 +8306,99 @@ function renderReconJournalEntries() {
     '<div style="padding:16px;text-align:center;font-size:12px;color:var(--text3)">暂无分录数据</div>';
   var countEl = document.getElementById('recon-je-count');
   if (countEl) countEl.textContent = rows.length + ' 条';
+}
+
+// ─── 会计分录详情弹窗（点击单条分录）──────────────────────────────
+function _coaInfo(account) {
+  var nm = (account || '').replace(/\s*\([^)]+\)/g, '').trim();
+  if (!nm) return { code: '', name: account || '', cat: '' };
+  var hit = (typeof COA_DATA !== 'undefined' ? COA_DATA : []).find(function(a){
+    var aen = (a.en || '').replace(/\s*\([^)]+\)/g, '').trim();
+    return aen === nm || a.en === account;
+  });
+  return { code: hit ? hit.c : '', name: nm, cat: hit ? (hit.cat || hit.category || '') : '' };
+}
+function openJEDetail(id) {
+  if (typeof ENTRIES === 'undefined') return;
+  var e = ENTRIES.find(function(x){ return x.id === id; });
+  if (!e || typeof window.gxOpen !== 'function') return;
+
+  // 反查来源对账配对（银行流水 + 票据）
+  var srcTxn = null, srcInvs = [];
+  if (typeof PAIR_JV_MAP !== 'undefined') {
+    var key = Object.keys(PAIR_JV_MAP).find(function(k){ return PAIR_JV_MAP[k] === id; });
+    if (key) {
+      var sep = key.lastIndexOf('_');
+      var mo = key.substring(0, sep), pi = parseInt(key.substring(sep + 1));
+      var pr = (RECON_PAIRS[mo] || [])[pi];
+      if (pr) { srcTxn = pr.txn; srcInvs = pr.invs || []; }
+    }
+  }
+
+  var CAT_ZH = { A:'资产', L:'负债', E:'权益', I:'收入', X:'费用' };
+  var drTotal = 0, crTotal = 0;
+  var lineRows = (e.lines || []).map(function(l){
+    var amt = typeof l.amount === 'number' ? l.amount : (parseFloat(l.amount) || 0);
+    var isDr = l.type === 'Dr';
+    if (isDr) drTotal += amt; else crTotal += amt;
+    var ci = _coaInfo(l.account);
+    var catTag = ci.cat ? ' <span class="pill p-gray" style="font-size:9px">' + (CAT_ZH[ci.cat] || ci.cat) + '</span>' : '';
+    return '<tr>'
+      + '<td>' + (isDr ? '<b style="color:var(--blue-text)">借 Dr</b>' : '<b style="color:var(--green-text)">贷 Cr</b>') + '</td>'
+      + '<td style="font-family:monospace;font-size:11px">' + (ci.code || '—') + '</td>'
+      + '<td style="font-size:11.5px">' + ci.name + catTag + '</td>'
+      + '<td style="text-align:right;font-family:monospace">' + (isDr ? amt.toFixed(2) : '') + '</td>'
+      + '<td style="text-align:right;font-family:monospace">' + (!isDr ? amt.toFixed(2) : '') + '</td>'
+      + '</tr>';
+  }).join('');
+  var balanced = Math.abs(drTotal - crTotal) < 0.01;
+  var statusMap = { confirmed: ['已确认', 'p-green'], pending: ['待确认', 'p-amber'] };
+  var sm = statusMap[e.status] || ['—', 'p-gray'];
+
+  var srcHtml = '';
+  if (srcTxn) {
+    srcHtml += '<div style="display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;margin-bottom:7px">'
+      + '<i class="ti ti-building-bank" style="font-size:15px;color:var(--text3)" aria-hidden="true"></i>'
+      + '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500">' + srcTxn.desc + '</div>'
+      + '<div style="font-size:10.5px;color:var(--text3)">银行流水 · 2026-' + srcTxn.date + ' · ' + _reconBank() + ' · ' + _txnTradeType(srcTxn) + '</div></div>'
+      + '<div style="font-weight:700;font-size:12.5px;color:' + (srcTxn.dir === 'in' ? 'var(--green-text)' : 'var(--red-text)') + '">' + (srcTxn.dir === 'in' ? '+' : '−') + srcTxn.amt + '</div></div>';
+  }
+  srcInvs.forEach(function(inv){
+    srcHtml += '<div style="display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;margin-bottom:7px">'
+      + '<i class="ti ti-file-text" style="font-size:15px;color:var(--text3)" aria-hidden="true"></i>'
+      + '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500">' + inv.desc + '</div>'
+      + '<div style="font-size:10.5px;color:var(--text3)">票据 · ' + (inv.type === 'income' ? '收入发票' : '支出票据') + ' · ' + _invCat(inv.desc) + '</div></div>'
+      + '<div style="font-weight:700;font-size:12.5px">HKD ' + inv.amt + '</div></div>';
+  });
+  if (!srcHtml) srcHtml = '<div style="font-size:11.5px;color:var(--text3)">手工补录 / 期末调整，无关联流水或票据。</div>';
+
+  var body = ''
+    + '<div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px 16px;font-size:12.5px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 15px;margin-bottom:14px">'
+    +   '<span style="color:var(--text3)">分录号</span><span style="font-weight:600;font-family:monospace">' + e.id + '</span>'
+    +   '<span style="color:var(--text3)">日期</span><span style="font-weight:600">' + (e.date || '—') + '</span>'
+    +   '<span style="color:var(--text3)">状态</span><span><span class="pill ' + sm[1] + '">' + sm[0] + '</span></span>'
+    +   '<span style="color:var(--text3)">AI 置信度</span><span>' + (e.conf != null ? e.conf + '%' : '人工/规则') + '</span>'
+    + '</div>'
+    + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">摘要 Description</div>'
+    + '<div style="font-size:12.5px;line-height:1.6;margin-bottom:14px">' + (e.desc || '—') + '</div>'
+    + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">借贷明细 Journal Lines</div>'
+    + '<table class="tbl" style="border:1px solid var(--border);border-radius:8px;margin-bottom:6px">'
+    +   '<thead><tr><th style="width:64px">方向</th><th style="width:74px">科目码</th><th>科目</th><th style="width:96px;text-align:right">借方 Dr</th><th style="width:96px;text-align:right">贷方 Cr</th></tr></thead>'
+    +   '<tbody>' + lineRows + '</tbody>'
+    +   '<tfoot><tr style="border-top:2px solid var(--border);font-weight:700">'
+    +     '<td colspan="3" style="text-align:right">合计</td>'
+    +     '<td style="text-align:right;font-family:monospace">' + drTotal.toFixed(2) + '</td>'
+    +     '<td style="text-align:right;font-family:monospace">' + crTotal.toFixed(2) + '</td></tr></tfoot>'
+    + '</table>'
+    + '<div style="margin-bottom:14px"><span class="pill ' + (balanced ? 'p-green' : 'p-red') + '" style="font-size:10.5px">' + (balanced ? '✓ 借贷平衡' : '✗ 借贷不平，差额 ' + Math.abs(drTotal - crTotal).toFixed(2)) + '</span></div>'
+    + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">来源凭证 Source</div>'
+    + srcHtml;
+
+  var foot = '<button class="btn" onclick="gxClose()">关闭</button>'
+    + (e.status === 'pending'
+        ? '<button class="btn btn-p" onclick="confirmEntryById(\'' + e.id + '\');gxClose()"><i class="ti ti-check" style="font-size:13px"></i>确认入账</button>'
+        : '');
+  window.gxOpen('会计分录详情 · ' + e.id, (e.date || '') + ' · ' + sm[0], body, foot, 720);
 }
 
 // ─── Auto-sort: matched/confirmed first, unprocessed last ────────
