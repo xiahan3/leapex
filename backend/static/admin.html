@@ -152,13 +152,13 @@ tbody tr:hover{background:#FAFAF8}
       <div class="page on" id="p-dash">
         <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
           <div class="kpi"><div class="l">今日新增订单</div><div class="v">12</div><div class="d" style="color:var(--green)">较昨日 +3</div></div>
-          <div class="kpi"><div class="l">待处理 KYC</div><div class="v">5</div><div class="d" style="color:var(--amber)">2 笔超时</div></div>
-          <div class="kpi"><div class="l">待核名查册</div><div class="v">3</div><div class="d">智能预检通过</div></div>
-          <div class="kpi"><div class="l">待确认回单</div><div class="v">4</div><div class="d" style="color:var(--amber)">需财务核对</div></div>
-          <div class="kpi"><div class="l">本月营收（已到账）</div><div class="v">HKD 286K</div><div class="d" style="color:var(--green)">↑ 18% MoM</div></div>
+          <div class="kpi"><div class="l">待处理 KYC</div><div class="v" id="k-kyc">5</div><div class="d" style="color:var(--amber)">含超时</div></div>
+          <div class="kpi"><div class="l">待核名查册</div><div class="v" id="k-nc">3</div><div class="d">智能预检通过</div></div>
+          <div class="kpi"><div class="l">待确认回单</div><div class="v" id="k-bill">4</div><div class="d" style="color:var(--amber)">需财务核对</div></div>
+          <div class="kpi"><div class="l">本月营收（已到账）</div><div class="v" id="k-rev">HKD 286K</div><div class="d" style="color:var(--green)">↑ 18% MoM</div></div>
           <div class="kpi"><div class="l">渠道转化率</div><div class="v">42.7%</div><div class="d">渠道 / 自然流量</div></div>
-          <div class="kpi"><div class="l">本月应付佣金</div><div class="v">HKD 34.2K</div><div class="d">待结算 28.4K</div></div>
-          <div class="kpi"><div class="l">供应商应付</div><div class="v">HKD 8.6K</div><div class="d">印章 / 公证</div></div>
+          <div class="kpi"><div class="l">本月应付佣金</div><div class="v" id="k-comm">HKD 34.2K</div><div class="d">待结算</div></div>
+          <div class="kpi"><div class="l">供应商应付</div><div class="v" id="k-sup">HKD 8.6K</div><div class="d">印章 / 公证</div></div>
         </div>
         <div class="grid" style="grid-template-columns:1.5fr 1fr">
           <div class="card">
@@ -211,7 +211,7 @@ tbody tr:hover{background:#FAFAF8}
         </div>
         <div class="card"><table>
           <thead><tr><th>客户</th><th>证件</th><th>PEP</th><th>制裁筛查</th><th>提交时间</th><th>SLA</th><th>状态</th><th></th></tr></thead>
-          <tbody>
+          <tbody id="kyc-tb">
             <tr><td><b>李美琪</b></td><td>香港身份证</td><td><span class="pill p-gray">否</span></td><td><span class="pill p-green">未命中</span></td><td>06-08 09:32</td><td><span class="pill p-green">14h</span></td><td><span class="pill p-blue">待审核</span></td><td><button class="btn btn-xs btn-p" onclick="openKyc()">审核</button></td></tr>
             <tr><td><b>刘建国</b></td><td>中国内地身份证</td><td><span class="pill p-purple">是 · 含家属</span></td><td><span class="pill p-green">未命中</span></td><td>06-07 16:20</td><td><span class="pill p-amber">超时 5h</span></td><td><span class="pill p-amber">EDD 待补</span></td><td><button class="btn btn-xs">审核</button></td></tr>
             <tr><td><b>Ahmed K.</b></td><td>护照</td><td><span class="pill p-gray">否</span></td><td><span class="pill p-red">命中 · 冻结</span></td><td>06-08 11:05</td><td><span class="pill p-red">合规复核</span></td><td><span class="pill p-red">已冻结</span></td><td><button class="btn btn-xs btn-red">复核</button></td></tr>
@@ -253,7 +253,7 @@ tbody tr:hover{background:#FAFAF8}
           <button class="btn" style="margin-left:auto"><i class="ti ti-plus"></i>手动生成账单</button><button class="btn"><i class="ti ti-download"></i>导出对账</button></div>
         <div class="card"><table>
           <thead><tr><th>账单号</th><th>订单 / 服务</th><th>金额</th><th>印花税</th><th>回单</th><th>状态</th><th></th></tr></thead>
-          <tbody>
+          <tbody id="bill-tb">
             <tr><td>LEA-2026-0188-1</td><td>陈大文 · 标准注册（首付）</td><td>HKD 2,750</td><td>—</td><td><span class="pill p-blue">已上传</span></td><td><span class="pill p-blue">待确认</span></td><td><button class="btn btn-xs btn-p" onclick="openBill()">核对回单</button></td></tr>
             <tr><td>LEA-2026-0210-1</td><td>科达 · 股份转让</td><td>HKD 2,000</td><td style="color:var(--amber)">HKD 1,200 (0.2%)</td><td><span class="pill p-blue">已上传</span></td><td><span class="pill p-blue">待确认</span></td><td><button class="btn btn-xs btn-p" onclick="openBill()">核对回单</button></td></tr>
             <tr><td>LEA-2026-0205-1</td><td>李美琪 · 年审</td><td>HKD 2,800</td><td>—</td><td><span class="pill p-gray">未上传</span></td><td><span class="pill p-amber">待支付</span></td><td><button class="btn btn-xs">作废 / 重开</button></td></tr>
@@ -320,7 +320,7 @@ tbody tr:hover{background:#FAFAF8}
           <div class="ch"><span class="ct">月度佣金台账（2026-06）· 应付分账</span><button class="btn btn-xs"><i class="ti ti-download"></i>导出</button></div>
           <table>
             <thead><tr><th>渠道</th><th>服务</th><th>实付（基数）</th><th>佣金率</th><th>单笔佣金</th><th>状态</th><th></th></tr></thead>
-            <tbody>
+            <tbody id="comm-tb">
               <tr><td>AGT001</td><td>公司注册（基础）</td><td>HKD 3,500</td><td>12%</td><td><b>HKD 420</b></td><td><span class="pill p-amber">待结算</span></td><td><button class="btn btn-xs btn-green">标记已结算</button></td></tr>
               <tr><td>AGT002</td><td>年审</td><td>HKD 2,400</td><td>10%</td><td><b>HKD 240</b></td><td><span class="pill p-amber">待结算</span></td><td><button class="btn btn-xs btn-green">标记已结算</button></td></tr>
               <tr><td>AGT003</td><td>董事变更</td><td>HKD 1,500</td><td>4%</td><td><b>HKD 60</b></td><td><span class="pill p-green">已结算</span></td><td>—</td></tr>
@@ -453,10 +453,10 @@ tbody tr:hover{background:#FAFAF8}
       </div>
     </div>
     <div class="mf">
-      <button class="btn" onclick="closeM('m-kyc')">要求补充</button>
-      <button class="btn btn-red" onclick="closeM('m-kyc');toast('已拒绝，资料留档 7 年')">拒绝</button>
-      <button class="btn" onclick="toast('已标记 EDD 增强尽调')">标记 EDD</button>
-      <button class="btn btn-p" onclick="closeM('m-kyc');toast('KYC 已通过，通知客户')">通过</button>
+      <button class="btn" onclick="kycAct('request-more')">要求补充</button>
+      <button class="btn btn-red" onclick="kycAct('reject')">拒绝</button>
+      <button class="btn" onclick="kycAct('edd')">标记 EDD</button>
+      <button class="btn btn-p" onclick="kycAct('approve')">通过</button>
     </div>
   </div>
 </div>
@@ -476,8 +476,8 @@ tbody tr:hover{background:#FAFAF8}
       <div class="cp" style="background:var(--amber-bg);border-radius:7px;margin-top:12px;font-size:11.5px;color:var(--amber)"><i class="ti ti-alert-circle"></i> 请核对银行实际入账后再确认。确认后订单进入「服务中」并自动生成渠道应付佣金。</div>
     </div>
     <div class="mf">
-      <button class="btn btn-red" onclick="closeM('m-bill');toast('已驳回，通知客户重传')">驳回</button>
-      <button class="btn btn-p" onclick="closeM('m-bill');toast('已确认到账 · 订单进入服务中 · 佣金入台账')">确认到账</button>
+      <button class="btn btn-red" onclick="billReject()">驳回</button>
+      <button class="btn btn-p" onclick="billConfirm()">确认到账</button>
     </div>
   </div>
 </div>
@@ -509,10 +509,60 @@ function go(el){
   var m=meta[p]||['',''];document.getElementById('pt').textContent=m[0];document.getElementById('ps').textContent=m[1];
   document.querySelector('.content').scrollTop=0;
 }
-function openKyc(){document.getElementById('m-kyc').classList.add('on')}
-function openBill(){document.getElementById('m-bill').classList.add('on')}
 function closeM(id){document.getElementById(id).classList.remove('on')}
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._);t._=setTimeout(()=>t.classList.remove('show'),1800)}
+
+/* ═══════ 真后端桥接（/api/tcsp/*）═══════ */
+var API='/api/tcsp';
+var _kid=null,_bid=null;
+function jget(p){return fetch(API+p).then(r=>r.json())}
+function jpost(p){return fetch(API+p,{method:'POST'})}
+function k(n){return 'HKD '+(n>=1000?(n/1000).toFixed(1)+'K':n)}
+var KYC_PILL={submitted:['待审核','p-blue'],reviewing:['审核中','p-blue'],approved:['已通过','p-green'],edd_required:['EDD 待补','p-amber'],rejected:['已拒绝','p-red'],frozen:['已冻结','p-red']};
+var BILL_PILL={'待支付':'p-amber','待确认':'p-blue','已到账':'p-green','已驳回':'p-red','已作废':'p-gray'};
+
+function loadDash(){jget('/dashboard').then(d=>{
+  set('k-kyc',d.kyc_pending);set('k-nc',d.nc_pending);set('k-bill',d.bills_confirm);
+  set('k-rev',k(d.revenue_recognized));set('k-comm',k(d.commission_payable));set('k-sup',k(d.supplier_payable));
+})}
+function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
+
+function renderKyc(){jget('/kyc').then(rows=>{var tb=document.getElementById('kyc-tb');if(!tb)return;
+  tb.innerHTML=rows.map(r=>{
+    var st=KYC_PILL[r.status]||['',''];
+    var pep=r.is_pep?'<span class="pill p-purple">是·含家属</span>':'<span class="pill p-gray">否</span>';
+    var san=r.sanction_hit?'<span class="pill p-red">命中·冻结</span>':'<span class="pill p-green">未命中</span>';
+    var act=(r.status==='submitted'||r.status==='reviewing')
+      ?'<button class="btn btn-xs btn-p" onclick="openKyc(\''+r.id+'\')">审核</button>'
+      :(r.sanction_hit?'<button class="btn btn-xs btn-red">复核</button>':'<button class="btn btn-xs">查看</button>');
+    var doc={hkid:'香港身份证',cn_id:'中国内地身份证',passport:'护照'}[r.id_doc_type]||'';
+    return '<tr><td><b>'+r.customer_name+'</b></td><td>'+doc+'</td><td>'+pep+'</td><td>'+san+'</td><td>'+(r.submitted_at||'')+'</td><td><span class="pill '+(r.status==='edd_required'||r.sanction_hit?'p-amber':'p-green')+'">'+r.sla_hours+'h</span></td><td><span class="pill '+st[1]+'">'+st[0]+'</span></td><td>'+act+'</td></tr>';
+  }).join('');
+})}
+function renderBills(){jget('/bills').then(rows=>{var tb=document.getElementById('bill-tb');if(!tb)return;
+  tb.innerHTML=rows.map(r=>{
+    var proof=r.proof_uploaded?'<span class="pill p-blue">已上传</span>':'<span class="pill p-gray">未上传</span>';
+    var sd=r.stamp_duty>0?'<span style="color:var(--amber)">HKD '+r.stamp_duty.toLocaleString()+' (0.2%)</span>':'—';
+    var act=r.status==='待确认'?'<button class="btn btn-xs btn-p" onclick="openBill(\''+r.id+'\')">核对回单</button>'
+      :(r.status==='已到账'?'<button class="btn btn-xs btn-red">退款</button>':'<button class="btn btn-xs">作废 / 重开</button>');
+    return '<tr><td>'+r.id+'</td><td>'+r.customer_name+' · '+r.service_item+'</td><td>HKD '+r.amount.toLocaleString()+'</td><td>'+sd+'</td><td>'+proof+'</td><td><span class="pill '+(BILL_PILL[r.status]||'p-gray')+'">'+r.status+'</span></td><td>'+act+'</td></tr>';
+  }).join('');
+})}
+function renderComm(){jget('/commissions').then(rows=>{var tb=document.getElementById('comm-tb');if(!tb)return;
+  tb.innerHTML=rows.map(r=>{
+    var act=r.settle_status==='待结算'?'<button class="btn btn-xs btn-green" onclick="settleComm('+r.id+')">标记已结算</button>':'—';
+    return '<tr><td>'+r.channel_code+'</td><td>'+r.service+'</td><td>HKD '+r.base_amount.toLocaleString()+'</td><td>'+(r.rate*100)+'%</td><td><b>HKD '+r.commission.toLocaleString()+'</b></td><td><span class="pill '+(r.settle_status==='已结算'?'p-green':'p-amber')+'">'+r.settle_status+'</span></td><td>'+act+'</td></tr>';
+  }).join('');
+})}
+
+function openKyc(id){_kid=id;document.getElementById('m-kyc').classList.add('on')}
+function openBill(id){_bid=id;document.getElementById('m-bill').classList.add('on')}
+function kycAct(action){if(!_kid)return;jpost('/kyc/'+_kid+'/'+action).then(()=>{closeM('m-kyc');toast('已处理：'+action);renderKyc();loadDash()})}
+function billConfirm(){if(!_bid)return;jpost('/bills/'+_bid+'/confirm').then(()=>{closeM('m-bill');toast('已确认到账 · 订单进入服务中');renderBills();loadDash()})}
+function billReject(){if(!_bid)return;jpost('/bills/'+_bid+'/reject').then(()=>{closeM('m-bill');toast('已驳回，通知客户重传');renderBills();loadDash()})}
+function settleComm(id){jpost('/commissions/'+id+'/settle').then(()=>{toast('佣金已标记结算');renderComm();loadDash()})}
+
+(function boot(){loadDash();renderKyc();renderBills();renderComm();})();
 </script>
 </body>
 </html>

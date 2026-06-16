@@ -10,8 +10,10 @@ from typing import List, Optional, Dict, Any
 
 from .db import engine, init_db, get_session
 from . import models as M
+from .routers import tcsp as tcsp_router
 
 app = FastAPI(title="EasybookX API", version="1.0.0")
+app.include_router(tcsp_router.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,6 +36,8 @@ def on_startup():
         n = s.exec(select(M.COA)).first()
         if not n:
             seed.run(s)
+        from . import tcsp_seed
+        tcsp_seed.run(s)
 
 
 # ═══════════ Health ═══════════
