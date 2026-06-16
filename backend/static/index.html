@@ -7507,6 +7507,10 @@ function saveReconEdit(type, pairIdx, invIdx) {
     if (amtEl)  p.txn.amt  = amtEl.value  || p.txn.amt;
     if (dirEl)  p.txn.dir  = dirEl.value  || p.txn.dir;
     if (acctEl) p.txn.acctCode = acctEl.value || p.txn.acctCode;
+    var bankEl  = document.getElementById('rce-bank-'  + cid); if (bankEl)  p.txn.bank      = bankEl.value  || p.txn.bank;
+    var ttypeEl = document.getElementById('rce-ttype-' + cid); if (ttypeEl) p.txn.tradeType = ttypeEl.value;
+    var partyEl = document.getElementById('rce-party-' + cid); if (partyEl) p.txn.party     = partyEl.value;
+    var tdateEl = document.getElementById('rce-date-'  + cid); if (tdateEl) p.txn.date      = tdateEl.value || p.txn.date;
 
     if (sels.length > 0) {
       // Link ALL selected invoices to this bank transaction
@@ -7537,6 +7541,9 @@ function saveReconEdit(type, pairIdx, invIdx) {
     if (amtEl)  p.invs[invIdx].amt  = amtEl.value  || p.invs[invIdx].amt;
     if (typeEl) p.invs[invIdx].type = typeEl.value  || p.invs[invIdx].type;
     if (acctEl) p.invs[invIdx].acctCode = acctEl.value || p.invs[invIdx].acctCode;
+    var curEl = document.getElementById('rce-cur-' + cid); if (curEl) p.invs[invIdx].currency  = curEl.value;
+    var catEl = document.getElementById('rce-cat-' + cid); if (catEl) p.invs[invIdx].category  = catEl.value;
+    var noEl  = document.getElementById('rce-no-'  + cid); if (noEl)  p.invs[invIdx].invoiceNo = noEl.value;
 
     if (sels.length > 0) {
       // Link this invoice to ALL selected bank transactions
@@ -7862,6 +7869,12 @@ function renderReconTxns() {
       + '<option value="in"' + (isIn?' selected':'') + '>进项（收入）</option>'
       + '<option value="out"' + (!isIn?' selected':'') + '>出项（支出）</option></select></div>'
       + '</div>'
+      + '<div class="rce-grid">'
+      + '<div class="rce-field"><label>所属银行</label><input class="rce-input" id="rce-bank-' + cid + '" value="' + (t.bank || _reconBank()) + '"></div>'
+      + '<div class="rce-field"><label>交易类型</label><input class="rce-input" id="rce-ttype-' + cid + '" value="' + (t.tradeType || _txnTradeType(t)) + '"></div>'
+      + '<div class="rce-field"><label>对方户名</label><input class="rce-input" id="rce-party-' + cid + '" value="' + (t.party || _txnParty(t.desc)) + '"></div>'
+      + '<div class="rce-field"><label>交易日期</label><input class="rce-input" id="rce-date-' + cid + '" value="' + (t.date || '') + '"></div>'
+      + '</div>'
       + '<div class="rce-field" style="margin-top:8px">'
       + '<label>关联至票据</label>'
       + '<div class="match-picker" id="mpicker-' + cid + '">'
@@ -7894,19 +7907,15 @@ function renderReconTxns() {
       + '<button class="btn btn-xs btn-p" onclick="saveReconEdit(\'txn\',' + pi + ',null)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>保存</button>'
       + '</div></div>';
     var bc = { match:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
-    // 扩充可辨别字段（标签形式，可换行不截断）：银行 · 交易类型 · 对方 · 方向 · 日期 · 关联票据
-    var _party = _txnParty(t.desc);
-    var _txnTags = [_reconBank(), _txnTradeType(t)];
-    if (_party && _party.length <= 18) _txnTags.push('对方 ' + _party);
-    _txnTags.push(isIn ? '进项·收入' : '出项·支出');
-    _txnTags.push('2026-' + t.date);
-    if (p.invs.length >= 1) _txnTags.push(p.invs.length + ' 张关联票据');
-    var subParts = _txnTags; // 兼容旧引用
+    // 列表行保持简洁（详情字段移至点击展开的编辑面板）：日期 · 方向 · 关联票据数
+    var subParts = ['2026-' + (t.date || ''), isIn ? '进项 ↑' : '出项 ↓'];
+    if (p.invs.length > 1) subParts.push(p.invs.length + ' 张关联票据');
+    else if (p.invs.length === 1) subParts.push('1 张票据');
     return '<div>'
       + '<div class="ri-row" onclick="toggleReconCard(\'txn\',' + pi + ',null)" style="border-left:3px solid '+bc+'">'
       + '<div class="ri-body" style="flex:1;min-width:0">'
       + '<div class="ri-name" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px">' + t.desc + '</div>'
-      + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);line-height:1.5;white-space:normal">' + _txnTags.map(_rtag).join('') + '</div>'
+      + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + subParts.join(' · ') + '</div>'
       + '</div>'
       + '<div class="ri-end" style="flex-shrink:0;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
       + '<div class="ri-amt" style="color:' + amtCol + ';font-size:13px;font-weight:700">' + (isIn?'+':'−') + t.amt + '</div>'
@@ -7976,6 +7985,11 @@ function renderReconInvs() {
       + '<option value="expense"' + (inv.type==='expense'?' selected':'') + '>支出票据</option>'
       + '<option value="income"'  + (inv.type==='income' ?' selected':'') + '>收入发票</option></select></div>'
       + '</div>'
+      + '<div class="rce-grid">'
+      + '<div class="rce-field"><label>币种</label><input class="rce-input" id="rce-cur-' + cid + '" value="' + (inv.currency || 'HKD') + '"></div>'
+      + '<div class="rce-field"><label>费用类别</label><input class="rce-input" id="rce-cat-' + cid + '" value="' + (inv.category || _invCat(inv.desc)) + '"></div>'
+      + '<div class="rce-field"><label>发票号</label><input class="rce-input" id="rce-no-' + cid + '" value="' + (inv.invoiceNo || _invNo(inv.desc)) + '"></div>'
+      + '</div>'
       + '<div class="rce-field" style="margin-top:8px">'
       + '<label>关联至银行流水</label>'
       + '<div class="match-picker" id="mpicker-' + cid + '">'
@@ -8034,19 +8048,14 @@ function renderReconInvs() {
             ? '<span style="color:' + (inv.type==='income'?'var(--green-text)':'var(--blue-text)') + ';font-weight:600">' + rowSugAcc.c + ' ' + rowSugAcc.en + '</span>'
             : '<span style="color:var(--blue);font-weight:600">✨ AI 推荐 ' + rowSugAcc.c + ' ' + rowSugAcc.en + '</span>')
         : '';
-      // 票据可辨别字段（参考票据上传解析）：类型 · 币种 · 费用类别 · 发票号
-      var _invTypeTxt = inv.type === 'income' ? '收入发票' : '支出票据';
-      var _invNoV = _invNo(inv.desc);
-      var _invMeta = [_invTypeTxt, (inv.currency || 'HKD'), _invCat(inv.desc)];
-      if (_invNoV !== '—') _invMeta.push('票号 ' + _invNoV);
-      var _invStatusNote = rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '请标注付款方式' : ''));
-      var subNote = _invMeta.map(_rtag).join('') + (_invStatusNote ? '<div style="margin-top:3px;font-size:10px;color:var(--text3)">' + _invStatusNote + '</div>' : '');
+      // 列表行保持简洁（详情字段移至点击展开的编辑面板）：仅显示状态/科目提示
+      var subNote = rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '无对应银行流水 · 请标注付款方式' : '—'));
       return '<div>'
         + '<div class="ri-row" onclick="toggleReconCard(\'inv\',' + item.pi + ',' + item.ii + ')" style="border-left:3px solid '+bci+'">'
         + '<div class="ri-body" style="flex:1;min-width:0">'
         + '<div class="ri-name" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px">'
         + inv.desc + (inv.type==='income' ? ' <span class="pill p-blue" style="font-size:9px">收入</span>' : '') + '</div>'
-        + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);line-height:1.5;white-space:normal">' + subNote + '</div>'
+        + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + subNote + '</div>'
         + '</div>'
         + '<div class="ri-end" style="flex-shrink:0;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
         + '<div class="ri-amt" style="color:var(--text);font-size:13px;font-weight:700">HKD ' + inv.amt + '</div>'
