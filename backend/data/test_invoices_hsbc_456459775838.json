@@ -1,0 +1,161 @@
+{
+  "_meta": {
+    "purpose": "测试数据：基于真实 HSBC 商务户口结单（456-459775-838）流水，造对应票据，用于银行票据匹配→会计分录的端到端验证",
+    "source_statement": {
+      "bank": "HSBC",
+      "account_no": "456-459775-838",
+      "branch": "KWUN TONG",
+      "period": "2025-04-25 ~ 2025-05-24",
+      "page": "3 of 3",
+      "sub_accounts": ["HKD Current 港元往来", "HKD Savings 港元储蓄", "Foreign Currency Savings USD 外币储蓄"]
+    },
+    "company": { "company_id": "ABC", "my_company": "ABC Trading Co. Ltd" },
+    "schema_note": "字段对齐 backend/models.py 的 Invoice 表；以 _ 开头的字段为测试元数据（期望匹配/期望分录），导入时可忽略",
+    "scenarios_covered": ["exact_match", "multi(一对多)", "partial(金额差异)", "duplicate(重复票据)", "orphan(无对应流水)", "no_invoice(免票据流水，单独列示)"]
+  },
+
+  "invoices": [
+    {
+      "id": "TINV-001", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中國海外建築工程有限公司", "counterparty": "China Overseas Building Construction Ltd",
+      "invoice_no": "SI-2025-0418", "invoice_date": "2025-04-26", "period": "2025-04",
+      "currency": "HKD", "amt": "82368.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "51002871", "ai_confidence": 97, "parse_status": "done", "is_own": true, "recon_state": "matched",
+      "note": "工程服务收入，客户经银行转账支付",
+      "_summary": "向中国海外建築开具服务发票 SI-2025-0418，金额 HKD 82,368.00，确认为营业收入",
+      "_expected_match": { "status": "match", "bank_txn": "26 Apr · 转账收入 · CHINA OVERSEAS BUILD · +82,368.00 (HKD Savings)", "je": "Dr 银行-HSBC储蓄 / Cr Revenue from services" }
+    },
+    {
+      "id": "TINV-002", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中國建築工程(香港)有限公司", "counterparty": "China State Construction Engrg (HK) Ltd",
+      "invoice_no": "SI-2025-0421", "invoice_date": "2025-04-29", "period": "2025-04",
+      "currency": "HKD", "amt": "5992.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "33028190", "ai_confidence": 96, "parse_status": "done", "is_own": true, "recon_state": "matched",
+      "_summary": "向中国建築(香港)开具服务发票 SI-2025-0421，金额 HKD 5,992.00，确认为营业收入",
+      "_expected_match": { "status": "match", "bank_txn": "29 Apr · 转账收入 · CHINA STATE CONSTRUC · +5,992.00 (HKD Savings)", "je": "Dr 银行-HSBC储蓄 / Cr Revenue from services" }
+    },
+    {
+      "id": "TINV-003", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中國海外建築工程有限公司", "counterparty": "China Overseas Building Construction Ltd",
+      "invoice_no": "SI-2025-0509", "invoice_date": "2025-05-09", "period": "2025-05",
+      "currency": "HKD", "amt": "14600.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "51002871", "ai_confidence": 98, "parse_status": "done", "is_own": true, "recon_state": "matched",
+      "_summary": "向中国海外建築开具服务发票 SI-2025-0509，金额 HKD 14,600.00，确认为营业收入",
+      "_expected_match": { "status": "match", "bank_txn": "09 May · 转账收入 · CHINA OVERSEAS BUILD · +14,600.00 (HKD Savings)", "je": "Dr 银行-HSBC储蓄 / Cr Revenue from services" }
+    },
+
+    {
+      "id": "TINV-004A", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中國海外建築工程有限公司", "counterparty": "China Overseas Building Construction Ltd",
+      "invoice_no": "SI-2025-0518", "invoice_date": "2025-05-22", "period": "2025-05",
+      "currency": "HKD", "amt": "100000.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "51002871", "ai_confidence": 95, "parse_status": "done", "is_own": true, "recon_state": "unmatched",
+      "note": "多对一测试：本发票 + SI-2025-0519 合计 159,554.00 对应一笔银行收款",
+      "_summary": "向中国海外建築开具服务发票 SI-2025-0518，金额 HKD 100,000.00",
+      "_expected_match": { "status": "multi", "bank_txn": "22 May · 转账收入 · CHINA OVERSEAS BUILD · +159,554.00 (HKD Savings)", "note": "与 TINV-004B 合并匹配同一笔流水", "je": "Dr 银行-HSBC储蓄 159,554 / Cr Revenue 159,554（合并）" }
+    },
+    {
+      "id": "TINV-004B", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中國海外建築工程有限公司", "counterparty": "China Overseas Building Construction Ltd",
+      "invoice_no": "SI-2025-0519", "invoice_date": "2025-05-22", "period": "2025-05",
+      "currency": "HKD", "amt": "59554.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "51002871", "ai_confidence": 95, "parse_status": "done", "is_own": true, "recon_state": "unmatched",
+      "note": "多对一测试：本发票 + SI-2025-0518 合计 159,554.00 对应一笔银行收款",
+      "_summary": "向中国海外建築开具服务发票 SI-2025-0519，金额 HKD 59,554.00",
+      "_expected_match": { "status": "multi", "bank_txn": "22 May · 转账收入 · CHINA OVERSEAS BUILD · +159,554.00 (HKD Savings)", "note": "与 TINV-004A 合并匹配同一笔流水" }
+    },
+
+    {
+      "id": "TINV-005", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "豐盛企業有限公司", "counterparty": "Fung Shing Enterprise Ltd",
+      "invoice_no": "SI-2025-0511", "invoice_date": "2025-05-20", "period": "2025-05",
+      "currency": "HKD", "amt": "13500.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "60277314", "ai_confidence": 90, "parse_status": "done", "is_own": true, "recon_state": "pending",
+      "note": "部分匹配测试：发票 13,500.00，银行入票机到账 13,422.00（差 78.00，疑客户扣减跨行手续费）",
+      "_summary": "向豐盛企業开具服务发票 SI-2025-0511，金额 HKD 13,500.00，客户支票入账",
+      "_expected_match": { "status": "partial", "bank_txn": "23 May · 入票机 CHEQUE DEPOSIT MACHINE · +13,422.00 (HKD Current)", "note": "金额差 78.00，需人工处理差额（手续费/部分收款）", "je": "Dr 银行 13,422 + Dr 银行手续费 78 / Cr Revenue 13,500" }
+    },
+
+    {
+      "id": "TINV-006", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "三菱HC資本(香港)有限公司", "counterparty": "Mitsubishi HC Capital (HK) Ltd",
+      "invoice_no": "MHC-8750033", "invoice_date": "2025-05-02", "period": "2025-05",
+      "currency": "HKD", "amt": "9994.00", "invoice_type": "expense", "category": "Hire purchase / Lease 融资租赁分期",
+      "br_no": "27156608", "ai_confidence": 94, "parse_status": "done", "is_own": true, "recon_state": "matched",
+      "note": "设备融资分期自动转账",
+      "_summary": "三菱HC资本融资分期月供 MHC-8750033，金额 HKD 9,994.00，计入融资租赁",
+      "_expected_match": { "status": "match", "bank_txn": "02 May · 自动转账支出 · MITSUBISHI HC C(HK)L 8750033 · −9,994.00 (HKD Savings)", "je": "Dr 融资租赁/利息 / Cr 银行-HSBC储蓄" }
+    },
+    {
+      "id": "TINV-007", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "宏利公積金計劃", "counterparty": "Manulife Provident Funds",
+      "invoice_no": "MPF-0459635501-202505", "invoice_date": "2025-05-13", "period": "2025-05",
+      "currency": "HKD", "amt": "6580.00", "invoice_type": "expense", "category": "MPF contributions 强积金供款",
+      "br_no": "00298765", "ai_confidence": 96, "parse_status": "done", "is_own": true, "recon_state": "matched",
+      "note": "雇主强积金供款（自动转账）",
+      "_summary": "宏利强积金雇主供款 5 月，金额 HKD 6,580.00，计入强积金供款费用",
+      "_expected_match": { "status": "match", "bank_txn": "13 May · 自动转账支出 · MANULIFE PROVIDENT F 0459635501 · −6,580.00 (HKD Savings)", "je": "Dr MPF contributions / Cr 银行-HSBC储蓄" }
+    },
+
+    {
+      "id": "TINV-008", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中國海外建築工程有限公司", "counterparty": "China Overseas Building Construction Ltd",
+      "invoice_no": "SI-2025-0418", "invoice_date": "2025-04-26", "period": "2025-04",
+      "currency": "HKD", "amt": "82368.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "51002871", "ai_confidence": 97, "parse_status": "done", "is_own": true, "is_duplicate": true, "recon_state": "unmatched",
+      "note": "重复票据测试：与 TINV-001 同一发票号 SI-2025-0418，应被标记重复并去重",
+      "_summary": "（重复）中国海外建築 SI-2025-0418 HKD 82,368.00",
+      "_expected_match": { "status": "duplicate", "note": "应识别为 TINV-001 的重复，仅入账一张" }
+    },
+
+    {
+      "id": "TINV-009", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "美心食品有限公司", "counterparty": "Maxim's Caterers Ltd",
+      "invoice_no": "RCP-0505-1180", "invoice_date": "2025-05-05", "period": "2025-05",
+      "currency": "HKD", "amt": "850.00", "invoice_type": "expense", "category": "Meals and entertainment 业务餐饮",
+      "br_no": "11883204", "ai_confidence": 88, "parse_status": "done", "is_own": true, "recon_state": "orphan",
+      "note": "孤票测试：现金支付（以 ATM 提取现金支付），无对应银行流水",
+      "_summary": "美心餐饮收据 RCP-0505-1180，现金支付 HKD 850.00",
+      "_expected_match": { "status": "orphan", "note": "无对应流水，现金/备用金支付", "je": "Dr Meals and entertainment / Cr Petty Cash（现金）" }
+    },
+    {
+      "id": "TINV-010", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "中環停車場", "counterparty": "Central Car Park",
+      "invoice_no": "PK-2025-0515", "invoice_date": "2025-05-15", "period": "2025-05",
+      "currency": "HKD", "amt": "2200.00", "invoice_type": "expense", "category": "Travelling expenses 差旅/停车",
+      "br_no": "44190028", "ai_confidence": 91, "parse_status": "done", "is_own": true, "recon_state": "orphan",
+      "note": "孤票测试：现金/董事垫付，无对应银行流水",
+      "_summary": "中环停车场月费收据 PK-2025-0515，金额 HKD 2,200.00",
+      "_expected_match": { "status": "orphan", "note": "无对应流水，现金或董事垫付", "je": "Dr Travelling expenses / Cr Director's Current Account" }
+    },
+    {
+      "id": "TINV-011", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "嘉華貿易有限公司", "counterparty": "Ka Wah Trading Ltd",
+      "invoice_no": "SI-2025-0524", "invoice_date": "2025-05-20", "period": "2025-05",
+      "currency": "HKD", "amt": "28000.00", "invoice_type": "income", "category": "Revenue from services 服务收入",
+      "br_no": "70551982", "ai_confidence": 99, "parse_status": "done", "is_own": true, "recon_state": "orphan",
+      "note": "孤票测试：已开票未收款，挂应收账款（结单期内无对应入账）",
+      "_summary": "向嘉華貿易开具服务发票 SI-2025-0524，金额 HKD 28,000.00，尚未收款",
+      "_expected_match": { "status": "orphan", "note": "已开票未收款 · 应收账款 Accounts Receivable", "je": "Dr Accounts Receivable / Cr Revenue from services" }
+    },
+    {
+      "id": "TINV-012", "company_id": "ABC", "my_company": "ABC Trading Co. Ltd",
+      "merchant": "UPS Hong Kong", "counterparty": "United Parcel Service Hong Kong Ltd",
+      "invoice_no": "UPS-2025-0507", "invoice_date": "2025-05-07", "period": "2025-05",
+      "currency": "USD", "amt": "78.40", "invoice_type": "expense", "category": "Postage and courier 邮费快递",
+      "br_no": "20889106", "ai_confidence": 93, "parse_status": "done", "is_own": true, "recon_state": "orphan",
+      "note": "外币孤票测试：USD 票据，外币储蓄账户本期无交易，测试多币种处理",
+      "_summary": "UPS 国际快递发票 UPS-2025-0507，金额 USD 78.40",
+      "_expected_match": { "status": "orphan", "note": "USD 外币票据，需按交易日汇率折算 HKD 入账", "je": "Dr Postage and courier / Cr 银行/应付（按汇率折算）" }
+    }
+  ],
+
+  "_bank_txns_without_invoice": [
+    { "txn": "28 Apr · 利息收入 CREDIT INTEREST · +18.43 (HKD Savings)", "handling": "免票据，自动入账", "je": "Dr 银行-HSBC储蓄 / Cr Interest income" },
+    { "txn": "29 Apr · 转账支出 CHOI YUET MAN CHARGES · −5.00 (HKD Savings)", "handling": "免票据，银行手续费", "je": "Dr Bank charges / Cr 银行-HSBC储蓄" },
+    { "txn": "30 Apr · 提取现金 ATM WITHDRAWAL · −63,500.00 (HKD Savings)", "handling": "无票据，现金提取", "je": "Dr Petty Cash / Cr 银行-HSBC储蓄（后续凭现金票据再结转费用）" },
+    { "txn": "02 May · 提取现金 ATM WITHDRAWAL · −8,000.00 (HKD Savings)", "handling": "无票据，现金提取", "je": "Dr Petty Cash / Cr 银行-HSBC储蓄" },
+    { "txn": "03 May · 提取现金 ATM WITHDRAWAL (02MAY25) · −8,000.00 (HKD Savings)", "handling": "无票据，现金提取", "je": "Dr Petty Cash / Cr 银行-HSBC储蓄" },
+    { "txn": "23 May · 转账支出 CR TO 456-459775-001 · −150,000.00 (HKD Savings)", "handling": "免票据，内部账户调拨（不进损益）", "je": "Dr 银行-往来 456-459775-001 / Cr 银行-HSBC储蓄" }
+  ]
+}
