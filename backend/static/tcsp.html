@@ -222,6 +222,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 .faq-q.open + .faq-a{display:block}
 .mc{padding:5px 13px;border:1px solid var(--line2);border-radius:15px;font-size:12px;cursor:pointer;color:var(--text2);background:var(--card);white-space:nowrap;flex-shrink:0;user-select:none}
 .mc.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+/* 纵向节点时间轴（办理流程详情）*/
+.vtl{padding:4px 4px 2px}
+.vnode{display:flex;gap:13px;position:relative;padding-bottom:18px}
+.vnode:last-child{padding-bottom:0}
+.vnode::before{content:'';position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line2)}
+.vnode.done::before{background:var(--accent)}
+.vnode:last-child::before{display:none}
+.vdot{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;z-index:1;background:var(--bg2);color:var(--text3);border:2px solid var(--line2)}
+.vnode.done .vdot{background:var(--accent);color:#fff;border-color:var(--accent)}
+.vnode.act .vdot{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-bg)}
+.vbody{flex:1;padding-top:1px}
+.vtitle{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.vsub{font-size:11.5px;color:var(--text2);margin-top:3px;line-height:1.6}
+.vnote{font-size:11px;color:var(--text3);margin-top:5px;background:var(--bg2);border-radius:7px;padding:7px 9px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -289,9 +303,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
           </div>
         </div>
 
-        <div class="card card-pad" style="background:var(--yellow-bg);display:flex;gap:10px;align-items:flex-start">
-          <i class="ti ti-shield-check" style="color:#B8860B;font-size:20px;flex-shrink:0;margin-top:1px"></i>
-          <div class="note" style="color:#8a6d00">本平台为香港持牌 TCSP，所有客户资料依 AMLO 加密保存 7 年，仅用于公司秘书服务尽职调查。</div>
+        <!-- 尽调办理流程 · 节点进度 -->
+        <div class="card" style="margin-bottom:0">
+          <div style="padding:12px 14px 2px;display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:13px;font-weight:600"><i class="ti ti-route" style="font-size:14px;color:var(--accent);vertical-align:-2px;margin-right:4px"></i>办理进度 · 尽职调查与注册</div>
+            <span style="color:var(--accent);font-size:12px;font-weight:500;cursor:pointer" onclick="go('s-progress')">查看详情 ›</span>
+          </div>
+          <div class="steps" style="padding:12px 6px 4px">
+            <div class="step-i done"><div class="step-dot">1</div><div class="step-lab">尽调</div></div><div class="step-line done"></div>
+            <div class="step-i done"><div class="step-dot">2</div><div class="step-lab">核名</div></div><div class="step-line done"></div>
+            <div class="step-i act"><div class="step-dot">3</div><div class="step-lab">签约</div></div><div class="step-line"></div>
+            <div class="step-i"><div class="step-dot">4</div><div class="step-lab">支付</div></div><div class="step-line"></div>
+            <div class="step-i"><div class="step-dot">5</div><div class="step-lab">注册</div></div><div class="step-line"></div>
+            <div class="step-i"><div class="step-dot">6</div><div class="step-lab">交付</div></div>
+          </div>
+          <div style="padding:0 14px 12px;font-size:11.5px;color:var(--text2);display:flex;align-items:center;gap:6px">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0"></span>
+            当前：<b style="color:var(--text)">签约 &amp; 章程确认</b> · 请确认公司章程细则
+          </div>
         </div>
       </div>
     </div>
@@ -316,6 +345,76 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
     </div>
 
     <!-- ════════ 订单 TAB（订单 > 服务 > 账单 层级）════════ -->
+    <!-- ════════ 办理流程详情（尽调 + 注册）════════ -->
+    <div class="screen" id="s-progress" data-title="办理进度详情" data-back="s-home">
+      <div class="body-pad">
+        <div class="card card-pad" style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:700;font-size:15px">星辰科技有限公司</div>
+            <span class="tag t-orange">注册进行中</span>
+          </div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">订单 ORD-2026-0188 · 标准注册套餐 · 第 3 / 6 步</div>
+        </div>
+
+        <div class="sec-t">尽调与注册全流程</div>
+        <div class="card cp" style="padding:16px 16px 14px">
+          <div class="vtl">
+            <div class="vnode done">
+              <div class="vdot"><i class="ti ti-check" style="font-size:14px"></i></div>
+              <div class="vbody">
+                <div class="vtitle">KYC 尽职调查（AML DD）<span class="tag t-green" style="font-size:9.5px">已完成</span></div>
+                <div class="vsub">依《打击洗钱条例》(AMLO) 完成身份认证、地址证明、业务声明，并通过 PEP 与制裁名单筛查。</div>
+                <div class="vnote"><i class="ti ti-lock" style="font-size:11px"></i> 客户资料 AES-256 加密，依法保存 7 年，仅用于公司秘书服务尽调。</div>
+              </div>
+            </div>
+            <div class="vnode done">
+              <div class="vdot"><i class="ti ti-check" style="font-size:14px"></i></div>
+              <div class="vbody">
+                <div class="vtitle">核名查册（iCRIS）<span class="tag t-green" style="font-size:9.5px">已完成</span></div>
+                <div class="vsub">经公司注册处网上查册中心查册，风险评级 <b>Yellow（轻微近似，已确认）</b>。</div>
+                <div class="vnote"><i class="ti ti-clock" style="font-size:11px"></i> 名称锁定 30 天 · 至 2026-07-11，逾期未注册自动释放。</div>
+              </div>
+            </div>
+            <div class="vnode act">
+              <div class="vdot">3</div>
+              <div class="vbody">
+                <div class="vtitle">签约 &amp; 章程确认（NNC1）<span class="tag t-blue" style="font-size:9.5px">进行中</span></div>
+                <div class="vsub">确认公司章程（Sample A 标准章程）、注册地址与股本、董事与法定秘书、创办成员——信息将直接用于 NNC1 法团成立表格。</div>
+                <div class="vnote" style="background:var(--accent-bg);color:var(--accent-d)"><i class="ti ti-pencil" style="font-size:11px"></i> 待您确认章程细则后进入支付。</div>
+                <button class="btn" style="width:auto;padding:8px 16px;margin-top:9px;font-size:12.5px" onclick="go('s-reg')">去确认 ›</button>
+              </div>
+            </div>
+            <div class="vnode">
+              <div class="vdot">4</div>
+              <div class="vbody">
+                <div class="vtitle">支付确认</div>
+                <div class="vsub">上传银行汇款回单，运营核对到账后启动注册（账单 ↔ 服务 1:1）。</div>
+              </div>
+            </div>
+            <div class="vnode">
+              <div class="vdot">5</div>
+              <div class="vbody">
+                <div class="vtitle">注册提交（公司注册处）</div>
+                <div class="vsub">向公司注册处递交 NNC1，约 3–5 个工作日签发公司注册证书 CI 与商业登记证 BR。</div>
+              </div>
+            </div>
+            <div class="vnode">
+              <div class="vdot">6</div>
+              <div class="vbody">
+                <div class="vtitle">交付</div>
+                <div class="vsub">CI / BR、公司章程、董事/股东名册、SCR 重要控制人登记册、公司圆章 + 签字章、精装文件册。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-pad" style="background:var(--yellow-bg);display:flex;gap:9px;align-items:flex-start">
+          <i class="ti ti-shield-check" style="color:#B8860B;font-size:18px;flex-shrink:0;margin-top:1px"></i>
+          <div class="note" style="color:#8a6d00">Leapexbiz 为香港持牌 TCSP（持牌人）。全流程符合《公司条例》(Cap.622) 与 AMLO 要求，资料加密保存 7 年。</div>
+        </div>
+      </div>
+    </div>
+
     <div class="screen" id="s-orders" data-title="订单" data-tab="orders">
       <div class="body-pad">
         <div style="display:flex;gap:8px;margin-bottom:10px">
