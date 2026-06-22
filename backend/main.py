@@ -10,10 +10,8 @@ from typing import List, Optional, Dict, Any
 
 from .db import engine, init_db, get_session
 from . import models as M
-from .routers import tcsp as tcsp_router
 
 app = FastAPI(title="EasybookX API", version="1.0.0")
-app.include_router(tcsp_router.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,8 +34,6 @@ def on_startup():
         n = s.exec(select(M.COA)).first()
         if not n:
             seed.run(s)
-        from . import tcsp_seed
-        tcsp_seed.run(s)
 
 
 # ═══════════ Health ═══════════
@@ -595,24 +591,6 @@ def root():
     if idx.exists():
         return FileResponse(idx)
     return JSONResponse({"msg": "easybookx backend up. UI not yet uploaded."})
-
-
-@app.get("/tcsp")
-def tcsp():
-    """Leapexbiz 公司秘书小程序原型 demo."""
-    page = STATIC_DIR / "tcsp.html"
-    if page.exists():
-        return FileResponse(page)
-    return JSONResponse({"msg": "tcsp prototype not uploaded."})
-
-
-@app.get("/admin")
-def admin():
-    """Leapexbiz 管理后台原型 demo."""
-    page = STATIC_DIR / "admin.html"
-    if page.exists():
-        return FileResponse(page)
-    return JSONResponse({"msg": "admin prototype not uploaded."})
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

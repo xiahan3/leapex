@@ -5,7 +5,8 @@
 - **Part A · 会计做账**（Web 后台）— 票据 AI 解析、银行流水对账、JE/试算平衡/财务报表、账簿
 - **平台管理**（超管控制台）— 租户/员工/套餐/账单收款/用量/审计日志（已后端持久化）
 - **AI 审计报告** — 选企业 → 抓平台数据 → 生成审前分析/审计辅助报告（HKFRS/SME-FRS/HKSA）
-- **Part B · TCSP 公司秘书**（微信小程序原型）— KYC / 核名 / NNC1 注册 / 交付物中心
+
+> Part B · TCSP 公司秘书（Leapexbiz 小程序 + 管理后台）已迁出至独立仓库 [`leapex_Leapexbiz`](https://github.com/xiahan3/leapex_Leapexbiz)。
 
 ## 技术栈
 
@@ -29,7 +30,6 @@ python3 -m venv .venv
 | 路径 | 内容 |
 |---|---|
 | `/` | EasybookX Web 主应用（会计做账） |
-| `/tcsp` | TCSP 公司秘书小程序原型 |
 | `/docs` | FastAPI Swagger API 文档 |
 | `/api/health` | 健康检查 |
 
@@ -42,7 +42,7 @@ backend/
 ├── models.py        SQLModel 数据表（会计 + Tenant/TenantUser/Plan/BillingInvoice/AuditReport）
 ├── seed.py          种子数据
 ├── data/            COA 科目表种子
-└── static/          前端 (index.html, tcsp.html)
+└── static/          前端 (index.html)
 deploy/
 ├── easybookx.service     systemd 单元
 ├── nginx_easybookx.conf  Nginx 反向代理
