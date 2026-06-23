@@ -430,15 +430,20 @@
       <!-- 账簿管理 -->
       <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span>账簿管理</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
       <div class="nav-sub">
-        <div class="ni" id="ni-coabal" onclick="go('coabal',this)">
-          <i class="ti ti-scale" aria-hidden="true"></i><span>科目余额</span><span class="nn">NEW</span>
+        <div class="ni" id="ni-journal" onclick="go('journal',this)">
+          <i class="ti ti-notebook" aria-hidden="true"></i><span>日记账（序时账）</span><span class="nn">NEW</span>
         </div>
         <div class="ni" id="ni-gledger" onclick="go('gledger',this)">
           <i class="ti ti-book" aria-hidden="true"></i><span>总账</span><span class="nn">NEW</span>
         </div>
-        <div class="ni" id="ni-ledger" onclick="go('ledger',this)">
-          <i class="ti ti-book-2" aria-hidden="true"></i><span>账簿浏览</span>
+        <div class="ni" id="ni-coabal" onclick="go('coabal',this)">
+          <i class="ti ti-scale" aria-hidden="true"></i><span>科目余额表</span><span class="nn">NEW</span>
         </div>
+      </div>
+
+      <!-- AI 审计 -->
+      <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span>AI 审计</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
         <div class="ni" id="ni-auditrpt" onclick="go('auditrpt',this)">
           <i class="ti ti-report-search" aria-hidden="true"></i><span>AI 审计报告</span><span class="nn">NEW</span>
         </div>
@@ -2367,6 +2372,38 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════ 日记账（序时账）═══════════════════════ -->
+      <div class="page" id="page-journal">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-notebook" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">日记账（序时账）· General Journal</div>
+              <div style="font-size:11.5px;color:var(--text2)">按日期 / 凭证号序时登记的全部会计分录 · 香港法定原始记账簿（Cap.622 S.373 / IRO S.51C · 7 年留存）</div>
+            </div>
+            <div style="display:flex;gap:4px" id="journal-filter">
+              <div class="mc on" onclick="setJournalFilter(this,'all')">全部</div>
+              <div class="mc" onclick="setJournalFilter(this,'confirmed')">✓ 已确认</div>
+              <div class="mc" onclick="setJournalFilter(this,'pending')">待确认</div>
+            </div>
+            <button class="btn" onclick="toast('导出日记账 Excel（演示）')"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct">序时分录</span><span id="journal-pill" class="pill p-gray">—</span></div>
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:92px">日期</th><th style="width:118px">凭证号</th><th>摘要</th>
+              <th style="width:170px">借方科目 Dr</th><th style="width:170px">贷方科目 Cr</th>
+              <th style="width:108px;text-align:right">金额</th>
+              <th style="width:78px;text-align:center">状态</th>
+            </tr></thead>
+            <tbody id="journal-tbody"></tbody>
+          </table>
+          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">序时账按交易发生顺序登记，每笔分录借贷必相等；点凭证号可追溯来源（银行流水/票据/手工补录/期末调整）。</div>
+        </div>
+      </div>
+
       <!-- ═══════════════════════ 科目余额表 ═══════════════════════ -->
       <div class="page" id="page-coabal">
         <div class="card" style="margin-bottom:14px">
@@ -4048,6 +4085,7 @@ const PAGE_META = {
   ledger:   ['账簿浏览','HK CO S373 法定账簿 · 14 本系统账簿 · 钻取至原始凭证'],
   coabal:   ['科目余额表','期初 · 本期借贷发生 · 期末余额 · 按账期 / 类别'],
   gledger:  ['总账 General Ledger','按科目逐笔分录 · 借贷 · 滚动余额'],
+  journal:  ['日记账（序时账）','General Journal · 按日期/凭证序时 · 借贷分录 · 钻取来源'],
   tenants:  ['租户管理','超级管理员控制台 · 多租户 SaaS 运营'],
   plans:    ['套餐与计费','订阅套餐 + Token 用量计费'],
   usage:    ['用量监控','Token / OCR / 存储 · 按租户分组'],
@@ -10101,6 +10139,7 @@ function handleInvDrop(evt) {
       if (id === 'reports' && window.renderReportCompleteness) window.renderReportCompleteness();
       if (id === 'coabal' && window.renderCoaBalance) window.renderCoaBalance();
       if (id === 'gledger' && window.renderGLedger) window.renderGLedger();
+      if (id === 'journal' && window.renderJournal) window.renderJournal();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
@@ -11175,6 +11214,39 @@ function handleInvDrop(evt) {
     tb.innerHTML = rows;
     var ttl = document.getElementById('gledger-title'); if(ttl) ttl.textContent = '总账 · '+(meta.code?meta.code+' ':'')+acc;
     var sub = document.getElementById('gledger-sub'); if(sub){ sub.className='pill p-blue'; sub.textContent = m.lines.length+' 笔 · 借'+_money(sDr)+' / 贷'+_money(sCr); }
+  };
+
+  // ── 日记账（序时账 General Journal）──
+  var journalFilter = 'all';
+  window.setJournalFilter = function(el, v){
+    document.querySelectorAll('#journal-filter .mc').forEach(function(c){ c.classList.remove('on'); });
+    el.classList.add('on'); journalFilter = v; window.renderJournal();
+  };
+  window.renderJournal = function(){
+    var tb = document.getElementById('journal-tbody'); if(!tb) return;
+    var EN = _g('ENTRIES') || window.ENTRIES || [];
+    var list = EN.filter(function(e){
+      if(journalFilter==='confirmed') return e.status==='confirmed';
+      if(journalFilter==='pending')   return e.status==='pending';
+      return true;
+    }).slice().sort(function(a,b){ return String(a.date).localeCompare(String(b.date)) || String(a.id).localeCompare(String(b.id)); });
+    var stMap = { confirmed:['已确认','p-green'], pending:['待确认','p-amber'], ignored:['已忽略','p-gray'], reversed:['已冲销','p-red'] };
+    function acctName(l){ if(!l) return '—'; var m=_acctMeta(l.account); return (m.code?m.code+' ':'')+String(l.account).replace(/\s*\([^)]*\)/g,''); }
+    var total = 0;
+    tb.innerHTML = list.map(function(e){
+      var dr=(e.lines||[]).find(function(l){return l.type==='Dr';});
+      var cr=(e.lines||[]).find(function(l){return l.type==='Cr';});
+      var amt=dr?(typeof dr.amount==='number'?dr.amount:parseFloat(dr.amount)||0):0; total+=amt;
+      var multi=(e.lines||[]).length>2?'<span class="pill p-gray" style="font-size:8.5px;margin-left:4px">多行</span>':'';
+      var s=stMap[e.status]||['—','p-gray'];
+      return '<tr><td style="font-size:11.5px">'+(e.date||'')+'</td><td style="font-family:monospace;font-size:11px">'+e.id+'</td>'
+        + '<td style="font-size:11.5px">'+(e.desc||'')+multi+'</td>'
+        + '<td style="font-size:11px;color:var(--blue-text)">'+acctName(dr)+'</td>'
+        + '<td style="font-size:11px;color:var(--green-text)">'+acctName(cr)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(amt)+'</td>'
+        + '<td style="text-align:center"><span class="pill '+s[1]+'" style="font-size:9px">'+s[0]+'</span></td></tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:18px">暂无分录</td></tr>';
+    var pill=document.getElementById('journal-pill'); if(pill){ pill.className='pill p-blue'; pill.textContent=list.length+' 笔 · 合计借方 '+_money(total); }
   };
 })();
 </script>
