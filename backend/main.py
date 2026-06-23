@@ -589,7 +589,8 @@ def del_audit_report(no: str, session: Session = Depends(get_session)):
 def root():
     idx = STATIC_DIR / "index.html"
     if idx.exists():
-        return FileResponse(idx)
+        # no-cache：浏览器每次带 ETag 回源校验，内容未变走 304，部署后立即看到新版（避免缓存旧 HTML）
+        return FileResponse(idx, headers={"Cache-Control": "no-cache, must-revalidate"})
     return JSONResponse({"msg": "easybookx backend up. UI not yet uploaded."})
 
 
