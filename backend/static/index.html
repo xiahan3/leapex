@@ -1552,6 +1552,7 @@
           <div style="display:flex;gap:6px;align-items:center">
             <button class="btn btn-xs" onclick="toast('正在导出 Excel…')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出 Excel</button>
             <button class="btn btn-xs" onclick="toast('正在导出 PDF…')"><i class="ti ti-file-text" style="font-size:11px" aria-hidden="true"></i>导出 PDF</button>
+            <button class="btn btn-xs btn-t" onclick="openCloseModal()" style="padding:7px 14px;font-size:12px;font-weight:700"><i class="ti ti-checkbook" style="font-size:13px" aria-hidden="true"></i>结账（年结结转）</button>
             <button class="btn btn-p" onclick="openConfirmReportModal()" style="padding:7px 16px;font-size:12.5px;font-weight:700;background:var(--green);border-color:var(--green)">
               <i class="ti ti-lock" style="font-size:13px" aria-hidden="true"></i>确认财务报表
             </button>
@@ -10764,6 +10765,133 @@ function handleInvDrop(evt) {
 
   // Refresh state from backend so 待解析列表 (STAGED_BK) reflects new rows
   if (window.__easybookx && window.__easybookx.hydrate) window.__easybookx.hydrate();
+})();
+</script>
+
+<!-- ═══════════════════ 结账（年结结转）逻辑 ═══════════════════ -->
+<script>
+(function(){
+  function _g(name){ try { return eval(name); } catch(e){ return window[name]; } }
+  function _money(n){ return 'HKD ' + Number(n||0).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function _n(a){ return typeof a==='number'?a:(parseFloat(String(a).replace(/[^0-9.\-]/g,''))||0); }
+
+  // 科目分类：优先 COA 类别，其次关键词（I 收入 / X 费用 / 其他=资产负债权益）
+  function classifyAcct(name){
+    if(!name) return '';
+    var nm = String(name).replace(/\s*\([^)]*\)/g,'').replace(/^\d+\s*/,'').trim();
+    var COA = _g('COA_DATA') || window.COA_DATA || [];
+    var hit = COA.find(function(a){ var en=(a.en||'').replace(/\s*\([^)]*\)/g,'').trim(); return en===nm || a.en===name; });
+    var cat = hit && (hit.cat || hit.category); if(cat) return cat;
+    if(/revenue|interest income|sales|turnover|收入/i.test(nm)) return 'I';
+    if(/accumulated|payable|receivable|prepay|bank —|bank-|petty cash|director|^cash|tax payable|accrued|share capital|retained/i.test(nm)) return '';
+    if(/expense|depreciation and amort|amortis|telephone|postage|office supplies|bank charge|charges|travel|meals|entertainment|audit fee|mpf|salar|rent|utilities|\bfee\b|fuel|motor/i.test(nm)) return 'X';
+    return '';
+  }
+
+  // 从已确认分录 + 已确认期末调整 汇总本期损益
+  function closeFigures(){
+    var EN = _g('ENTRIES') || window.ENTRIES || [];
+    var ADJ = _g('ADJ_ENTRIES') || window.ADJ_ENTRIES || [];
+    var rev=0, exp=0;
+    EN.forEach(function(e){ if(e.status!=='confirmed') return; (e.lines||[]).forEach(function(l){
+      var c=classifyAcct(l.account), a=_n(l.amount);
+      if(c==='I') rev += (l.type==='Cr'? a : -a);
+      else if(c==='X') exp += (l.type==='Dr'? a : -a);
+    }); });
+    ADJ.forEach(function(e){ if(e.status!=='confirmed') return; var a=_n(e.amt);
+      var dc=classifyAcct(e.drAcct), cc=classifyAcct(e.crAcct);
+      if(dc==='X') exp+=a; if(dc==='I') rev-=a; if(cc==='I') rev+=a; if(cc==='X') exp-=a;
+    });
+    return { revenue: rev, expenses: exp, net: rev-exp };
+  }
+
+  var OPENING_RE = 285000.00;   // 期初留存收益（演示）
+  var DIVIDEND   = 0.00;        // 本期分红（演示）
+
+  window.openCloseModal = function(){
+    if(typeof window.gxOpen!=='function'){ if(window.toast) window.toast('弹窗组件未就绪'); return; }
+    var f = closeFigures(); window._closeFig = f;
+    var body = ''
+      + '<div style="font-size:11px;color:var(--text3);margin-bottom:10px">财政年度 FY 2025/26（2025-07 ~ 2026-06）· 币种 HKD · 香港不征 GST/VAT</div>'
+      + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">结账周期 Closing Frequency</div>'
+      + '<div style="display:flex;gap:8px;margin-bottom:14px" id="close-freq">'
+      +   '<label style="flex:1;border:1px solid var(--border2);border-radius:8px;padding:9px 12px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:7px"><input type="radio" name="cfreq" value="monthly" onchange="renderCloseDetail()"> 月结</label>'
+      +   '<label style="flex:1;border:1px solid var(--border2);border-radius:8px;padding:9px 12px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:7px"><input type="radio" name="cfreq" value="quarterly" onchange="renderCloseDetail()"> 季结</label>'
+      +   '<label style="flex:1;border:1px solid var(--blue);background:var(--blue-bg);border-radius:8px;padding:9px 12px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:7px"><input type="radio" name="cfreq" value="annually" checked onchange="renderCloseDetail()"> <b>年结（FY 末）</b></label>'
+      + '</div>'
+      + '<div id="close-detail"></div>';
+    var foot = '<button class="btn" onclick="gxClose()">取消</button>'
+      + '<button class="btn btn-p" onclick="confirmClosePeriod()"><i class="ti ti-lock" style="font-size:13px"></i>确认结账</button>';
+    window.gxOpen('结账（Period Closing / 年结结转）', '期末调整 → 财务报表 → 结账 → 关账锁定 → 期初结转', body, foot, 720);
+    renderCloseDetail();
+  };
+
+  window.renderCloseDetail = function(){
+    var el = document.getElementById('close-detail'); if(!el) return;
+    var freq = (document.querySelector('input[name=cfreq]:checked')||{}).value || 'annually';
+    var f = window._closeFig || closeFigures();
+    if(freq!=='annually'){
+      el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 15px;font-size:12.5px;line-height:1.7">'
+        + '<b>'+(freq==='monthly'?'月结':'季结')+'</b>：仅<b>锁定本期账期 + 出具报表</b>，<b>不结转损益</b>。'
+        + '损益类科目（收入/费用）在本财政年度内<b>继续累计</b>，待财政年度末（年结）再统一结转至留存收益。'
+        + '<div style="margin-top:8px;color:var(--text3)">本期净'+(f.net>=0?'利':'亏')+'（累计）：<b>'+_money(Math.abs(f.net))+'</b></div></div>';
+      return;
+    }
+    var net = f.net, isProfit = net>=0;
+    var closingRE = OPENING_RE + net - DIVIDEND;
+    function row(dr, drv, cr, crv){ return '<tr><td style="font-size:11.5px">'+dr+'</td><td style="text-align:right;font-family:monospace">'+(drv!=null?_money(drv).replace("HKD ",""):'')+'</td><td style="font-size:11.5px">'+cr+'</td><td style="text-align:right;font-family:monospace">'+(crv!=null?_money(crv).replace("HKD ",""):'')+'</td></tr>'; }
+    el.innerHTML = ''
+      + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">① 结转分录 Closing Entries（系统自动生成，借贷自平衡）</div>'
+      + '<table class="tbl" style="border:1px solid var(--border);border-radius:8px;margin-bottom:12px">'
+      +   '<thead><tr><th>借方 Dr 科目</th><th style="text-align:right">金额</th><th>贷方 Cr 科目</th><th style="text-align:right">金额</th></tr></thead><tbody>'
+      +   row('各收入科目 (I) 结转', f.revenue, '本年利润 P&L Summary', f.revenue)
+      +   row('本年利润 P&L Summary', f.expenses, '各费用科目 (X) 结转', f.expenses)
+      +   (isProfit
+            ? row('本年利润（净利润）', net, '留存收益 Retained Earnings', net)
+            : row('留存收益 Retained Earnings', Math.abs(net), '本年利润（净亏损）', Math.abs(net)))
+      +   '</tbody></table>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+      +   '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:12px">'
+      +     '<div style="color:var(--text3);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">本期损益结转</div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:3px 0"><span>营业收入 (I)</span><span style="font-family:monospace">'+_money(f.revenue)+'</span></div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:3px 0"><span>营业费用 (X)</span><span style="font-family:monospace">'+_money(f.expenses)+'</span></div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--border);font-weight:700;color:'+(isProfit?'var(--green-text)':'var(--red-text)')+'"><span>本期净'+(isProfit?'利润':'亏损')+'</span><span style="font-family:monospace">'+_money(Math.abs(net))+'</span></div>'
+      +   '</div>'
+      +   '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:12px">'
+      +     '<div style="color:var(--text3);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">留存收益滚存 Retained Earnings</div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:3px 0"><span>期初留存收益</span><span style="font-family:monospace">'+_money(OPENING_RE)+'</span></div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:3px 0"><span>+ 本期净'+(isProfit?'利':'亏')+'</span><span style="font-family:monospace">'+(isProfit?'+':'−')+_money(Math.abs(net)).replace("HKD ","")+'</span></div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:3px 0"><span>− 本期分红</span><span style="font-family:monospace">'+_money(DIVIDEND)+'</span></div>'
+      +     '<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--border);font-weight:700;color:var(--blue-text)"><span>期末留存收益</span><span style="font-family:monospace">'+_money(closingRE)+'</span></div>'
+      +   '</div>'
+      + '</div>'
+      + '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">② 下期期初试算表预览 Opening TB（结转下一财政年度）</div>'
+      + '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>科目类别</th><th>处理</th><th style="text-align:right">下期期初余额</th></tr></thead><tbody>'
+      +   '<tr><td>收入 (I) / 费用 (X)</td><td><span class="pill p-gray" style="font-size:9.5px">已归零</span></td><td style="text-align:right;font-family:monospace">0.00</td></tr>'
+      +   '<tr><td>资产 (A) / 负债 (L)</td><td><span class="pill p-green" style="font-size:9.5px">结转延续</span></td><td style="text-align:right;color:var(--text3)">按期末余额结转</td></tr>'
+      +   '<tr><td>权益 (E) · 留存收益</td><td><span class="pill p-blue" style="font-size:9.5px">滚存更新</span></td><td style="text-align:right;font-family:monospace">'+_money(closingRE).replace("HKD ","")+'</td></tr>'
+      + '</tbody></table>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:10px;background:var(--bg2);border-radius:6px;padding:9px 11px">年结确认后：损益类归零、净'+(isProfit?'利':'亏')+'转入留存收益、上期期末余额成为下期期初 TB，账期锁定（如需修改请先反结账）。</div>';
+  };
+
+  window.confirmClosePeriod = function(){
+    var freq = (document.querySelector('input[name=cfreq]:checked')||{}).value || 'annually';
+    var f = window._closeFig || closeFigures();
+    window.gxClose && window.gxClose();
+    window._periodClosed = true;
+    if(freq==='annually'){
+      var closingRE = OPENING_RE + f.net - DIVIDEND;
+      window.toast && window.toast('✓ 年结完成：结转损益 '+_money(Math.abs(f.net))+' → 留存收益（期末 '+_money(closingRE)+'），损益已归零、期末余额已结转下期期初 TB，账期已锁定');
+    } else {
+      window.toast && window.toast('✓ '+(freq==='monthly'?'月结':'季结')+'完成：本期已出表并锁定账期（损益不结转，年度内继续累计）');
+    }
+  };
+  window.reopenPeriod = function(){
+    if(!window._periodClosed){ window.toast && window.toast('当前账期未结账'); return; }
+    if(!confirm('反结账将红冲结转分录并解锁账期，确认？')) return;
+    window._periodClosed = false;
+    window.toast && window.toast('已反结账：结转分录红冲、账期解锁，可重新调整后再结账');
+  };
 })();
 </script>
 
