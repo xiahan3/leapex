@@ -35,7 +35,12 @@
     .sb-icon svg { fill: white; width: 16px; height: 16px; }
     .nav { flex: 1; padding: 10px 8px; overflow-y: auto; }
     .nav::-webkit-scrollbar { width: 4px; } .nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-    .ng { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .8px; text-transform: uppercase; padding: 8px 8px 3px; }
+    .ng { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .8px; text-transform: uppercase; padding: 8px 8px 3px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; border-radius: 5px; }
+    .ng:hover { color: var(--text2); background: var(--bg2); }
+    .ng .ng-chev { font-size: 13px; opacity: .5; transition: transform .15s ease; }
+    .ng.collapsed .ng-chev { transform: rotate(-90deg); }
+    .nav-sub { overflow: hidden; }
+    .nav-sub.collapsed { display: none; }
     .ni { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; cursor: pointer; color: var(--text2); font-size: 12.5px; font-weight: 500; transition: background .12s, color .12s; margin: 1px 0; user-select: none; }
     .ni:hover { background: var(--bg2); color: var(--text); }
     .ni.on { background: var(--text); color: white; }
@@ -383,70 +388,91 @@
       </div>
     </div>
     <nav class="nav">
-      <div class="ng" data-i18n="ng.overview">概览</div>
-      <div class="ni on" id="ni-dash" onclick="go('dash',this)">
-        <i class="ti ti-layout-dashboard" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.workspace">工作台</span>
-      </div>
-      <div class="ng nav-company" style="margin-top:6px;display:none" data-i18n="ng.collect">采集解析</div>
-      <div class="ni nav-company" id="ni-bank" style="display:none" onclick="go('bank',this)">
-        <i class="ti ti-building-bank" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.bank">银行流水上传</span>
-      </div>
-      <div class="ni nav-company" id="ni-inv" style="display:none" onclick="go('inv',this)">
-        <i class="ti ti-file-upload" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.inv">票据上传 &amp; 解析</span><span class="nb" id="nb-inv">4</span>
-      </div>
-      <div class="ng nav-company" style="margin-top:6px;display:none" data-i18n="ng.ai">AI 记账</div>
-      <div class="ni nav-company" id="ni-recon" style="display:none" onclick="go('recon',this)">
-        <i class="ti ti-git-compare" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.recon">银行票据会计分录</span><span class="nb">2</span>
-      </div>
-      <div class="ni nav-company" id="ni-cash" style="display:none" onclick="go('cash',this)">
-        <i class="ti ti-keyboard" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.cash">手工补录会计分录</span>
-      </div>
-      <div class="ni nav-company" id="ni-adjust" style="display:none" onclick="go('adjust',this)">
-        <i class="ti ti-adjustments" aria-hidden="true"></i><span data-i18n="nav.adjust">期末调整</span>
-      </div>
-      <div class="ni nav-company" id="ni-tb" style="display:none" onclick="go('tb',this)">
-        <i class="ti ti-table" aria-hidden="true"></i><span data-i18n="nav.tb">试算平衡表</span>
-      </div>
-      <div class="ni nav-company" id="ni-reports" style="display:none" onclick="go('reports',this)">
-        <i class="ti ti-chart-bar" aria-hidden="true"></i><span data-i18n="nav.reports">财务报表</span>
-      </div>
-      <div class="ng" style="margin-top:6px">账簿管理</div>
-      <div class="ni" id="ni-ledger" onclick="go('ledger',this)">
-        <i class="ti ti-book-2" aria-hidden="true"></i><span>账簿浏览</span><span class="nn">NEW</span>
-      </div>
-      <div class="ni" id="ni-auditrpt" onclick="go('auditrpt',this)">
-        <i class="ti ti-report-search" aria-hidden="true"></i><span>AI 审计报告</span><span class="nn">NEW</span>
+      <!-- 概览 -->
+      <div class="ng" onclick="toggleNavGroup(this)"><span data-i18n="ng.overview">概览</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni on" id="ni-dash" onclick="go('dash',this)">
+          <i class="ti ti-layout-dashboard" aria-hidden="true"></i><span data-i18n="nav.workspace">工作台</span>
+        </div>
       </div>
 
-      <div class="ng" style="margin-top:6px" data-i18n="ng.settings">设置</div>
-      <div class="ni" id="ni-init" onclick="go('init',this)">
-        <i class="ti ti-settings-2" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.init">初始化</span>
-      </div>
-      <div class="ni" id="ni-coa" onclick="go('coa',this)">
-        <i class="ti ti-list-tree" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.coa">科目表 (COA)</span>
-      </div>
-      <div class="ni" id="ni-settings" onclick="go('settings',this)">
-        <i class="ti ti-plug" aria-hidden="true" aria-hidden="true"></i><span data-i18n="nav.endpoints">接入点管理</span>
+      <!-- 采集解析 -->
+      <div class="ng nav-company" style="margin-top:6px;display:none" onclick="toggleNavGroup(this)"><span data-i18n="ng.collect">采集解析</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni nav-company" id="ni-bank" style="display:none" onclick="go('bank',this)">
+          <i class="ti ti-building-bank" aria-hidden="true"></i><span data-i18n="nav.bank">银行流水上传</span>
+        </div>
+        <div class="ni nav-company" id="ni-inv" style="display:none" onclick="go('inv',this)">
+          <i class="ti ti-file-upload" aria-hidden="true"></i><span data-i18n="nav.inv">票据上传 &amp; 解析</span><span class="nb" id="nb-inv">4</span>
+        </div>
       </div>
 
-      <div class="ng" style="margin-top:6px;color:var(--blue-text)">⚡ 平台管理（超管）</div>
-      <div class="ni" id="ni-tenants" onclick="go('tenants',this)">
-        <i class="ti ti-building-community" aria-hidden="true"></i><span>租户管理</span><span class="nn">NEW</span>
+      <!-- AI 记账 -->
+      <div class="ng nav-company" style="margin-top:6px;display:none" onclick="toggleNavGroup(this)"><span data-i18n="ng.ai">AI 记账</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni nav-company" id="ni-recon" style="display:none" onclick="go('recon',this)">
+          <i class="ti ti-git-compare" aria-hidden="true"></i><span data-i18n="nav.recon">银行票据会计分录</span><span class="nb">2</span>
+        </div>
+        <div class="ni nav-company" id="ni-cash" style="display:none" onclick="go('cash',this)">
+          <i class="ti ti-keyboard" aria-hidden="true"></i><span data-i18n="nav.cash">手工补录会计分录</span>
+        </div>
+        <div class="ni nav-company" id="ni-adjust" style="display:none" onclick="go('adjust',this)">
+          <i class="ti ti-adjustments" aria-hidden="true"></i><span data-i18n="nav.adjust">期末调整</span>
+        </div>
+        <div class="ni nav-company" id="ni-tb" style="display:none" onclick="go('tb',this)">
+          <i class="ti ti-table" aria-hidden="true"></i><span data-i18n="nav.tb">试算平衡表</span>
+        </div>
+        <div class="ni nav-company" id="ni-reports" style="display:none" onclick="go('reports',this)">
+          <i class="ti ti-chart-bar" aria-hidden="true"></i><span data-i18n="nav.reports">财务报表</span>
+        </div>
       </div>
-      <div class="ni" id="ni-users" onclick="go('users',this)">
-        <i class="ti ti-users" aria-hidden="true"></i><span>员工管理</span><span class="nn">NEW</span>
+
+      <!-- 账簿管理 -->
+      <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span>账簿管理</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni" id="ni-ledger" onclick="go('ledger',this)">
+          <i class="ti ti-book-2" aria-hidden="true"></i><span>账簿浏览</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-auditrpt" onclick="go('auditrpt',this)">
+          <i class="ti ti-report-search" aria-hidden="true"></i><span>AI 审计报告</span><span class="nn">NEW</span>
+        </div>
       </div>
-      <div class="ni" id="ni-plans" onclick="go('plans',this)">
-        <i class="ti ti-package" aria-hidden="true"></i><span>套餐与计费</span>
+
+      <!-- 设置 -->
+      <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span data-i18n="ng.settings">设置</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni" id="ni-init" onclick="go('init',this)">
+          <i class="ti ti-settings-2" aria-hidden="true"></i><span data-i18n="nav.init">初始化</span>
+        </div>
+        <div class="ni" id="ni-coa" onclick="go('coa',this)">
+          <i class="ti ti-list-tree" aria-hidden="true"></i><span data-i18n="nav.coa">科目表 (COA)</span>
+        </div>
+        <div class="ni" id="ni-settings" onclick="go('settings',this)">
+          <i class="ti ti-plug" aria-hidden="true"></i><span data-i18n="nav.endpoints">接入点管理</span>
+        </div>
       </div>
-      <div class="ni" id="ni-billing" onclick="go('billing',this)">
-        <i class="ti ti-credit-card" aria-hidden="true"></i><span>账单与收款</span><span class="nn">NEW</span>
-      </div>
-      <div class="ni" id="ni-usage" onclick="go('usage',this)">
-        <i class="ti ti-activity" aria-hidden="true"></i><span>用量监控</span>
-      </div>
-      <div class="ni" id="ni-audit" onclick="go('audit',this)">
-        <i class="ti ti-history" aria-hidden="true"></i><span>审计日志</span>
+
+      <!-- 平台管理（超管）-->
+      <div class="ng" style="margin-top:6px;color:var(--blue-text)" onclick="toggleNavGroup(this)"><span>⚡ 平台管理（超管）</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni" id="ni-tenants" onclick="go('tenants',this)">
+          <i class="ti ti-building-community" aria-hidden="true"></i><span>租户管理</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-users" onclick="go('users',this)">
+          <i class="ti ti-users" aria-hidden="true"></i><span>员工管理</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-plans" onclick="go('plans',this)">
+          <i class="ti ti-package" aria-hidden="true"></i><span>套餐与计费</span>
+        </div>
+        <div class="ni" id="ni-billing" onclick="go('billing',this)">
+          <i class="ti ti-credit-card" aria-hidden="true"></i><span>账单与收款</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-usage" onclick="go('usage',this)">
+          <i class="ti ti-activity" aria-hidden="true"></i><span>用量监控</span>
+        </div>
+        <div class="ni" id="ni-audit" onclick="go('audit',this)">
+          <i class="ti ti-history" aria-hidden="true"></i><span>审计日志</span>
+        </div>
       </div>
     </nav>
     <div class="sb-bot">
@@ -3975,6 +4001,14 @@ function go(id, el) {
     s.classList.remove('active');
     if (i === stepIdx) s.classList.add('active');
   });
+}
+
+// ─── 左侧菜单：一级分组折叠/展开 ─────────────────────────────────
+function toggleNavGroup(h) {
+  var sub = h.nextElementSibling;
+  if (!sub || !sub.classList.contains('nav-sub')) return;
+  h.classList.toggle('collapsed');
+  sub.classList.toggle('collapsed');
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────
