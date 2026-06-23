@@ -430,8 +430,14 @@
       <!-- 账簿管理 -->
       <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span>账簿管理</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
       <div class="nav-sub">
+        <div class="ni" id="ni-coabal" onclick="go('coabal',this)">
+          <i class="ti ti-scale" aria-hidden="true"></i><span>科目余额</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-gledger" onclick="go('gledger',this)">
+          <i class="ti ti-book" aria-hidden="true"></i><span>总账</span><span class="nn">NEW</span>
+        </div>
         <div class="ni" id="ni-ledger" onclick="go('ledger',this)">
-          <i class="ti ti-book-2" aria-hidden="true"></i><span>账簿浏览</span><span class="nn">NEW</span>
+          <i class="ti ti-book-2" aria-hidden="true"></i><span>账簿浏览</span>
         </div>
         <div class="ni" id="ni-auditrpt" onclick="go('auditrpt',this)">
           <i class="ti ti-report-search" aria-hidden="true"></i><span>AI 审计报告</span><span class="nn">NEW</span>
@@ -977,13 +983,18 @@
                 <span class="ct">已录入列表</span>
                 <span id="cash-count" class="pill p-gray" style="font-size:10.5px">4 条</span>
               </div>
-              <div style="display:flex;gap:6px">
-                <div style="display:flex;gap:4px" id="cash-filter">
-                  <div class="mc on" onclick="setCashFilter(this,'all')">全部</div>
-                  <div class="mc" onclick="setCashFilter(this,'expense')">💸 费用</div>
-                  <div class="mc" onclick="setCashFilter(this,'income')">💰 收入</div>
-                  <div class="mc" onclick="setCashFilter(this,'cash')">现金</div>
-                  <div class="mc" onclick="setCashFilter(this,'director')">董事垫付</div>
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                <div style="display:flex;gap:4px;align-items:center" id="cash-type-filter">
+                  <span style="font-size:10.5px;color:var(--text3);font-weight:600">类型</span>
+                  <div class="mc on" onclick="setCashType(this,'all')">全部</div>
+                  <div class="mc" onclick="setCashType(this,'income')">💰 收入</div>
+                  <div class="mc" onclick="setCashType(this,'expense')">💸 费用</div>
+                </div>
+                <div style="display:flex;gap:4px;align-items:center" id="cash-status-filter">
+                  <span style="font-size:10.5px;color:var(--text3);font-weight:600">状态</span>
+                  <div class="mc on" onclick="setCashStatus(this,'all')">全部</div>
+                  <div class="mc" onclick="setCashStatus(this,'done')">✓ 已完成</div>
+                  <div class="mc" onclick="setCashStatus(this,'pending')">⚠ 待完善</div>
                 </div>
                 <button class="btn btn-xs btn-p" onclick="toast('正在导出...')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出</button>
               </div>
@@ -2353,6 +2364,66 @@
               <tbody id="ledger-tbody"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════ 科目余额表 ═══════════════════════ -->
+      <div class="page" id="page-coabal">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-scale" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">科目余额表 · Account Balances</div>
+              <div style="font-size:11.5px;color:var(--text2)">期初余额 + 本期借贷发生额 = 期末余额 · 按账期汇总（仅已确认分录）· 香港法定账簿之一</div>
+            </div>
+            <select class="inl-sel" id="coabal-period" style="min-width:150px" onchange="renderCoaBalance()">
+              <option value="2026-01">账期 2026-01</option><option value="2025-12">账期 2025-12</option>
+            </select>
+            <button class="btn" onclick="toast('导出科目余额表 Excel（演示）')"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct">科目余额</span><span id="coabal-balpill" class="pill p-gray">—</span></div>
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:74px">代码</th><th>科目名称</th><th style="width:54px;text-align:center">类别</th>
+              <th style="width:110px;text-align:right">期初余额</th>
+              <th style="width:110px;text-align:right">本期借方</th>
+              <th style="width:110px;text-align:right">本期贷方</th>
+              <th style="width:120px;text-align:right">期末余额</th>
+            </tr></thead>
+            <tbody id="coabal-tbody"></tbody>
+            <tfoot id="coabal-tfoot"></tfoot>
+          </table>
+          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">期初余额为本财政年度首期演示值（0）；余额方向：资产/费用为借（Dr），负债/权益/收入为贷（Cr）。</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════ 总账 General Ledger ═══════════════════════ -->
+      <div class="page" id="page-gledger">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-book" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">总账 · General Ledger</div>
+              <div style="font-size:11.5px;color:var(--text2)">按科目逐笔列示分录（日期/凭证/摘要/借/贷）+ 滚动余额 · 期初→本期→期末</div>
+            </div>
+            <select class="inl-sel" id="gledger-acct" style="min-width:240px" onchange="renderGLedger()"></select>
+            <button class="btn" onclick="toast('导出总账 Excel（演示）')"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct" id="gledger-title">总账明细</span><span id="gledger-sub" class="pill p-gray">—</span></div>
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:96px">日期</th><th style="width:120px">凭证号</th><th>摘要</th>
+              <th style="width:110px;text-align:right">借方 Dr</th>
+              <th style="width:110px;text-align:right">贷方 Cr</th>
+              <th style="width:130px;text-align:right">余额 Balance</th>
+            </tr></thead>
+            <tbody id="gledger-tbody"></tbody>
+          </table>
+          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">仅列示已确认（confirmed）分录；余额按科目正常余额方向滚动计算。</div>
         </div>
       </div>
 
@@ -3975,6 +4046,8 @@ const PAGE_META = {
   coa:      ['科目表管理','香港标准 COA · 三级架构'],
   settings: ['接入点管理','MCP · API · 外部模型接入 · 平台开放'],
   ledger:   ['账簿浏览','HK CO S373 法定账簿 · 14 本系统账簿 · 钻取至原始凭证'],
+  coabal:   ['科目余额表','期初 · 本期借贷发生 · 期末余额 · 按账期 / 类别'],
+  gledger:  ['总账 General Ledger','按科目逐笔分录 · 借贷 · 滚动余额'],
   tenants:  ['租户管理','超级管理员控制台 · 多租户 SaaS 运营'],
   plans:    ['套餐与计费','订阅套餐 + Token 用量计费'],
   usage:    ['用量监控','Token / OCR / 存储 · 按租户分组'],
@@ -4999,6 +5072,16 @@ var CASH_DATA = [
     notes:'CPA 年度会籍费用，董事代付，税务可扣除' },
 ];
 var cashIdCounter = 20;
+// 完善状态：done 已完成 / pending 待完善（从银行票据分录转入、信息不全需补齐）
+CASH_DATA.forEach(function(r){ if (!r.status) r.status = 'done'; });
+CASH_DATA.push(
+  { id:'cashT1', date:'2026-01-18', desc:'UNKNOWN VENDOR TRF（由银行流水转入）', entryType:'expense',
+    drCode:'6700', crCode:'1002-01', curr:'HKD', amt:1200.00, reconSt:'orphan', voucher:'',
+    notes:'由银行票据分录页未匹配流水转入，待补费用科目与摘要', status:'pending' },
+  { id:'cashT2', date:'2026-01-15', desc:'停车场收据（现金）（由票据池转入）', entryType:'expense',
+    drCode:'6700', crCode:'2251-01', curr:'HKD', amt:80.00, reconSt:'orphan', voucher:'',
+    notes:'由票据池转入，待补费用科目', status:'pending' }
+);
 
 // ─── Cash Entry Modal Flow ───────────────────────────────────────
 var currentCashEntryTab = 'expense';
@@ -5068,7 +5151,7 @@ function addIncomeEntry() {
     desc: desc + (payer ? '（' + payer + '）' : ''),
     entryType:'income',
     drCode:drCode, crCode:crCode, curr:curr, amt:amt,
-    reconSt:'orphan', voucher:voucher, payer:payer, notes:notes || '收入补录',
+    reconSt:'orphan', voucher:voucher, payer:payer, notes:notes || '收入补录', status:'done',
   });
 
   closeCashEntryModal();
@@ -5078,44 +5161,48 @@ function addIncomeEntry() {
 }
 
 // ─── Cash Status Filter ───────────────────────────────────────────
-var currentCashFilter = 'all';
-var CASH_PAY_LABEL = { director:'董事垫付', cash:'现金 Cash', other:'其他' };  // legacy compat, unused
-var CASH_PAY_COLOR = { director:'var(--blue-text)', cash:'var(--text)', other:'var(--text3)' };
+var cashTypeFilter = 'all';     // all / income / expense
+var cashStatusFilter = 'all';   // all / done / pending
 
 const LARGE_EXPENSE_THRESHOLD = 100000; // HKD 10万 大额支出提醒
 
-function setCashFilter(el, type) {
-  document.querySelectorAll('#cash-filter .mc').forEach(function(c){ c.classList.remove('on'); });
-  el.classList.add('on');
-  currentCashFilter = type;
+function setCashType(el, v) {
+  document.querySelectorAll('#cash-type-filter .mc').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on'); cashTypeFilter = v;
+  renderCash(); renderCashJEColumn();
+}
+function setCashStatus(el, v) {
+  document.querySelectorAll('#cash-status-filter .mc').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on'); cashStatusFilter = v;
   renderCash(); renderCashJEColumn();
 }
 
 function renderCash() {
-  var filter = currentCashFilter;
-  // 法律意义上的"现金/董事垫付"分类基于贷方科目
-  function _isCash(r)    { return r.crCode === '1001'; }
-  function _isDirector(r){ return r.crCode === '2251-01'; }
-
   var filtered = CASH_DATA.filter(function(r) {
-    if (filter === 'income')   return r.entryType === 'income';
-    if (filter === 'expense')  return r.entryType !== 'income';
-    if (filter === 'director') return _isDirector(r);
-    if (filter === 'cash')     return _isCash(r);
+    // 类型筛选：收入 / 费用
+    if (cashTypeFilter === 'income'  && r.entryType !== 'income') return false;
+    if (cashTypeFilter === 'expense' && r.entryType === 'income') return false;
+    // 状态筛选：已完成 / 待完善
+    var st = r.status || 'done';
+    if (cashStatusFilter === 'done'    && st !== 'done')    return false;
+    if (cashStatusFilter === 'pending' && st !== 'pending') return false;
     return true;
   });
 
-  // 排序：待处理 → 已处理
+  // 排序：待完善 → 已完成
   filtered = filtered.slice().sort(function(a, b) {
-    return (a.reconSt === 'matched' ? 1 : 0) - (b.reconSt === 'matched' ? 1 : 0);
+    return ((a.status||'done') === 'pending' ? 0 : 1) - ((b.status||'done') === 'pending' ? 0 : 1);
   });
 
   var list = document.getElementById('cash-list'); if (!list) return;
 
   list.innerHTML = filtered.map(function(r) {
-    var isMatched = r.reconSt === 'matched';
     var isIncome  = r.entryType === 'income';
-    var bc       = isMatched ? 'var(--green)' : (isIncome ? 'var(--green-text)' : '#3B82F6');
+    var isPending = (r.status || 'done') === 'pending';
+    var bc       = isPending ? 'var(--amber)' : (isIncome ? 'var(--green-text)' : 'var(--green)');
+    var statusPill = isPending
+      ? '<span class="pill p-amber" style="font-size:9.5px;margin-right:4px">⚠ 待完善</span>'
+      : '<span class="pill p-green" style="font-size:9.5px;margin-right:4px">✓ 已完成</span>';
 
     // 借贷科目对象与标签
     var drList = isIncome ? HKCOA_RECEIPT : HKCOA_EXPENSE;
@@ -5172,14 +5259,16 @@ function renderCash() {
       + '<button class="btn btn-xs btn-p" onclick="saveCashEdit(\'' + r.id + '\')"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>保存</button>'
       + '</div></div>';
 
-    var btnEdit = '<button class="btn btn-xs" style="font-size:10px;padding:3px 10px;color:var(--blue);border-color:var(--blue)" onclick="editCashEntry(\'' + r.id + '\')"><i class="ti ti-edit" style="font-size:10px" aria-hidden="true"></i>编辑</button>';
+    var btnEdit = isPending
+      ? '<button class="btn btn-xs btn-p" style="font-size:10px;padding:3px 10px;background:var(--amber);border-color:var(--amber)" onclick="editCashEntry(\'' + r.id + '\')"><i class="ti ti-edit" style="font-size:10px" aria-hidden="true"></i>完善</button>'
+      : '<button class="btn btn-xs" style="font-size:10px;padding:3px 10px;color:var(--blue);border-color:var(--blue)" onclick="editCashEntry(\'' + r.id + '\')"><i class="ti ti-edit" style="font-size:10px" aria-hidden="true"></i>编辑</button>';
     var btnDel  = '<button class="btn btn-xs" style="font-size:10px;padding:3px 10px;color:var(--red);border-color:var(--red)" onclick="deleteCashEntry(\'' + r.id + '\')"><i class="ti ti-trash" style="font-size:10px" aria-hidden="true"></i>删除</button>';
 
     return '<div>'
       + '<div class="ri-row" style="border-left:3px solid ' + bc + ';cursor:default">'
       + '<div class="ri-body" style="flex:1;min-width:0">'
       + '<div class="ri-name" style="font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'
-      + typeTag + r.desc + '</div>'
+      + statusPill + typeTag + r.desc + '</div>'
       + '<div class="ri-sub" style="font-size:10.5px;color:var(--text3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'
       + r.date + ' · <span style="color:var(--blue-text);font-weight:600">Dr ' + drShort + '</span>'
       + ' → <span style="color:var(--green-text);font-weight:600">Cr ' + crShort + '</span>'
@@ -5196,8 +5285,9 @@ function renderCash() {
   }).join('') || '<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">暂无录入数据</div>';
 
   var allTotal = CASH_DATA.reduce(function(s, r){ return s + (r.amt || 0); }, 0);
+  var pendN = CASH_DATA.filter(function(r){ return (r.status||'done')==='pending'; }).length;
   var ce = document.getElementById('cash-count');  if (ce) ce.textContent = filtered.length + ' 条';
-  var fe = document.getElementById('cash-footer'); if (fe) fe.textContent = '共 ' + CASH_DATA.length + ' 条 · 合计 HKD ' + allTotal.toFixed(2);
+  var fe = document.getElementById('cash-footer'); if (fe) fe.textContent = '共 ' + CASH_DATA.length + ' 条 · 合计 HKD ' + allTotal.toFixed(2) + (pendN ? ' · ⚠ ' + pendN + ' 条待完善' : ' · 全部已完成');
 }
 
 function addCashEntry() {
@@ -5219,7 +5309,7 @@ function addCashEntry() {
   CASH_DATA.unshift({
     id:'cash'+cashIdCounter, date:date, desc:desc, entryType:'expense',
     drCode:drCode, crCode:crCode, curr:curr, amt:amt,
-    reconSt:'orphan', voucher:voucher, notes:notes,
+    reconSt:'orphan', voucher:voucher, notes:notes, status:'done',
   });
   closeCashEntryModal();
   renderCash(); renderCashJEColumn(); renderAnomalyGrid();
@@ -5279,9 +5369,12 @@ function saveCashEdit(id) {
   }
   if (!desc)         { toast('⚠ 请填写摘要描述'); return; }
   if (!amt || amt <= 0) { toast('⚠ 请填写有效金额'); return; }
+  if (r.drCode === '6700' || r.crCode === '6700') { toast('⚠ 请将「待分类(6700)」改为正确的费用/收入科目后再保存'); return; }
   r.amt = amt; r.desc = desc;
+  var wasPending = r.status === 'pending';
+  r.status = 'done';   // 完善后置为已完成
   renderCash(); renderCashJEColumn(); renderAnomalyGrid();
-  toast('✓ 已更新「' + desc + '」' + r.curr + ' ' + amt.toFixed(2));
+  toast(wasPending ? '✓ 已完善并标记「已完成」：' + desc : '✓ 已更新「' + desc + '」' + r.curr + ' ' + amt.toFixed(2));
 }
 // ─── Settings · Endpoint Management ──────────────────────────────
 function toggleOutbound(cb) {
@@ -7751,6 +7844,7 @@ function transferToManualEntry(pairIdx) {
     reconSt:   'orphan',
     voucher:   '',
     notes:     '由银行票据分录页面未匹配流水转入，原流水金额 HKD ' + p.txn.amt,
+    status:    'pending',
   });
 
   p.st = 'annotated';
@@ -7761,7 +7855,7 @@ function transferToManualEntry(pairIdx) {
 
   go('cash', document.getElementById('ni-cash'));
   setTimeout(function(){
-    toast('✓ 已将「' + p.txn.desc + '」转入手工补录，请补充费用/收入科目后确认');
+    toast('✓ 已转入手工补录（待完善），请补齐费用/收入科目与摘要后保存');
   }, 200);
 }
 
@@ -7789,6 +7883,7 @@ function transferInvToManualEntry(pairIdx, invIdx) {
     reconSt:   'orphan',
     voucher:   '',
     notes:     '由银行票据分录页面票据池转入，原票据：' + inv.desc,
+    status:    'pending',
   });
 
   p.st = 'annotated';
@@ -7799,7 +7894,7 @@ function transferInvToManualEntry(pairIdx, invIdx) {
 
   go('cash', document.getElementById('ni-cash'));
   setTimeout(function(){
-    toast('✓ 已将「' + inv.desc + '」转入手工补录，请补充科目信息后确认');
+    toast('✓ 已转入手工补录（待完善），请补齐科目信息后保存');
   }, 200);
 }
 
@@ -10004,6 +10099,8 @@ function handleInvDrop(evt) {
         if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
       }
       if (id === 'reports' && window.renderReportCompleteness) window.renderReportCompleteness();
+      if (id === 'coabal' && window.renderCoaBalance) window.renderCoaBalance();
+      if (id === 'gledger' && window.renderGLedger) window.renderGLedger();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
@@ -11000,6 +11097,84 @@ function handleInvDrop(evt) {
     }).join('');
     var pill = document.getElementById('rpt-comp-pill');
     if(pill){ var allOk = pass===checks.length; pill.className='pill '+(allOk?'p-green':'p-amber'); pill.textContent = pass+' / '+checks.length+(allOk?' · 可正式出表':' · 报表为草稿'); }
+  };
+
+  // ── 账簿：科目余额表 + 总账（按已确认分录 + COA 计算）──
+  function _acctMeta(name){
+    var COA = _g('COA_DATA') || window.COA_DATA || [];
+    var nm = String(name||'').replace(/\s*\([^)]*\)/g,'').trim();
+    var hit = COA.find(function(a){ return a.en===name || a.en===nm; });
+    if(!hit){ var base = nm.split('—')[0].trim(); if(base) hit = COA.find(function(a){ return a.en && (a.en.indexOf(base)===0 || base.indexOf(a.en)===0); }); }
+    if(hit) return { code:hit.c, zh:hit.zh||'', cat:hit.cat, nb:hit.nb||'Dr' };
+    var s = nm.toLowerCase(), cat='X', nb='Dr';
+    if(/revenue|interest income|sales|turnover/.test(s)){ cat='I'; nb='Cr'; }
+    else if(/retained|share capital|equity/.test(s)){ cat='E'; nb='Cr'; }
+    else if(/payable|accrued|tax payable|director|loan/.test(s)){ cat='L'; nb='Cr'; }
+    else if(/bank|cash|petty|receivable|prepay|equipment|accumulated|asset/.test(s)){ cat='A'; nb='Dr'; }
+    return { code:'', zh:'', cat:cat, nb:nb };
+  }
+  function _glAgg(){
+    var EN = _g('ENTRIES') || window.ENTRIES || [];
+    var map = {};
+    EN.forEach(function(e){ if(e.status!=='confirmed') return; (e.lines||[]).forEach(function(l){
+      var a = l.account; if(!a) return; if(!map[a]) map[a] = { account:a, dr:0, cr:0, lines:[] };
+      var amt = typeof l.amount==='number'? l.amount : (parseFloat(l.amount)||0);
+      if(l.type==='Dr') map[a].dr += amt; else map[a].cr += amt;
+      map[a].lines.push({ date:e.date, jv:e.id, desc:e.desc, type:l.type, amt:amt });
+    }); });
+    return map;
+  }
+  var CATZH = { A:'资产', L:'负债', E:'权益', I:'收入', X:'费用' };
+  function _amtTxt(n){ return _money(n).replace('HKD ',''); }
+  window.renderCoaBalance = function(){
+    var tb = document.getElementById('coabal-tbody'); if(!tb) return;
+    var map = _glAgg();
+    var rows = Object.keys(map).map(function(a){ var m=map[a], meta=_acctMeta(a); return { code:meta.code||'—', name:a, zh:meta.zh, cat:meta.cat, dr:m.dr, cr:m.cr, net:m.dr-m.cr }; });
+    rows.sort(function(x,y){ return String(x.code).localeCompare(String(y.code)); });
+    var sDr=0,sCr=0,sEndDr=0,sEndCr=0;
+    tb.innerHTML = rows.map(function(r){
+      sDr+=r.dr; sCr+=r.cr; var endDr=r.net>=0?r.net:0, endCr=r.net<0?-r.net:0; sEndDr+=endDr; sEndCr+=endCr;
+      return '<tr><td style="font-family:monospace;font-size:11px">'+r.code+'</td>'
+        + '<td><div style="font-size:12px">'+r.name+'</div>'+(r.zh?'<div style="font-size:10px;color:var(--text3)">'+r.zh+'</div>':'')+'</td>'
+        + '<td style="text-align:center"><span class="pill p-gray" style="font-size:9px">'+(CATZH[r.cat]||'—')+'</span></td>'
+        + '<td style="text-align:right;color:var(--text3)">0.00</td>'
+        + '<td style="text-align:right;font-family:monospace">'+(r.dr?_amtTxt(r.dr):'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+(r.cr?_amtTxt(r.cr):'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+(endDr?'借 '+_amtTxt(endDr):(endCr?'贷 '+_amtTxt(endCr):'0.00'))+'</td></tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:18px">暂无已确认分录（请先在「银行票据会计分录」批量确认）</td></tr>';
+    var tf = document.getElementById('coabal-tfoot');
+    if(tf) tf.innerHTML = '<tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="4" style="text-align:right">合计</td>'
+      + '<td style="text-align:right;font-family:monospace">'+_amtTxt(sDr)+'</td><td style="text-align:right;font-family:monospace">'+_amtTxt(sCr)+'</td>'
+      + '<td style="text-align:right;font-family:monospace">借'+_amtTxt(sEndDr)+' / 贷'+_amtTxt(sEndCr)+'</td></tr>';
+    var pill = document.getElementById('coabal-balpill');
+    if(pill){ var ok=Math.abs(sDr-sCr)<0.01; pill.className='pill '+(ok?'p-green':'p-red'); pill.textContent = ok?'借贷平衡 '+_money(sDr):'不平衡 差 '+_amtTxt(Math.abs(sDr-sCr)); }
+  };
+  window.renderGLedger = function(){
+    var sel = document.getElementById('gledger-acct'); if(!sel) return;
+    var map = _glAgg(); var accts = Object.keys(map).sort();
+    if(sel.dataset.n !== String(accts.length)){
+      sel.innerHTML = accts.map(function(a){ var m=_acctMeta(a); return '<option value="'+encodeURIComponent(a)+'">'+(m.code?m.code+' ':'')+a+'</option>'; }).join('');
+      sel.dataset.n = String(accts.length);
+    }
+    var acc = sel.value ? decodeURIComponent(sel.value) : (accts[0]||'');
+    var m = map[acc], meta = _acctMeta(acc);
+    var tb = document.getElementById('gledger-tbody'); if(!tb) return;
+    if(!m){ tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:18px">该科目无已确认分录</td></tr>'; return; }
+    var nbDr = meta.nb !== 'Cr'; var bal = 0; var sDr=0,sCr=0;
+    var rows = '<tr style="color:var(--text3)"><td>2026-01-01</td><td>—</td><td>期初余额 B/F</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-family:monospace">0.00 '+(nbDr?'Dr':'Cr')+'</td></tr>';
+    m.lines.slice().sort(function(a,b){ return String(a.date).localeCompare(String(b.date)); }).forEach(function(l){
+      if(l.type==='Dr'){ bal += nbDr? l.amt : -l.amt; sDr+=l.amt; } else { bal += nbDr? -l.amt : l.amt; sCr+=l.amt; }
+      rows += '<tr><td style="font-size:11.5px">'+(l.date||'')+'</td><td style="font-family:monospace;font-size:11px">'+l.jv+'</td><td style="font-size:11.5px">'+l.desc+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+(l.type==='Dr'?_amtTxt(l.amt):'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+(l.type==='Cr'?_amtTxt(l.amt):'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(Math.abs(bal))+' '+(bal>=0?(nbDr?'Dr':'Cr'):(nbDr?'Cr':'Dr'))+'</td></tr>';
+    });
+    rows += '<tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="3" style="text-align:right">本期合计 / 期末余额</td>'
+      + '<td style="text-align:right;font-family:monospace">'+_amtTxt(sDr)+'</td><td style="text-align:right;font-family:monospace">'+_amtTxt(sCr)+'</td>'
+      + '<td style="text-align:right;font-family:monospace">'+_amtTxt(Math.abs(bal))+' '+(bal>=0?(nbDr?'Dr':'Cr'):(nbDr?'Cr':'Dr'))+'</td></tr>';
+    tb.innerHTML = rows;
+    var ttl = document.getElementById('gledger-title'); if(ttl) ttl.textContent = '总账 · '+(meta.code?meta.code+' ':'')+acc;
+    var sub = document.getElementById('gledger-sub'); if(sub){ sub.className='pill p-blue'; sub.textContent = m.lines.length+' 笔 · 借'+_money(sDr)+' / 贷'+_money(sCr); }
   };
 })();
 </script>
