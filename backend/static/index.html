@@ -1221,7 +1221,7 @@
               <div style="width:28px;height:5px;border-radius:3px;background:var(--border)"></div>
               <div style="width:28px;height:5px;border-radius:3px;background:var(--border)"></div>
             </div>
-            <span style="font-size:11.5px;color:var(--text3)">Step 3 / 6</span>
+            <span id="close-progress" style="font-size:11.5px;color:var(--text3)">Step 3 / 6</span>
           </div>
         </div>
 
@@ -1351,18 +1351,70 @@
                   </tfoot>
                 </table>
                 <div style="margin-top:8px;display:flex;justify-content:flex-end">
-                  <button class="btn btn-xs btn-p" onclick="completeStep4()">✓ 确认试算表，生成财务报表</button>
+                  <button class="btn btn-xs btn-p" onclick="completeStep4()">✓ 确认试算表，进入结转</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Step 5 财务报表 -->
+          <!-- Step 5 生成结转分录 Closing Entries（新增）-->
+          <div class="card" style="margin:0;border-left:4px solid var(--border)" id="stepclose-card">
+            <div style="padding:11px 16px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:0" id="stepclose-header">
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-weight:700;font-size:13px;color:var(--text3)">5</span></div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text3)">Step 5 · 生成结转分录 Closing Entries</div><div style="font-size:11.5px;color:var(--text3);margin-top:1px">把本期收入与费用结转入「本年利润」，净利再转入「留存收益」，并将损益类科目清零——结账前的关键收尾</div></div>
+                <button class="btn btn-xs" id="stepclose-btn" disabled style="opacity:.4" onclick="showClosing()">生成结转分录</button>
+              </div>
+              <div id="stepclose-content" style="display:none;margin-top:12px">
+                <!-- 大白话说明 -->
+                <div style="padding:11px 13px;background:var(--amber-bg);border:1px solid var(--amber);border-radius:8px;margin-bottom:12px;font-size:11.5px;line-height:1.7;color:var(--text2)">
+                  <b style="color:var(--amber-text)">为什么要结转？</b> 收入、费用科目像一块「年度记分牌」，只记<b>本期</b>的赚与花。结账前把它们的余额结转到<b>「本年利润」</b>，算出净利后再转入<b>「留存收益」（股东家底）</b>，并把收入/费用科目<b>清零</b>，让下一期从 0 重新计。这样资产负债表的权益才会包含本期利润、两边才平。
+                </div>
+                <div style="font-size:12px;font-weight:600;margin-bottom:6px">系统自动生成的结转分录 <span style="font-size:10.5px;font-weight:400;color:var(--text3)">Jan 2026 · 结账期</span></div>
+                <table class="tbl" style="font-size:11.5px">
+                  <thead><tr><th style="width:30px">#</th><th>摘要 Narrative</th><th>借方 Dr.</th><th>贷方 Cr.</th><th style="text-align:right;width:104px">金额 HKD</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4005 / 利息收入 4101）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td style="text-align:right;font-weight:600">45,818.50</td></tr>
+                    <tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>费用类（电话/差旅/折旧等 7 项）</td><td style="text-align:right;font-weight:600">2,531.70</td></tr>
+                    <tr><td>3</td><td>计提并结转利得税（8.25%）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>应交利得税 Profits tax payable (2221)</td><td style="text-align:right;font-weight:600">3,571.16</td></tr>
+                    <tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>留存收益 Retained earnings (3200)</td><td style="text-align:right;font-weight:600">39,715.64</td></tr>
+                  </tbody>
+                </table>
+                <!-- 本年利润 T 形账：演示清零 -->
+                <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div style="padding:11px 13px;background:var(--blue-bg);border:1px solid var(--blue-text);border-radius:8px">
+                    <div style="font-size:11.5px;font-weight:700;color:var(--blue-text);margin-bottom:6px">「本年利润」结转汇总 P&amp;L Summary</div>
+                    <table style="width:100%;font-size:11.5px;border-collapse:collapse">
+                      <tr><td style="padding:3px 0;color:var(--text2)">贷：结转收入</td><td style="text-align:right;color:var(--green);font-weight:600">+45,818.50</td></tr>
+                      <tr><td style="padding:3px 0;color:var(--text2)">借：结转费用</td><td style="text-align:right;color:var(--red)">(2,531.70)</td></tr>
+                      <tr><td style="padding:3px 0;color:var(--text2)">借：结转利得税</td><td style="text-align:right;color:var(--red)">(3,571.16)</td></tr>
+                      <tr style="border-top:1px solid var(--blue-text)"><td style="padding:5px 0;font-weight:700">= 本期净利</td><td style="text-align:right;font-weight:700;color:var(--green-text)">39,715.64</td></tr>
+                      <tr><td style="padding:3px 0;color:var(--text2)">借：结转至留存收益</td><td style="text-align:right;color:var(--red)">(39,715.64)</td></tr>
+                      <tr style="border-top:2px solid var(--blue-text)"><td style="padding:5px 0;font-weight:700">本年利润余额</td><td style="text-align:right;font-weight:700;color:var(--blue-text)">0.00 ✓ 已清零</td></tr>
+                    </table>
+                  </div>
+                  <div style="padding:11px 13px;background:var(--green-bg);border:1px solid var(--green);border-radius:8px;display:flex;flex-direction:column;justify-content:center">
+                    <div style="font-size:11.5px;color:var(--green-text);line-height:1.8">
+                      <div>✓ 收入 / 费用类科目余额已<b>全部清零</b>，下一期从 0 重新计</div>
+                      <div>✓ 本期净利 <b>HKD 39,715.64</b> 已结入<b>留存收益</b></div>
+                      <div>✓ 结转分录借贷平衡 · 已写入<b>日记账</b>（来源：结账结转）</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top:10px;display:flex;gap:6px;justify-content:flex-end">
+                  <button class="btn btn-xs" onclick="toast('结转分录可在「日记账」按来源=结账结转查看')">查看分录</button>
+                  <button class="btn btn-xs btn-p" onclick="completeStepClose()">✓ 确认并过账结转分录，生成报表</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 6 财务报表 -->
           <div class="card" style="margin:0;border-left:4px solid var(--border)" id="step5-card">
             <div style="padding:11px 16px">
               <div style="display:flex;align-items:center;gap:10px;margin-bottom:0" id="step5-header">
-                <div style="width:28px;height:28px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-weight:700;font-size:13px;color:var(--text3)">5</span></div>
-                <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text3)">Step 5 · 财务报表 Financial Statements（SME-FRS）</div><div style="font-size:11.5px;color:var(--text3);margin-top:1px">损益表 P&amp;L · 资产负债表 Balance Sheet · 遵循香港 SME-FRS 准则</div></div>
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-weight:700;font-size:13px;color:var(--text3)">6</span></div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text3)">Step 6 · 财务报表 Financial Statements（SME-FRS）</div><div style="font-size:11.5px;color:var(--text3);margin-top:1px">损益表 P&amp;L · 资产负债表 Balance Sheet · 遵循香港 SME-FRS 准则</div></div>
                 <button class="btn btn-xs" id="step5-btn" disabled style="opacity:.4" onclick="showFinancialStatements()">生成报表</button>
               </div>
               <div id="step5-content" style="display:none;margin-top:12px">
@@ -8862,7 +8914,7 @@ function completeStep3() {
   var content = document.getElementById('step4-content');
   markStepDone('step3'); unlockStep('step4');
   toast('✓ 期末调整已保存，试算平衡表已解锁');
-  var bar = document.querySelector('#page-close .card:first-child span.pill'); if (bar) bar.textContent = 'Step 4 / 6';
+  var bar = document.getElementById('close-progress'); if (bar) bar.textContent = 'Step 4 / 6';
 }
 function showTrialBalance() {
   var content = document.getElementById('step4-content');
@@ -8870,9 +8922,21 @@ function showTrialBalance() {
   toast('✓ 试算平衡表已生成，借贷平衡 ✓');
 }
 function completeStep4() {
-  markStepDone('step4'); unlockStep('step5');
+  markStepDone('step4'); unlockStep('stepclose');
   document.getElementById('step4-content').style.display = 'none';
-  toast('✓ 试算表已确认，财务报表已解锁');
+  toast('✓ 试算表已确认，结转分录已解锁');
+  var bar = document.getElementById('close-progress'); if (bar) bar.textContent = 'Step 5 / 6';
+}
+function showClosing() {
+  var c = document.getElementById('stepclose-content');
+  if (c) c.style.display = 'block';
+  toast('✓ 已按损益类科目自动生成结转分录（结转收入/费用/税款/净利）');
+}
+function completeStepClose() {
+  markStepDone('stepclose'); unlockStep('step5');
+  document.getElementById('stepclose-content').style.display = 'none';
+  toast('✓ 结转分录已过账，损益科目已清零，财务报表已解锁');
+  var bar = document.getElementById('close-progress'); if (bar) bar.textContent = 'Step 6 / 6';
 }
 function showFinancialStatements() {
   var c = document.getElementById('step5-content');
