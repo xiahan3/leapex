@@ -422,6 +422,9 @@
         <div class="ni nav-company" id="ni-tb" style="display:none" onclick="go('tb',this)">
           <i class="ti ti-table" aria-hidden="true"></i><span data-i18n="nav.tb">试算平衡表</span>
         </div>
+        <div class="ni nav-company" id="ni-carry" style="display:none" onclick="go('carry',this)">
+          <i class="ti ti-arrows-transfer-down" aria-hidden="true"></i><span data-i18n="nav.carry">结转分录</span>
+        </div>
         <div class="ni nav-company" id="ni-reports" style="display:none" onclick="go('reports',this)">
           <i class="ti ti-chart-bar" aria-hidden="true"></i><span data-i18n="nav.reports">财务报表</span>
         </div>
@@ -1575,7 +1578,7 @@
             <button class="btn btn-xs" onclick="toast('正在导出 Excel…')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出 Excel</button>
             <button class="btn btn-xs" onclick="toast('正在导出 PDF…')"><i class="ti ti-file-text" style="font-size:11px" aria-hidden="true"></i>导出 PDF</button>
             <button class="btn btn-p" onclick="confirmAndGenerateReports()" style="padding:7px 16px;font-size:12.5px;font-weight:700">
-              <i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>确认并生成财务报表
+              <i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>确认试算表，生成结转分录
             </button>
           </div>
         </div>
@@ -1639,6 +1642,79 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════ 结转分录 Closing Entries ═══════════════════════ -->
+      <div class="page" id="page-carry">
+        <!-- 顶部工具栏（与试算平衡表/财务报表统一） -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <select id="carry-period" style="font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">
+              <option>Jan 2026（当前账期）</option><option>Dec 2025</option><option>Nov 2025</option>
+            </select>
+            <button class="btn btn-xs" onclick="toast('正在按损益类科目重新生成结转分录…')"><i class="ti ti-refresh" style="font-size:11px" aria-hidden="true"></i>重新生成</button>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="btn btn-xs" onclick="toast('正在导出结转分录…')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出</button>
+            <button class="btn btn-p" onclick="confirmCarryAndGenerateReports()" style="padding:7px 16px;font-size:12.5px;font-weight:700">
+              <i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>确认并过账，生成财务报表
+            </button>
+          </div>
+        </div>
+        <!-- 前置检查提示（前一步=试算平衡表 未完成时提示） -->
+        <div id="carry-prereq" style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+          <i class="ti ti-alert-triangle" style="font-size:18px;color:var(--amber);flex-shrink:0" aria-hidden="true"></i>
+          <div style="flex:1;font-size:12px;color:var(--text2)">请先确认<strong>试算平衡表</strong>借贷平衡后再生成结转分录。</div>
+          <button class="btn btn-xs btn-p" onclick="go('tb',document.getElementById('ni-tb'))" style="flex-shrink:0">前往试算平衡表 →</button>
+        </div>
+        <!-- 结转说明（大白话） -->
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start">
+            <i class="ti ti-info-circle" style="font-size:18px;color:var(--amber-text);flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+            <div style="font-size:11.5px;line-height:1.7;color:var(--text2)">
+              <b style="color:var(--amber-text)">为什么要结转？</b> 收入、费用科目像一块「年度记分牌」，只记<b>本期</b>的赚与花。结账前把它们的余额结转到<b>「本年利润」</b>，算出净利后再转入<b>「留存收益」（股东家底）</b>，并把收入/费用科目<b>清零</b>，让下一期从 0 重新计——这样资产负债表的权益才会包含本期利润、两边才平。
+            </div>
+          </div>
+        </div>
+        <!-- 结转分录 -->
+        <div class="card">
+          <div class="ch"><span class="ct">结转分录 Closing Entries — Jan 2026</span><span class="pill p-green" style="font-size:10.5px">✓ 借贷平衡</span></div>
+          <table class="tbl" style="font-size:12px">
+            <thead><tr><th style="width:30px">#</th><th>摘要 Narrative</th><th>借方 Dr.</th><th>贷方 Cr.</th><th style="text-align:right;width:120px">金额 HKD</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4100 / 利息收入 4300）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td style="text-align:right;font-weight:600">45,818.50</td></tr>
+              <tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>费用类（汽车/电话/折旧/审计费/强积金等）</td><td style="text-align:right;font-weight:600">9,231.70</td></tr>
+              <tr><td>3</td><td>结转本期利得税</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>利得税 Profits tax expense (7100)</td><td style="text-align:right;font-weight:600">3,538.16</td></tr>
+              <tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>留存收益 Retained earnings (3200)</td><td style="text-align:right;font-weight:600">33,048.64</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 本年利润汇总 + 结转结果 -->
+        <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="card">
+            <div class="ch"><span class="ct">「本年利润」结转汇总 P&amp;L Summary</span></div>
+            <div style="padding:12px 16px">
+              <table style="width:100%;font-size:12px;border-collapse:collapse">
+                <tr><td style="padding:4px 0;color:var(--text2)">贷：结转收入</td><td style="text-align:right;color:var(--green);font-weight:600">+45,818.50</td></tr>
+                <tr><td style="padding:4px 0;color:var(--text2)">借：结转费用</td><td style="text-align:right;color:var(--red)">(9,231.70)</td></tr>
+                <tr><td style="padding:4px 0;color:var(--text2)">借：结转利得税</td><td style="text-align:right;color:var(--red)">(3,538.16)</td></tr>
+                <tr style="border-top:1px solid var(--border)"><td style="padding:6px 0;font-weight:700">= 本期净利</td><td style="text-align:right;font-weight:700;color:var(--green-text)">33,048.64</td></tr>
+                <tr><td style="padding:4px 0;color:var(--text2)">借：结转至留存收益</td><td style="text-align:right;color:var(--red)">(33,048.64)</td></tr>
+                <tr style="border-top:2px solid var(--text)"><td style="padding:6px 0;font-weight:800">本年利润余额</td><td style="text-align:right;font-weight:800;color:var(--blue-text)">0.00 ✓ 已清零</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="card" style="background:var(--green-bg);border-color:var(--green)">
+            <div style="padding:14px 16px;display:flex;flex-direction:column;justify-content:center;height:100%">
+              <div style="font-size:12px;color:var(--green-text);line-height:2">
+                <div>✓ 收入 / 费用类科目余额已<b>全部清零</b>，下一期从 0 重新计</div>
+                <div>✓ 本期净利 <b>HKD 33,048.64</b> 已结入<b>留存收益</b></div>
+                <div>✓ 结转分录借贷平衡 · 已写入<b>日记账</b>（来源：结账结转）</div>
+                <div>✓ 完成后即可生成<b>财务报表</b>（资产负债表权益含本期利润）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ═══════════════════════ 财务报表 ═══════════════════════ -->
       <div class="page" id="page-reports">
         <!-- 顶部工具栏 -->
@@ -1664,8 +1740,8 @@
         <!-- 前置检查 -->
         <div id="rpt-prereq" style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
           <i class="ti ti-alert-triangle" style="font-size:18px;color:var(--amber);flex-shrink:0" aria-hidden="true"></i>
-          <div style="flex:1;font-size:12px;color:var(--text2)">请先确认<strong>试算平衡表</strong>借贷平衡后再生成报表。</div>
-          <button class="btn btn-xs btn-p" onclick="go('tb',document.getElementById('ni-tb'))" style="flex-shrink:0">前往试算平衡表 →</button>
+          <div style="flex:1;font-size:12px;color:var(--text2)">请先完成<strong>结转分录</strong>（损益结转、损益科目清零）后再生成财务报表。</div>
+          <button class="btn btn-xs btn-p" onclick="go('carry',document.getElementById('ni-carry'))" style="flex-shrink:0">前往结转分录 →</button>
         </div>
         <!-- 出表前完整性校验（落地「做账→出报表 流程完整性审查」修改方案）-->
         <div class="card" id="rpt-completeness-card" style="margin-bottom:14px">
@@ -4007,6 +4083,7 @@ const LANG = {
     'nav.workspace':'工作台', 'nav.bank':'银行流水上传', 'nav.inv':'票据上传 &amp; 解析',
     'nav.recon':'银行票据会计分录', 'nav.cash':'手工补录会计分录', 'nav.adjust':'期末调整',
     'nav.tb':'试算平衡表',
+    'nav.carry':'结转分录',
     'nav.reports':'财务报表',
     'nav.close':'结账 &amp; 报表',
     'nav.init':'初始化', 'nav.coa':'科目表 (COA)', 'nav.endpoints':'接入点管理',
@@ -4029,6 +4106,7 @@ const LANG = {
     'nav.workspace':'工作台', 'nav.bank':'銀行流水上傳', 'nav.inv':'票據上傳 &amp; 解析',
     'nav.recon':'銀行票據會計分錄', 'nav.cash':'手工補錄會計分錄', 'nav.adjust':'期末調整',
     'nav.tb':'試算平衡表',
+    'nav.carry':'結轉分錄',
     'nav.reports':'財務報表',
     'nav.close':'結賬 &amp; 報表',
     'nav.init':'初始化', 'nav.coa':'科目表 (COA)', 'nav.endpoints':'接入點管理',
@@ -4050,6 +4128,7 @@ const LANG = {
     'nav.workspace':'Workspace', 'nav.bank':'Bank Statements', 'nav.inv':'Invoice Upload &amp; AI',
     'nav.recon':'Bank-Invoice JE', 'nav.cash':'Manual Entry JE', 'nav.adjust':'Period-End Adj.',
     'nav.tb':'Trial Balance',
+    'nav.carry':'Closing Entries',
     'nav.reports':'Financial Reports',
     'nav.close':'Close &amp; Reports',
     'nav.init':'Initialization', 'nav.coa':'Chart of Accounts', 'nav.endpoints':'API Endpoints',
@@ -4100,17 +4179,30 @@ function setLanguage(lang) {
 }
 
 
-// ─── 试算平衡 → 确认并生成财务报表 ──────────────────────────────
+// ─── 试算平衡 → 生成结转分录（下一步） ──────────────────────────────
 function confirmAndGenerateReports() {
   var tbPrereq = document.getElementById('tb-prereq');
   if (tbPrereq && tbPrereq.style.display !== 'none') {
     toast('⚠ 请先完成期末调整后再确认试算平衡表'); return;
   }
-  // 跳转至财务报表页
+  // 试算已平衡 → 进入结转分录，并解除其前置提示
+  go('carry', document.getElementById('ni-carry'));
+  var cp = document.getElementById('carry-prereq');
+  if (cp) cp.style.display = 'none';
+  toast('✓ 试算平衡已确认，已按损益类科目生成结转分录，请复核后过账');
+}
+
+// ─── 结转分录 → 过账并生成财务报表（下一步） ──────────────────────────
+function confirmCarryAndGenerateReports() {
+  var cp = document.getElementById('carry-prereq');
+  if (cp && cp.style.display !== 'none') {
+    toast('⚠ 请先确认试算平衡表借贷平衡后再生成结转分录'); return;
+  }
+  // 结转已过账、损益科目清零 → 进入财务报表，并解除其前置提示
   go('reports', document.getElementById('ni-reports'));
   var prereq = document.getElementById('rpt-prereq');
-  if (prereq) prereq.style.display = 'none'; // 试算已平衡，隐藏前置检查
-  toast('✓ 试算平衡已确认，正在生成财务报表…');
+  if (prereq) prereq.style.display = 'none';
+  toast('✓ 结转分录已过账，损益科目已清零，正在生成财务报表…');
 }
 
 // ─── 财务报表 → 确认关账 ─────────────────────────────────────────
@@ -4194,7 +4286,10 @@ function deleteAdj(id) {
 }
 function confirmAllAdj() {
   ADJ_ENTRIES.forEach(function(e){ e.status = 'confirmed'; });
-  renderAdjList(); toast('✓ 已全部确认');
+  renderAdjList();
+  // 期末调整完成 → 解除「试算平衡表」的前置提示（开启 调整→试算→结转→报表 链路）
+  var tp = document.getElementById('tb-prereq'); if (tp) tp.style.display = 'none';
+  toast('✓ 期末调整已全部确认，可前往试算平衡表');
 }
 function renderAdjList() {
   var el = document.getElementById('adj-list'); if (!el) return;
@@ -4243,6 +4338,7 @@ const PAGE_META = {
   entry:    ['AI 会计分录','账期生成 · 对账来源 · 分录明细'],
   adjust:   ['期末调整','折旧 · 应计 · 预付 · 暂估 · 其他调整'],
   tb:       ['试算平衡表','TB · 借贷平衡 · 按账期查看'],
+  carry:    ['结转分录','Closing Entries · 损益结转「本年利润」→ 留存收益 · 损益科目清零'],
   reports:  ['财务报表','P&L · B/S · 按账期查看 · 导出'],
   close:    ['结账 & 报表','期末调整 · 试算平衡 · 财务报表'],
   init:     ['初始化设置','期初設定 · 财政年度 · 结账周期'],
