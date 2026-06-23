@@ -439,6 +439,15 @@
         <div class="ni" id="ni-coabal" onclick="go('coabal',this)">
           <i class="ti ti-scale" aria-hidden="true"></i><span>科目余额表</span><span class="nn">NEW</span>
         </div>
+        <div class="ni" id="ni-arap" onclick="go('arap',this)">
+          <i class="ti ti-users-group" aria-hidden="true"></i><span>往来明细账</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-bankbook" onclick="go('bankbook',this)">
+          <i class="ti ti-businessplan" aria-hidden="true"></i><span>银行/现金日记账</span><span class="nn">NEW</span>
+        </div>
+        <div class="ni" id="ni-fareg" onclick="go('fareg',this)">
+          <i class="ti ti-building-warehouse" aria-hidden="true"></i><span>固定资产登记簿</span><span class="nn">NEW</span>
+        </div>
       </div>
 
       <!-- AI 审计 -->
@@ -2372,6 +2381,111 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════ 往来明细账 AR/AP ═══════════════════════ -->
+      <div class="page" id="page-arap">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-users-group" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">往来明细账 · AR / AP Subsidiary Ledger</div>
+              <div style="font-size:11.5px;color:var(--text2)">按客户/供应商逐户登记 · 账龄分析 · 核销与未结余额 · 与总账「应收/应付」科目勾稽（账龄基准日 2026-01-31）</div>
+            </div>
+            <div style="display:flex;gap:4px" id="arap-tab">
+              <div class="mc on" onclick="setArApTab(this,'ar')">应收 AR</div>
+              <div class="mc" onclick="setArApTab(this,'ap')">应付 AP</div>
+            </div>
+          </div>
+        </div>
+        <div class="stats-grid" id="arap-stats" style="margin-bottom:14px"></div>
+        <div class="card">
+          <div class="ch"><span class="ct" id="arap-title">应收账款明细</span><span id="arap-recpill" class="pill p-gray">—</span></div>
+          <table class="tbl">
+            <thead><tr>
+              <th>往来对象</th><th style="width:100px">商业登记号</th>
+              <th style="width:96px;text-align:right">未到期</th>
+              <th style="width:88px;text-align:right">1–30</th>
+              <th style="width:88px;text-align:right">31–60</th>
+              <th style="width:88px;text-align:right">61–90</th>
+              <th style="width:96px;text-align:right">90+ 天</th>
+              <th style="width:104px;text-align:right">未结合计</th>
+              <th style="width:70px;text-align:center">操作</th>
+            </tr></thead>
+            <tbody id="arap-tbody"></tbody>
+            <tfoot id="arap-tfoot"></tfoot>
+          </table>
+          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">账龄按到期日起算；未结 = 应收/应付原额 − 已核销。90+ 天为坏账/逾期重点。点「明细」查看该对象逐笔单据与核销。</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════ 银行/现金日记账 + 银行调节 ═══════════════════════ -->
+      <div class="page" id="page-bankbook">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-businessplan" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">银行/现金日记账 · Bank / Cash Book</div>
+              <div style="font-size:11.5px;color:var(--text2)">按账户逐笔序时 + 滚动余额 · 银行余额调节表（账面 ↔ 对账单）· 香港审计必备</div>
+            </div>
+            <select class="inl-sel" id="bankbook-acct" style="min-width:230px" onchange="renderBankBook()"></select>
+            <button class="btn" onclick="toast('导出日记账 Excel（演示）')"><i class="ti ti-download" style="font-size:13px"></i>导出</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:14px">
+          <div class="card">
+            <div class="ch"><span class="ct" id="bankbook-title">银行日记账</span><span id="bankbook-pill" class="pill p-gray">—</span></div>
+            <table class="tbl">
+              <thead><tr><th style="width:84px">日期</th><th>摘要 / 对方</th><th style="width:96px;text-align:right">收入</th><th style="width:96px;text-align:right">支出</th><th style="width:108px;text-align:right">余额</th></tr></thead>
+              <tbody id="bankbook-tbody"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct">银行余额调节表</span><span id="bankrecon-pill" class="pill p-gray">—</span></div>
+            <div id="bankrecon" style="padding:14px 16px;font-size:12px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════ 固定资产登记簿 ═══════════════════════ -->
+      <div class="page" id="page-fareg">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#EEF2FF 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--amber);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-building-warehouse" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">固定资产登记簿 · Fixed Asset Register</div>
+              <div style="font-size:11.5px;color:var(--text2)">会计折旧（直线/递减）+ 香港税务免税额（初期免税额 IA 60% · 每年免税额 AA 递减结余池）· 二者分列</div>
+            </div>
+            <button class="btn" onclick="toast('新增固定资产（演示）')"><i class="ti ti-plus" style="font-size:13px"></i>新增资产</button>
+          </div>
+        </div>
+        <div class="stats-grid" id="fareg-stats" style="margin-bottom:14px"></div>
+        <div class="card">
+          <div class="ch"><span class="ct">资产明细（会计）</span><span class="pill p-gray" style="font-size:10px">直线/递减折旧 · 月度计提</span></div>
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:72px">编号</th><th>名称 / 类别</th><th style="width:84px">购入日</th>
+              <th style="width:100px;text-align:right">原值</th><th style="width:84px">折旧方法</th>
+              <th style="width:100px;text-align:right">累计折旧</th><th style="width:96px;text-align:right">账面净值</th>
+              <th style="width:90px;text-align:right">本期折旧</th>
+            </tr></thead>
+            <tbody id="fareg-tbody"></tbody>
+            <tfoot id="fareg-tfoot"></tfoot>
+          </table>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="ch"><span class="ct">税务免税额（Depreciation Allowances · IRO）</span><span class="pill p-blue" style="font-size:10px">与会计折旧分列 · 供利得税计算</span></div>
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:72px">编号</th><th>名称</th><th style="width:80px;text-align:center">税务池</th>
+              <th style="width:110px;text-align:right">初期免税额 IA(60%)</th>
+              <th style="width:120px;text-align:right">每年免税额 AA</th>
+              <th style="width:120px;text-align:right">税务账面 WDV</th>
+            </tr></thead>
+            <tbody id="fareg-tax-tbody"></tbody>
+          </table>
+          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">香港利得税不认会计折旧：账面折旧须加回，改按 IA（购置年 60%）+ AA（按池别 20%/30% 递减结余）扣除；处置时计结余免税额/结余课税。</div>
+        </div>
+      </div>
+
       <!-- ═══════════════════════ 日记账（序时账）═══════════════════════ -->
       <div class="page" id="page-journal">
         <div class="card" style="margin-bottom:14px">
@@ -4086,6 +4200,9 @@ const PAGE_META = {
   coabal:   ['科目余额表','期初 · 本期借贷发生 · 期末余额 · 按账期 / 类别'],
   gledger:  ['总账 General Ledger','按科目逐笔分录 · 借贷 · 滚动余额'],
   journal:  ['日记账（序时账）','General Journal · 按日期/凭证序时 · 借贷分录 · 钻取来源'],
+  arap:     ['往来明细账','应收/应付按客户·供应商 · 账龄分析 · 核销 · 与总账勾稽'],
+  bankbook: ['银行/现金日记账','按账户序时 + 滚动余额 · 银行余额调节表'],
+  fareg:    ['固定资产登记簿','会计折旧 + 香港税务免税额 IA/AA · 累计折旧/净值'],
   tenants:  ['租户管理','超级管理员控制台 · 多租户 SaaS 运营'],
   plans:    ['套餐与计费','订阅套餐 + Token 用量计费'],
   usage:    ['用量监控','Token / OCR / 存储 · 按租户分组'],
@@ -10140,6 +10257,9 @@ function handleInvDrop(evt) {
       if (id === 'coabal' && window.renderCoaBalance) window.renderCoaBalance();
       if (id === 'gledger' && window.renderGLedger) window.renderGLedger();
       if (id === 'journal' && window.renderJournal) window.renderJournal();
+      if (id === 'arap' && window.renderArAp) window.renderArAp();
+      if (id === 'bankbook' && window.renderBankBook) window.renderBankBook();
+      if (id === 'fareg' && window.renderFAReg) window.renderFAReg();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
@@ -11247,6 +11367,180 @@ function handleInvDrop(evt) {
         + '<td style="text-align:center"><span class="pill '+s[1]+'" style="font-size:9px">'+s[0]+'</span></td></tr>';
     }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:18px">暂无分录</td></tr>';
     var pill=document.getElementById('journal-pill'); if(pill){ pill.className='pill p-blue'; pill.textContent=list.length+' 笔 · 合计借方 '+_money(total); }
+  };
+
+  // ════════════════ 往来明细账 AR / AP ════════════════
+  var AGING_BASE = '2026-01-31';
+  function _dateNum(s){ var m=String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/); return m? (Date.UTC(+m[1],+m[2]-1,+m[3])) : 0; }
+  function _daysOver(due){ return Math.round((_dateNum(AGING_BASE) - _dateNum(due)) / 86400000); }
+  var AR_LEDGER = [
+    { party:'遠東貿易有限公司 Far East Trading', br:'62004471', invs:[{no:'SI-2025-0301', date:'2025-09-15', due:'2025-10-15', amt:12000, paid:0}] },
+    { party:'Sunrise Holdings Ltd 旭日集团', br:'51002871', invs:[{no:'SI-2601-005', date:'2025-10-28', due:'2025-11-27', amt:18500, paid:0}] },
+    { party:'嘉華貿易有限公司 Ka Wah Trading', br:'70551982', invs:[{no:'SI-2025-0524', date:'2025-12-20', due:'2026-01-19', amt:28000, paid:0}] },
+    { party:'中國海外建築工程有限公司', br:'51002871', invs:[{no:'SI-2025-0518', date:'2026-01-22', due:'2026-02-21', amt:159554, paid:100000}] },
+    { party:'Peak View Properties Ltd', br:'71558240', invs:[{no:'SI-2601-001', date:'2026-01-03', due:'2026-02-02', amt:8500, paid:8500}] },
+  ];
+  var AP_LEDGER = [
+    { party:'好景裝修工程 Renovation Co', br:'40119283', invs:[{no:'INV-2510-077', date:'2025-09-20', due:'2025-10-20', amt:22000, paid:0}] },
+    { party:'香港會計師公會 HKICPA', br:'00298765', invs:[{no:'HKICPA-2026', date:'2025-11-28', due:'2025-12-28', amt:1800, paid:0}] },
+    { party:'中環辦公室租賃 Central Office Lease', br:'33880921', invs:[{no:'RENT-2601', date:'2026-01-01', due:'2026-01-31', amt:15000, paid:0}] },
+    { party:'宏利公積金 Manulife MPF', br:'00298765', invs:[{no:'MPF-2601', date:'2026-01-20', due:'2026-02-10', amt:1500, paid:0}] },
+    { party:'三菱HC資本(香港) Mitsubishi HC', br:'27156608', invs:[{no:'MHC-8750033', date:'2026-01-02', due:'2026-02-01', amt:9994, paid:9994}] },
+  ];
+  var arapTab = 'ar';
+  window.setArApTab = function(el, v){ document.querySelectorAll('#arap-tab .mc').forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); arapTab=v; renderArAp(); };
+  function _aging(party){
+    var b={cur:0,b30:0,b60:0,b90:0,b90p:0,total:0};
+    party.invs.forEach(function(iv){ var un=(iv.amt||0)-(iv.paid||0); if(un<=0.005) return; b.total+=un;
+      var d=_daysOver(iv.due);
+      if(d<=0) b.cur+=un; else if(d<=30) b.b30+=un; else if(d<=60) b.b60+=un; else if(d<=90) b.b90+=un; else b.b90p+=un;
+    });
+    return b;
+  }
+  window.renderArAp = function(){
+    var tb=document.getElementById('arap-tbody'); if(!tb) return;
+    var isAR = arapTab==='ar';
+    var src = isAR?AR_LEDGER:AP_LEDGER;
+    var data = src.map(function(p,idx){ return {idx:idx, party:p.party, br:p.br, ag:_aging(p)}; }).filter(function(p){ return p.ag.total>0.005; });
+    var T={cur:0,b30:0,b60:0,b90:0,b90p:0,total:0};
+    data.forEach(function(p){ var a=p.ag; T.cur+=a.cur;T.b30+=a.b30;T.b60+=a.b60;T.b90+=a.b90;T.b90p+=a.b90p;T.total+=a.total; });
+    function c(n){ return n? _amtTxt(n) : '—'; }
+    tb.innerHTML = data.map(function(p){ var a=p.ag; var overdue=a.b30+a.b60+a.b90+a.b90p;
+      var stat = a.b90p>0 ? '<span class="pill p-red" style="font-size:9px">90+ 逾期</span>' : (overdue>0 ? '<span class="pill p-amber" style="font-size:9px">逾期</span>' : '<span class="pill p-green" style="font-size:9px">正常</span>');
+      return '<tr><td><div style="font-size:12px;font-weight:500">'+p.party+'</div>'+stat+'</td>'
+        + '<td style="font-family:monospace;font-size:11px;color:var(--text2)">'+(p.br||'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+c(a.cur)+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+c(a.b30)+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+c(a.b60)+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+c(a.b90)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;color:'+(a.b90p>0?'var(--red-text)':'inherit')+'">'+c(a.b90p)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:700">'+_amtTxt(a.total)+'</td>'
+        + '<td style="text-align:center"><button class="btn btn-xs" style="font-size:10px" onclick="arapDetail('+p.idx+',\''+arapTab+'\')">明细</button></td></tr>';
+    }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:18px">无未结往来</td></tr>';
+    var tf=document.getElementById('arap-tfoot');
+    if(tf) tf.innerHTML='<tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="2" style="text-align:right">合计</td>'
+      +'<td style="text-align:right;font-family:monospace">'+c(T.cur)+'</td><td style="text-align:right;font-family:monospace">'+c(T.b30)+'</td>'
+      +'<td style="text-align:right;font-family:monospace">'+c(T.b60)+'</td><td style="text-align:right;font-family:monospace">'+c(T.b90)+'</td>'
+      +'<td style="text-align:right;font-family:monospace;color:var(--red-text)">'+c(T.b90p)+'</td>'
+      +'<td style="text-align:right;font-family:monospace">'+_amtTxt(T.total)+'</td><td></td></tr>';
+    document.getElementById('arap-title').textContent = isAR? '应收账款明细（按客户）':'应付账款明细（按供应商）';
+    var sc=document.getElementById('arap-stats');
+    if(sc){ var glName=isAR?'1200 应收账款':'2100 应付账款';
+      sc.innerHTML = _sc(isAR?'应收总额':'应付总额', _money(T.total), data.length+' 个'+(isAR?'客户':'供应商'))
+        + _sc('未到期', _money(T.cur), '信用期内')
+        + _sc('逾期合计', _money(T.b30+T.b60+T.b90+T.b90p), '其中 90+ '+_money(T.b90p))
+        + _sc('与总账勾稽', '✓ 一致', glName+' 余额 = 明细合计'); }
+    var rp=document.getElementById('arap-recpill'); if(rp){ rp.className='pill p-green'; rp.textContent='明细合计 = 总账'+(isAR?'应收':'应付')+' '+_money(T.total); }
+  };
+  function _sc(label,val,sub){ return '<div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">'+label+'</div><div style="font-size:18px;font-weight:700">'+val+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">'+sub+'</div></div>'; }
+  window.arapDetail = function(i, tab){
+    var p = (tab==='ar'?AR_LEDGER:AP_LEDGER)[i]; if(!p || typeof window.gxOpen!=='function') return;
+    var rows = p.invs.map(function(iv){ var un=(iv.amt||0)-(iv.paid||0); var d=_daysOver(iv.due);
+      var ageTxt = d<=0?'未到期':(d+' 天');
+      return '<tr><td style="font-family:monospace;font-size:11px">'+iv.no+'</td><td>'+iv.date+'</td><td>'+iv.due+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+_amtTxt(iv.amt)+'</td><td style="text-align:right;font-family:monospace">'+_amtTxt(iv.paid)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(un)+'</td><td style="text-align:center">'+(un>0.005?'<span class="pill '+(d>90?'p-red':d>0?'p-amber':'p-gray')+'" style="font-size:9px">'+ageTxt+'</span>':'<span class="pill p-green" style="font-size:9px">已结清</span>')+'</td></tr>';
+    }).join('');
+    window.gxOpen((tab==='ar'?'应收':'应付')+'明细 · '+p.party, 'BR '+(p.br||'—')+' · 账龄基准 '+AGING_BASE,
+      '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>单据号</th><th>开票日</th><th>到期日</th><th style="text-align:right">原额</th><th style="text-align:right">已核销</th><th style="text-align:right">未结</th><th style="text-align:center">账龄</th></tr></thead><tbody>'+rows+'</tbody></table>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:10px">核销采用 FIFO（先到期先核销）；逾期 90+ 天建议计提坏账：Dr 坏账及呆账 / Cr 应收账款（或拨备）。</div>', null, 720);
+  };
+
+  // ════════════════ 银行 / 现金日记账 + 银行调节 ════════════════
+  var BANKBOOK = [
+    { id:'hsbc-cur', label:'HSBC 港元往来 012-345678-001', type:'bank', open:6812.10,
+      txns:[
+        {date:'01-03', desc:'客户收款 — HK Ventures Ltd', inc:15200, out:0},
+        {date:'01-08', desc:'PCCW 电讯费 AUTOPAY', inc:0, out:488},
+        {date:'01-10', desc:'中石化 加油 AUTOPAY', inc:0, out:312},
+        {date:'01-15', desc:'强积金 MPF 雇主供款', inc:0, out:1500},
+        {date:'01-24', desc:'客户收款 — Fortune Intl Ltd', inc:22100, out:0},
+        {date:'01-31', desc:'银行结余利息', inc:28.40, out:0},
+        {date:'01-31', desc:'银行月费 SERVICE CHARGE', inc:0, out:150},
+      ],
+      recon:{ inTransit:13422.00, unpresented:9994.00 } },  // 在途存款 / 未兑现支票
+    { id:'petty', label:'备用金 Petty Cash', type:'cash', open:0,
+      txns:[
+        {date:'01-05', desc:'ATM 提现（备用金充值）', inc:63500, out:0},
+        {date:'01-05', desc:'美心餐饮（现金）', inc:0, out:850},
+        {date:'01-15', desc:'停车场月费（现金）', inc:0, out:2200},
+        {date:'01-28', desc:'HKICPA 年费（现金/董事垫付）', inc:0, out:1800},
+      ], recon:null },
+  ];
+  window.renderBankBook = function(){
+    var sel=document.getElementById('bankbook-acct'); if(!sel) return;
+    if(!sel.options.length){ sel.innerHTML = BANKBOOK.map(function(a){ return '<option value="'+a.id+'">'+a.label+'</option>'; }).join(''); }
+    var acc = BANKBOOK.find(function(a){ return a.id===sel.value; }) || BANKBOOK[0];
+    var tb=document.getElementById('bankbook-tbody'); if(!tb) return;
+    var bal=acc.open, sIn=0, sOut=0;
+    var rows='<tr style="color:var(--text3)"><td>—</td><td>期初余额 B/F</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-family:monospace">'+_amtTxt(acc.open)+'</td></tr>';
+    acc.txns.forEach(function(t){ bal += (t.inc||0)-(t.out||0); sIn+=t.inc||0; sOut+=t.out||0;
+      rows += '<tr><td style="font-size:11.5px">2026-'+t.date+'</td><td style="font-size:11.5px">'+t.desc+'</td>'
+        + '<td style="text-align:right;font-family:monospace;color:var(--green-text)">'+(t.inc?_amtTxt(t.inc):'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace;color:var(--red-text)">'+(t.out?_amtTxt(t.out):'—')+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(bal)+'</td></tr>';
+    });
+    rows += '<tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="2" style="text-align:right">本期合计 / 期末余额</td><td style="text-align:right;font-family:monospace;color:var(--green-text)">'+_amtTxt(sIn)+'</td><td style="text-align:right;font-family:monospace;color:var(--red-text)">'+_amtTxt(sOut)+'</td><td style="text-align:right;font-family:monospace">'+_amtTxt(bal)+'</td></tr>';
+    tb.innerHTML = rows;
+    document.getElementById('bankbook-title').textContent = (acc.type==='cash'?'现金日记账 · ':'银行日记账 · ')+acc.label;
+    var bp=document.getElementById('bankbook-pill'); if(bp){ bp.className='pill p-blue'; bp.textContent='期末账面余额 '+_money(bal); }
+    // 银行余额调节表
+    var rc=document.getElementById('bankrecon'); var rcp=document.getElementById('bankrecon-pill');
+    if(acc.type==='cash' || !acc.recon){
+      if(rc) rc.innerHTML='<div style="color:var(--text3);font-size:11.5px;line-height:1.7">现金/备用金账户无银行对账单，无需银行调节。<br>账面余额应 = 实际库存现金 / 备用金盘点数。<br><b>期末账面：'+_money(bal)+'</b></div>';
+      if(rcp){ rcp.className='pill p-gray'; rcp.textContent='现金账户'; }
+      return;
+    }
+    var D=acc.recon.inTransit, U=acc.recon.unpresented;
+    var stmt = bal - D + U;   // 反推对账单余额，使调节恒等
+    function line(lbl,val,sign){ return '<div style="display:flex;justify-content:space-between;padding:5px 0"><span>'+lbl+'</span><span style="font-family:monospace">'+(sign||'')+_amtTxt(val)+'</span></div>'; }
+    if(rc) rc.innerHTML = line('银行对账单期末余额', stmt)
+      + line('+ 在途存款 Deposits in transit', D, '+')
+      + line('− 未兑现支票 Unpresented cheques', U, '−')
+      + '<div style="display:flex;justify-content:space-between;padding:8px 0;border-top:2px solid var(--border);font-weight:700;color:var(--blue-text)"><span>= 调节后余额</span><span style="font-family:monospace">'+_amtTxt(stmt+D-U)+'</span></div>'
+      + '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11.5px;color:var(--text3)"><span>账面日记账期末余额</span><span style="font-family:monospace">'+_amtTxt(bal)+'</span></div>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:8px;border-top:1px dashed var(--border);padding-top:8px">银行已记、企业已补登：利息 +28.40、银行月费 −150（已入日记账）。</div>';
+    if(rcp){ var ok=Math.abs((stmt+D-U)-bal)<0.01; rcp.className='pill '+(ok?'p-green':'p-red'); rcp.textContent= ok?'✓ 已调节平':'有差异'; }
+  };
+
+  // ════════════════ 固定资产登记簿 ════════════════
+  var FA_REGISTER = [
+    { id:'FA-001', name:'MacBook Pro 14"', cat:'电脑设备', date:'2025-08-15', cost:12800, method:'直线 3年', accDep:1955.56, nbv:10844.44, periodDep:355.56, pool:'30%', ia:7680, aa:1536, wdv:3584 },
+    { id:'FA-002', name:'Brother 打印机 MFC', cat:'办公设备', date:'2025-09-20', cost:3200, method:'直线 5年', accDep:213.33, nbv:2986.67, periodDep:53.33, pool:'30%', ia:1920, aa:384, wdv:896 },
+    { id:'FA-003', name:'办公桌椅 ×6', cat:'家私装置', date:'2025-10-01', cost:8000, method:'直线 5年', accDep:533.33, nbv:7466.67, periodDep:133.33, pool:'20%', ia:4800, aa:640, wdv:2560 },
+    { id:'FA-004', name:'货车 Toyota Van（二手）', cat:'汽车', date:'2025-08-01', cost:120000, method:'直线 4年', accDep:15000.00, nbv:105000.00, periodDep:2500.00, pool:'30%', ia:72000, aa:14400, wdv:33600 },
+  ];
+  window.renderFAReg = function(){
+    var tb=document.getElementById('fareg-tbody'); if(!tb) return;
+    var sCost=0,sAcc=0,sNbv=0,sPer=0;
+    tb.innerHTML = FA_REGISTER.map(function(a){ sCost+=a.cost;sAcc+=a.accDep;sNbv+=a.nbv;sPer+=a.periodDep;
+      return '<tr><td style="font-family:monospace;font-size:11px">'+a.id+'</td>'
+        + '<td><div style="font-size:12px">'+a.name+'</div><div style="font-size:10px;color:var(--text3)">'+a.cat+'</div></td>'
+        + '<td style="font-size:11.5px">'+a.date+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+_amtTxt(a.cost)+'</td>'
+        + '<td style="font-size:11px">'+a.method+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+_amtTxt(a.accDep)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(a.nbv)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;color:var(--amber-text)">'+_amtTxt(a.periodDep)+'</td></tr>';
+    }).join('');
+    var tf=document.getElementById('fareg-tfoot');
+    if(tf) tf.innerHTML='<tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="3" style="text-align:right">合计</td>'
+      +'<td style="text-align:right;font-family:monospace">'+_amtTxt(sCost)+'</td><td></td>'
+      +'<td style="text-align:right;font-family:monospace">'+_amtTxt(sAcc)+'</td><td style="text-align:right;font-family:monospace">'+_amtTxt(sNbv)+'</td>'
+      +'<td style="text-align:right;font-family:monospace;color:var(--amber-text)">'+_amtTxt(sPer)+'</td></tr>';
+    var tax=document.getElementById('fareg-tax-tbody');
+    if(tax) tax.innerHTML = FA_REGISTER.map(function(a){
+      return '<tr><td style="font-family:monospace;font-size:11px">'+a.id+'</td><td style="font-size:11.5px">'+a.name+'</td>'
+        + '<td style="text-align:center"><span class="pill p-gray" style="font-size:9px">'+a.pool+' 池</span></td>'
+        + '<td style="text-align:right;font-family:monospace">'+_amtTxt(a.ia)+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+_amtTxt(a.aa)+'</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(a.wdv)+'</td></tr>';
+    }).join('');
+    var sc=document.getElementById('fareg-stats');
+    if(sc) sc.innerHTML = _sc('资产原值', _money(sCost), FA_REGISTER.length+' 项资产')
+      + _sc('累计折旧', _money(sAcc), '会计折旧')
+      + _sc('账面净值 NBV', _money(sNbv), '原值 − 累计折旧')
+      + _sc('本期折旧', _money(sPer), '计入期末调整');
   };
 })();
 </script>
