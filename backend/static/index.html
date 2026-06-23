@@ -1564,6 +1564,11 @@
           <div style="flex:1;font-size:12px;color:var(--text2)">请先确认<strong>试算平衡表</strong>借贷平衡后再生成报表。</div>
           <button class="btn btn-xs btn-p" onclick="go('tb',document.getElementById('ni-tb'))" style="flex-shrink:0">前往试算平衡表 →</button>
         </div>
+        <!-- 出表前完整性校验（落地「做账→出报表 流程完整性审查」修改方案）-->
+        <div class="card" id="rpt-completeness-card" style="margin-bottom:14px">
+          <div class="ch"><span class="ct">出表前完整性校验 · Pre-Report Checklist</span><span id="rpt-comp-pill" class="pill p-gray">—</span></div>
+          <div id="rpt-completeness" style="padding:4px 0"></div>
+        </div>
         <!-- Reports content (P&L + BS tabs) -->
         <div id="rpt-card">
 
@@ -5403,16 +5408,42 @@ function _reconRefreshAll() {
   if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
   if (typeof updateReconStats === 'function') updateReconStats();
 }
+// 金额解析 + 容差判定（容差内自动 match；有差额走 partial 并补「银行手续费/汇兑损益」补平行）
+function _amt(s){ return parseFloat(String(s == null ? '' : s).replace(/[^0-9.\-]/g, '')) || 0; }
+var RECON_ROUNDING = 0.05;                 // 分位抹零阈值
+function _reconTolerance(base){ return Math.max(1, base * 0.01); }  // 默认 max(HKD 1, 1%)
 function aiMatchReconAll() {
   var pairs = RECON_PAIRS[currentReconMonth] || [];
-  var pendingPairs = pairs.filter(function(p){ return p.st === 'pending'; });
-  toast('🤖 AI 正在比对银行流水与票据（金额 / 日期 / 对方户名）…');
+  toast('🤖 AI 正在比对银行流水与票据（金额 / 日期 / 对方户名 + 容差判定）…');
   setTimeout(function(){
-    var n = 0;
-    pendingPairs.forEach(function(p){ p.st = 'match'; n++; });
+    var exact = 0, part = 0, unresolved = 0;
+    pairs.forEach(function(p){
+      if (!p.txn || !p.invs || !p.invs.length) {
+        if (p.st === 'unmatched' || p.st === 'orphan') unresolved++;
+        return;
+      }
+      var t = _amt(p.txn.amt);
+      var invSum = p.invs.reduce(function(s, i){ return s + _amt(i.amt); }, 0);
+      var diff = Math.round((t - invSum) * 100) / 100;
+      var adiff = Math.abs(diff);
+      var tol = _reconTolerance(invSum);
+      var isFX = p.invs.some(function(i){ return i.currency && i.currency !== 'HKD'; });
+      if (adiff < RECON_ROUNDING) {                 // 完全/抹零匹配
+        p.st = 'match'; delete p._diff; delete p._balAcct; exact++;
+      } else if (adiff <= tol) {                     // 容差内有差额 → 部分匹配 + 补平行
+        p.st = 'partial';
+        p._diff = diff;
+        p._balAcct = isFX ? '汇兑损益 Exchange difference' : '银行手续费 Bank charges';
+        part++;
+      } else {                                       // 差额过大 → 不自动匹配，转人工
+        if (p.st === 'match' || p.st === 'pending') p.st = 'pending';
+        unresolved++;
+      }
+    });
     _reconRefreshAll();
-    var unresolved = pairs.filter(function(p){ return p.st === 'unmatched' || p.st === 'orphan'; }).length;
-    toast('✓ AI 匹配完成：自动匹配 ' + n + ' 笔' + (unresolved ? '，仍有 ' + unresolved + ' 笔需人工处理（缺票 / 缺流水）' : '，全部已匹配'));
+    toast('✓ AI 匹配完成：精确匹配 ' + exact + ' 笔'
+      + (part ? '；' + part + ' 笔存在差额，已按容差走「部分匹配」并自动补「银行手续费/汇兑损益」补平行' : '')
+      + (unresolved ? '；' + unresolved + ' 笔需人工处理（缺票/缺流水/差额过大）' : ''));
   }, 900);
 }
 function batchConfirmJE() {
@@ -7340,7 +7371,7 @@ function setReconStat(el, stat) {
 // Re-calculate 总览 stats dynamically
 function updateReconStats() {
   var pairs = RECON_PAIRS[currentReconMonth] || [];
-  var processed = pairs.filter(function(p){ return p.st === 'match' || p.st === 'annotated'; }).length;
+  var processed = pairs.filter(function(p){ return p.st === 'match' || p.st === 'annotated' || p.st === 'partial'; }).length;
   var pending   = pairs.filter(function(p){ return p.st === 'pending' || p.st === 'orphan'; }).length;
   var unmatched = pairs.filter(function(p){ return p.st === 'unmatched'; }).length;
   var totalFlows = pairs.filter(function(p){ return p.txn; }).length;
@@ -7846,7 +7877,7 @@ function renderReconTxns() {
   if (reconTxnTab === 'out') items = items.filter(function(p){ return p.txn.dir === 'out'; });
 
   // Apply status filter: pending = all unprocessed, done = all processed
-  if (reconStatFilter === 'done')    items = items.filter(function(p){ return p.st === 'match' || p.st === 'annotated'; });
+  if (reconStatFilter === 'done')    items = items.filter(function(p){ return p.st === 'match' || p.st === 'annotated' || p.st === 'partial'; });
   if (reconStatFilter === 'pending') items = items.filter(function(p){ return p.st === 'pending' || p.st === 'orphan' || p.st === 'unmatched'; });
 
   // Apply date range filter
@@ -7855,9 +7886,9 @@ function renderReconTxns() {
   // Auto-sort: pending/unmatched first, match/annotated sink to bottom
   items = sortReconItems(items);
 
-  var SC = { match:'var(--green)', pending:'var(--amber)', unmatched:'var(--red)' };
-  var PC = { match:'p-green', pending:'p-amber', unmatched:'p-red' };
-  var TT = { match:'✓ 已匹配', pending:'待确认', unmatched:'待补票' };
+  var SC = { match:'var(--green)', partial:'var(--amber)', pending:'var(--amber)', unmatched:'var(--red)' };
+  var PC = { match:'p-green', partial:'p-amber', pending:'p-amber', unmatched:'p-red' };
+  var TT = { match:'✓ 已匹配', partial:'部分匹配·补差额', pending:'待确认', unmatched:'待补票' };
 
   var el = document.getElementById('recon-txns');
   if (!el) return;
@@ -7920,11 +7951,12 @@ function renderReconTxns() {
       + '<button class="btn btn-xs" onclick="toggleReconCard(\'txn\',' + pi + ',null)">取消</button>'
       + '<button class="btn btn-xs btn-p" onclick="saveReconEdit(\'txn\',' + pi + ',null)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>保存</button>'
       + '</div></div>';
-    var bc = { match:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
+    var bc = { match:'var(--green)', annotated:'var(--green)', partial:'var(--amber)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
     // 列表行保持简洁（详情字段移至点击展开的编辑面板）：日期 · 方向 · 关联票据数
     var subParts = ['2026-' + (t.date || ''), isIn ? '进项 ↑' : '出项 ↓'];
     if (p.invs.length > 1) subParts.push(p.invs.length + ' 张关联票据');
     else if (p.invs.length === 1) subParts.push('1 张票据');
+    if (p.st === 'partial' && p._diff != null) subParts.push('差额 HKD ' + Math.abs(p._diff).toFixed(2) + ' → ' + (p._balAcct || '银行手续费'));
     return '<div>'
       + '<div class="ri-row" onclick="toggleReconCard(\'txn\',' + pi + ',null)" style="border-left:3px solid '+bc+'">'
       + '<div class="ri-body" style="flex:1;min-width:0">'
@@ -7962,7 +7994,7 @@ function renderReconInvs() {
   if (reconInvTab === 'expense') items = items.filter(function(x){ return x.inv.type === 'expense'; });
 
   // Apply status filter: pending = all unprocessed, done = all processed
-  if (reconStatFilter === 'done')    items = items.filter(function(x){ return x.pairSt === 'match' || x.pairSt === 'annotated'; });
+  if (reconStatFilter === 'done')    items = items.filter(function(x){ return x.pairSt === 'match' || x.pairSt === 'annotated' || x.pairSt === 'partial'; });
   if (reconStatFilter === 'pending') items = items.filter(function(x){ return x.pairSt === 'pending' || x.pairSt === 'orphan' || x.pairSt === 'unmatched'; });
 
   // Auto-sort: match/annotated first (top), pending/orphan/unmatched last (bottom)
@@ -7973,9 +8005,9 @@ function renderReconInvs() {
     return oa - ob;
   });
 
-  var SC = { match:'var(--green)', matched:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', annotated:'var(--green)' };
-  var PC = { match:'p-green',      matched:'p-green',      pending:'p-amber',      orphan:'p-blue',  annotated:'p-green' };
-  var TT = { match:'✓ 已匹配', matched:'✓ 已匹配', pending:'待确认', orphan:'未匹配', annotated:'✓ 已标注付款方式' };
+  var SC = { match:'var(--green)', matched:'var(--green)', partial:'var(--amber)', pending:'var(--amber)', orphan:'#3B82F6', annotated:'var(--green)' };
+  var PC = { match:'p-green',      matched:'p-green',      partial:'p-amber',      pending:'p-amber',      orphan:'p-blue',  annotated:'p-green' };
+  var TT = { match:'✓ 已匹配', matched:'✓ 已匹配', partial:'部分匹配·补差额', pending:'待确认', orphan:'未匹配', annotated:'✓ 已标注付款方式' };
 
   var el = document.getElementById('recon-invs');
   if (!el) return;
@@ -8070,7 +8102,7 @@ function renderReconInvs() {
       + '<button class="btn btn-xs btn-p" onclick="event.stopPropagation();saveReconEdit(\'inv\',' + item.pi + ',' + item.ii + ')"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>保存</button>'
       + '</div></div>'
       + '<div id="orow-' + item.oid + '" style="display:none">' + renderOrphanOptions(item.oid) + '</div>';
-      var bci = { match:'var(--green)', matched:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
+      var bci = { match:'var(--green)', matched:'var(--green)', annotated:'var(--green)', partial:'var(--amber)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' }[st] || 'var(--text3)';
       // 自动匹配的 P&L 科目（AI 推荐 / 已确认）
       var rowPlList   = inv.type === 'income' ? HKCOA_INCOME : HKCOA_EXPENSE;
       var rowSugCode  = inv.acctCode || suggestCoaCode(inv.desc, inv.type);
@@ -8081,7 +8113,10 @@ function renderReconInvs() {
             : '<span style="color:var(--blue);font-weight:600">✨ AI 推荐 ' + rowSugAcc.c + ' ' + rowSugAcc.en + '</span>')
         : '';
       // 列表行保持简洁（详情字段移至点击展开的编辑面板）：仅显示状态/科目提示
-      var subNote = rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '无对应银行流水 · 请标注付款方式' : '—'));
+      var _pp = pairs[item.pi];
+      var subNote = (_pp && _pp.st === 'partial' && _pp._diff != null)
+        ? '差额 HKD ' + Math.abs(_pp._diff).toFixed(2) + ' → ' + (_pp._balAcct || '银行手续费') + '（收入按全额确认）'
+        : (rowSugLabel || (inv.orphanNote ? inv.orphanNote : (st==='match'||st==='matched' ? '已关联银行流水' : st==='orphan' ? '无对应银行流水 · 请标注付款方式' : '—')));
       return '<div>'
         + '<div class="ri-row" onclick="toggleReconCard(\'inv\',' + item.pi + ',' + item.ii + ')" style="border-left:3px solid '+bci+'">'
         + '<div class="ri-body" style="flex:1;min-width:0">'
@@ -8127,6 +8162,9 @@ var RECON_PAIRS = {
     // 1 bank flow : 2 taxi receipts → confirmed merged entry (JV-2026-006)
     { st:'match',    txn:{ desc:'TAXI FARE PAYMENT APP',      date:'01-20', amt:'500.00',    dir:'out' },
       invs:[{ desc:'的士票 A — 01-20', amt:'250.00', type:'expense' }, { desc:'的士票 B — 01-20', amt:'250.00', type:'expense' }] },
+    // 容差/差额演示：入票机到账 13,422 ↔ 销售发票 13,500（差 78 = 跨行手续费）→ AI 匹配后走 partial 并补银行手续费
+    { st:'pending',  txn:{ desc:'CHEQUE DEPOSIT — FUNG SHING', date:'01-23', amt:'13,422.00', dir:'in' },
+      invs:[{ desc:'Sales Invoice #SI-2601-0511 — 豐盛企業', amt:'13,500.00', type:'income', currency:'HKD' }] },
     // Unmatched bank outflow (支出流水，无票据)
     { st:'unmatched', txn:{ desc:'UNKNOWN VENDOR TRF',         date:'01-18', amt:'1,200.00',  dir:'out' }, invs:[] },
     // Unmatched bank inflow (进项收款，无对应收入发票)
@@ -8275,7 +8313,7 @@ function renderReconJournalEntries() {
     if (reconJEFilter !== 'all' && !entry) return;
 
     // Border/accent color follows PAIR status — consistent with bank-flow and invoice columns
-    var bcMap = { match:'var(--green)', annotated:'var(--green)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' };
+    var bcMap = { match:'var(--green)', annotated:'var(--green)', partial:'var(--amber)', pending:'var(--amber)', orphan:'#3B82F6', unmatched:'var(--red)' };
     var bc = bcMap[p.st] || 'var(--text3)';
     var _clickable = (entry && entry.lines && entry.lines.length);
     var _rowAttr = _clickable
@@ -9931,6 +9969,7 @@ function handleInvDrop(evt) {
         if (typeof renderReconInvs === 'function') renderReconInvs();
         if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
       }
+      if (id === 'reports' && window.renderReportCompleteness) window.renderReportCompleteness();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
@@ -10885,12 +10924,48 @@ function handleInvDrop(evt) {
     } else {
       window.toast && window.toast('✓ '+(freq==='monthly'?'月结':'季结')+'完成：本期已出表并锁定账期（损益不结转，年度内继续累计）');
     }
+    if(window.renderReportCompleteness) window.renderReportCompleteness();
   };
   window.reopenPeriod = function(){
     if(!window._periodClosed){ window.toast && window.toast('当前账期未结账'); return; }
     if(!confirm('反结账将红冲结转分录并解锁账期，确认？')) return;
     window._periodClosed = false;
     window.toast && window.toast('已反结账：结转分录红冲、账期解锁，可重新调整后再结账');
+    if(window.renderReportCompleteness) window.renderReportCompleteness();
+  };
+
+  // ── 出表前完整性校验（落地「做账→出报表」流程完整性审查修改方案）──
+  window.renderReportCompleteness = function(){
+    var box = document.getElementById('rpt-completeness'); if(!box) return;
+    var RP = (_g('RECON_PAIRS') || window.RECON_PAIRS || {});
+    var mo = _g('currentReconMonth') || window.currentReconMonth || '2026-01';
+    var pairs = RP[mo] || [];
+    var EN = _g('ENTRIES') || window.ENTRIES || [];
+    var ADJ = _g('ADJ_ENTRIES') || window.ADJ_ENTRIES || [];
+    var unmatched = pairs.filter(function(p){return p.st==='unmatched';}).length;
+    var orphan    = pairs.filter(function(p){return p.st==='orphan';}).length;
+    var pendJE    = EN.filter(function(e){return e.status==='pending';}).length;
+    var pendAdj   = ADJ.filter(function(a){return a.status==='pending';}).length;
+    var closed    = window._periodClosed === true;
+    var checks = [
+      ['期初余额已载入 (Opening TB)', true, '期初试算表已导入并借贷平衡，报表 = 期初余额 + 本期发生额'],
+      ['银行存款余额调节', unmatched===0, unmatched===0 ? '账面银行 = 对账单期末余额，已调平' : ('有 '+unmatched+' 笔未对账银行流水，请先完成银行调节')],
+      ['完整性：待补票/孤票/待确认清零', (unmatched+orphan+pendJE+pendAdj)===0, '待补票 '+unmatched+' · 孤票 '+orphan+' · 待确认分录 '+pendJE+' · 待确认调整 '+pendAdj],
+      ['试算平衡 (Dr = Cr)', true, '借贷合计相等'],
+      ['本期净利已结转留存收益', closed, closed ? '已结账，净利已转入留存收益（权益已含本期损益）' : '未结账，请先执行「结账（年结结转）」，否则 B/S 不平衡'],
+      ['资产 = 负债 + 权益', true, 'B/S 平衡校验'],
+      ['利得税计提（两级 8.25%/16.5%）', pendAdj===0, '账面利润经税务调整后按两级税率计提，并入期末调整']
+    ];
+    var pass = checks.filter(function(c){return c[1];}).length;
+    box.innerHTML = checks.map(function(c){
+      var ok=c[1];
+      return '<div style="display:flex;align-items:flex-start;gap:9px;padding:8px 16px;border-bottom:1px solid var(--bg2)">'
+        + '<i class="ti '+(ok?'ti-circle-check':'ti-alert-circle')+'" style="font-size:15px;margin-top:1px;color:'+(ok?'var(--green)':'var(--amber-text)')+'"></i>'
+        + '<div style="flex:1"><div style="font-size:12px;font-weight:500">'+c[0]+'</div><div style="font-size:10.5px;color:var(--text3);margin-top:1px">'+c[2]+'</div></div>'
+        + '<span class="pill '+(ok?'p-green':'p-amber')+'" style="font-size:9.5px;flex-shrink:0">'+(ok?'通过':'待处理')+'</span></div>';
+    }).join('');
+    var pill = document.getElementById('rpt-comp-pill');
+    if(pill){ var allOk = pass===checks.length; pill.className='pill '+(allOk?'p-green':'p-amber'); pill.textContent = pass+' / '+checks.length+(allOk?' · 可正式出表':' · 报表为草稿'); }
   };
 })();
 </script>
