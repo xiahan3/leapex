@@ -427,25 +427,25 @@
         </div>
       </div>
 
-      <!-- 账簿管理 -->
-      <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span>账簿管理</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <!-- 账簿管理（关联企业：选具体企业后显示）-->
+      <div class="ng nav-company" style="margin-top:6px;display:none" onclick="toggleNavGroup(this)"><span>账簿管理</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
       <div class="nav-sub">
-        <div class="ni" id="ni-journal" onclick="go('journal',this)">
+        <div class="ni nav-company" id="ni-journal" style="display:none" onclick="go('journal',this)">
           <i class="ti ti-notebook" aria-hidden="true"></i><span>日记账（序时账）</span><span class="nn">NEW</span>
         </div>
-        <div class="ni" id="ni-gledger" onclick="go('gledger',this)">
+        <div class="ni nav-company" id="ni-gledger" style="display:none" onclick="go('gledger',this)">
           <i class="ti ti-book" aria-hidden="true"></i><span>总账</span><span class="nn">NEW</span>
         </div>
-        <div class="ni" id="ni-coabal" onclick="go('coabal',this)">
+        <div class="ni nav-company" id="ni-coabal" style="display:none" onclick="go('coabal',this)">
           <i class="ti ti-scale" aria-hidden="true"></i><span>科目余额表</span><span class="nn">NEW</span>
         </div>
-        <div class="ni" id="ni-arap" onclick="go('arap',this)">
+        <div class="ni nav-company" id="ni-arap" style="display:none" onclick="go('arap',this)">
           <i class="ti ti-users-group" aria-hidden="true"></i><span>往来明细账</span><span class="nn">NEW</span>
         </div>
-        <div class="ni" id="ni-bankbook" onclick="go('bankbook',this)">
+        <div class="ni nav-company" id="ni-bankbook" style="display:none" onclick="go('bankbook',this)">
           <i class="ti ti-businessplan" aria-hidden="true"></i><span>银行/现金日记账</span><span class="nn">NEW</span>
         </div>
-        <div class="ni" id="ni-fareg" onclick="go('fareg',this)">
+        <div class="ni nav-company" id="ni-fareg" style="display:none" onclick="go('fareg',this)">
           <i class="ti ti-building-warehouse" aria-hidden="true"></i><span>固定资产登记簿</span><span class="nn">NEW</span>
         </div>
       </div>
@@ -11259,10 +11259,18 @@ function handleInvDrop(evt) {
   };
 
   // ── 账簿：科目余额表 + 总账（按已确认分录 + COA 计算）──
+  // 账簿科目维度统一由科目表(COA)管理：记账常用别名 → COA 代码（主数据单一来源）
+  var COA_ALIAS = {
+    "Bank — HSBC Current Account":'1002', "Bank — HSBC Savings":'1002', "Bank":'1002',
+    "Petty Cash — Office":'1003', "Petty Cash":'1003',
+    "Director's Current Account":'2251', "Accounts receivable":'1122', "Accounts payable":'2202',
+    "Accrued charges":'2241', "Tax payable":'2221', "Profits tax payable":'2221', "MPF contributions":'6230'
+  };
   function _acctMeta(name){
     var COA = _g('COA_DATA') || window.COA_DATA || [];
     var nm = String(name||'').replace(/\s*\([^)]*\)/g,'').trim();
     var hit = COA.find(function(a){ return a.en===name || a.en===nm; });
+    if(!hit){ var code = COA_ALIAS[name] || COA_ALIAS[nm]; if(code) hit = COA.find(function(a){ return a.c===code; }); }
     if(!hit){ var base = nm.split('—')[0].trim(); if(base) hit = COA.find(function(a){ return a.en && (a.en.indexOf(base)===0 || base.indexOf(a.en)===0); }); }
     if(hit) return { code:hit.c, zh:hit.zh||'', cat:hit.cat, nb:hit.nb||'Dr' };
     var s = nm.toLowerCase(), cat='X', nb='Dr';
