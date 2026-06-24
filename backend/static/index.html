@@ -1733,7 +1733,7 @@
         </div>
         <!-- 出表前完整性校验（落地「做账→出报表 流程完整性审查」修改方案）-->
         <div class="card" id="rpt-completeness-card" style="margin-bottom:14px">
-          <div class="ch"><span class="ct">出表前完整性校验 · Pre-Report Checklist</span><span id="rpt-comp-pill" class="pill p-gray">—</span></div>
+          <div class="ch" onclick="toggleCompletenessCard()" style="cursor:pointer" title="点击收起 / 展开"><span class="ct">出表前完整性校验 · Pre-Report Checklist</span><span style="display:flex;align-items:center;gap:8px"><span id="rpt-comp-pill" class="pill p-gray">—</span><i class="ti ti-chevron-down" id="rpt-comp-chev" style="font-size:14px;color:var(--text3);transition:transform .15s" aria-hidden="true"></i></span></div>
           <div id="rpt-completeness" style="padding:4px 0"></div>
         </div>
         <!-- Reports content (P&L + BS tabs) -->
@@ -11452,6 +11452,15 @@ function handleInvDrop(evt) {
     if(window.renderReportCompleteness) window.renderReportCompleteness();
   };
 
+  // ── 出表前完整性校验：可收起 ──
+  window.toggleCompletenessCard = function(){
+    var body = document.getElementById('rpt-completeness');
+    var chev = document.getElementById('rpt-comp-chev');
+    if(!body) return;
+    var collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? '' : 'none';
+    if(chev) chev.style.transform = collapsed ? '' : 'rotate(-90deg)';
+  };
   // ── 出表前完整性校验（落地「做账→出报表」流程完整性审查修改方案）──
   window.renderReportCompleteness = function(){
     var box = document.getElementById('rpt-completeness'); if(!box) return;
