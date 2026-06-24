@@ -1668,7 +1668,7 @@
           <div style="display:flex;gap:6px;align-items:center">
             <button class="btn btn-xs" onclick="toast('正在导出结转分录…')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出</button>
             <button class="btn btn-p" onclick="confirmCarryAndGenerateReports()" style="padding:7px 16px;font-size:12.5px;font-weight:700">
-              <i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>确认并过账，生成财务报表
+              <i class="ti ti-file-text" style="font-size:13px" aria-hidden="true"></i>生成 / 预览财务报表 →
             </button>
           </div>
         </div>
@@ -1678,54 +1678,29 @@
           <div style="flex:1;font-size:12px;color:var(--text2)">请先确认<strong>试算平衡表</strong>借贷平衡后再生成结转分录。</div>
           <button class="btn btn-xs btn-p" onclick="go('tb',document.getElementById('ni-tb'))" style="flex-shrink:0">前往试算平衡表 →</button>
         </div>
-        <!-- 结转说明（大白话） -->
+        <!-- 结账周期 + 香港做账说明（合并自原「结账（Period Closing / 年结结转）」弹窗） -->
         <div class="card" style="margin-bottom:14px">
-          <div style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start">
-            <i class="ti ti-info-circle" style="font-size:18px;color:var(--amber-text);flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
-            <div style="font-size:11.5px;line-height:1.7;color:var(--text2)">
-              <b style="color:var(--amber-text)">为什么要结转？</b> 收入、费用科目像一块「年度记分牌」，只记<b>本期</b>的赚与花。结账前把它们的余额结转到<b>「本年利润」</b>，算出净利后再转入<b>「留存收益」（股东家底）</b>，并把收入/费用科目<b>清零</b>，让下一期从 0 重新计——这样资产负债表的权益才会包含本期利润、两边才平。
+          <div style="padding:12px 14px">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+              <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">结账周期 Closing Frequency</span>
+              <div style="display:flex;gap:6px" id="carry-freq">
+                <button class="mc" onclick="setCarryFreq(this,'monthly')">月结</button>
+                <button class="mc" onclick="setCarryFreq(this,'quarterly')">季结</button>
+                <button class="mc on" onclick="setCarryFreq(this,'annually')">年结（FY 末）</button>
+              </div>
+              <span style="flex:1"></span>
+              <span class="pill p-gray" style="font-size:10px">FY 2025/26 · 2025-07 ~ 2026-06 · HKD</span>
             </div>
-          </div>
-        </div>
-        <!-- 结转分录 -->
-        <div class="card">
-          <div class="ch"><span class="ct">结转分录 Closing Entries — Jan 2026</span><span class="pill p-green" style="font-size:10.5px">✓ 借贷平衡</span></div>
-          <table class="tbl" style="font-size:12px">
-            <thead><tr><th style="width:30px">#</th><th>摘要 Narrative</th><th>借方 Dr.</th><th>贷方 Cr.</th><th style="text-align:right;width:120px">金额 HKD</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4100 / 利息收入 4300）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td style="text-align:right;font-weight:600">45,818.50</td></tr>
-              <tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>费用类（汽车/电话/折旧/审计费/强积金等）</td><td style="text-align:right;font-weight:600">31,911.70</td></tr>
-              <tr><td>3</td><td>结转本期利得税</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>利得税 Profits tax expense (7100)</td><td style="text-align:right;font-weight:600">1,147.31</td></tr>
-              <tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>留存收益 Retained earnings (3200)</td><td style="text-align:right;font-weight:600">12,759.49</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- 本年利润汇总 + 结转结果 -->
-        <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div class="card">
-            <div class="ch"><span class="ct">「本年利润」结转汇总 P&amp;L Summary</span></div>
-            <div style="padding:12px 16px">
-              <table style="width:100%;font-size:12px;border-collapse:collapse">
-                <tr><td style="padding:4px 0;color:var(--text2)">贷：结转收入</td><td style="text-align:right;color:var(--green);font-weight:600">+45,818.50</td></tr>
-                <tr><td style="padding:4px 0;color:var(--text2)">借：结转费用</td><td style="text-align:right;color:var(--red)">(31,911.70)</td></tr>
-                <tr><td style="padding:4px 0;color:var(--text2)">借：结转利得税</td><td style="text-align:right;color:var(--red)">(1,147.31)</td></tr>
-                <tr style="border-top:1px solid var(--border)"><td style="padding:6px 0;font-weight:700">= 本期净利</td><td style="text-align:right;font-weight:700;color:var(--green-text)">12,759.49</td></tr>
-                <tr><td style="padding:4px 0;color:var(--text2)">借：结转至留存收益</td><td style="text-align:right;color:var(--red)">(12,759.49)</td></tr>
-                <tr style="border-top:2px solid var(--text)"><td style="padding:6px 0;font-weight:800">本年利润余额</td><td style="text-align:right;font-weight:800;color:var(--blue-text)">0.00 ✓ 已清零</td></tr>
-              </table>
-            </div>
-          </div>
-          <div class="card" style="background:var(--green-bg);border-color:var(--green)">
-            <div style="padding:14px 16px;display:flex;flex-direction:column;justify-content:center;height:100%">
-              <div style="font-size:12px;color:var(--green-text);line-height:2">
-                <div>✓ 收入 / 费用类科目余额已<b>全部清零</b>，下一期从 0 重新计</div>
-                <div>✓ 本期净利 <b>HKD 12,759.49</b> 已结入<b>留存收益</b></div>
-                <div>✓ 结转分录借贷平衡 · 已写入<b>日记账</b>（来源：结账结转）</div>
-                <div>✓ 完成后即可生成<b>财务报表</b>（资产负债表权益含本期利润）</div>
+            <div style="display:flex;gap:9px;align-items:flex-start;background:var(--amber-bg);border:1px solid var(--amber);border-radius:8px;padding:10px 12px">
+              <i class="ti ti-info-circle" style="font-size:17px;color:var(--amber-text);flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+              <div style="font-size:11.5px;line-height:1.7;color:var(--text2)">
+                <b style="color:var(--amber-text)">香港做账惯例：</b>收入 / 费用类科目按权责发生制在<b>整个财政年度内持续累计</b>。<b>月结 / 季结</b>只锁定账期、出具管理报表，<b>不结转损益</b>；只有<b>财政年度末（年结）</b>才把损益结转「本年利润」、再并入「留存收益」并清零，新财年重新累计。
               </div>
             </div>
           </div>
         </div>
+        <!-- 结转 / 结账明细（按结账周期渲染：月/季=仅锁账；年结=结转+留存滚存+期初结转） -->
+        <div id="carry-detail"></div>
       </div>
 
       <!-- ═══════════════════════ 财务报表 ═══════════════════════ -->
@@ -1744,7 +1719,7 @@
           <div style="display:flex;gap:6px;align-items:center">
             <button class="btn btn-xs" onclick="toast('正在导出 Excel…')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出 Excel</button>
             <button class="btn btn-xs" onclick="toast('正在导出 PDF…')"><i class="ti ti-file-text" style="font-size:11px" aria-hidden="true"></i>导出 PDF</button>
-            <button class="btn btn-xs btn-t" onclick="openCloseModal()" style="padding:7px 14px;font-size:12px;font-weight:700"><i class="ti ti-checkbook" style="font-size:13px" aria-hidden="true"></i>结账（年结结转）</button>
+            <button class="btn btn-xs btn-t" onclick="go('carry',document.getElementById('ni-carry'))" style="padding:7px 14px;font-size:12px;font-weight:700"><i class="ti ti-checkbook" style="font-size:13px" aria-hidden="true"></i>结转 / 结账 →</button>
             <button class="btn btn-p" onclick="openConfirmReportModal()" style="padding:7px 16px;font-size:12.5px;font-weight:700;background:var(--green);border-color:var(--green)">
               <i class="ti ti-lock" style="font-size:13px" aria-hidden="true"></i>确认财务报表
             </button>
@@ -4351,7 +4326,7 @@ const PAGE_META = {
   entry:    ['AI 会计分录','账期生成 · 对账来源 · 分录明细'],
   adjust:   ['期末调整','折旧 · 应计 · 预付 · 暂估 · 其他调整'],
   tb:       ['试算平衡表','TB · 借贷平衡 · 按账期查看'],
-  carry:    ['结转分录','Closing Entries · 损益结转「本年利润」→ 留存收益 · 损益科目清零'],
+  carry:    ['结转分录 / 结账','Closing & Period-End · 月/季结仅锁账 · 年结结转损益→留存收益·清零·锁定账期'],
   reports:  ['财务报表','P&L · B/S · 按账期查看 · 导出'],
   close:    ['结账 & 报表','期末调整 · 试算平衡 · 财务报表'],
   init:     ['初始化设置','期初設定 · 财政年度 · 结账周期'],
@@ -10427,6 +10402,7 @@ function handleInvDrop(evt) {
         if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
       }
       if (id === 'reports' && window.renderReportCompleteness) window.renderReportCompleteness();
+      if (id === 'carry' && window.renderCarryDetail) window.renderCarryDetail();
       if (id === 'coabal' && window.renderCoaBalance) window.renderCoaBalance();
       if (id === 'gledger' && window.renderGLedger) window.renderGLedger();
       if (id === 'journal' && window.renderJournal) window.renderJournal();
@@ -11394,6 +11370,85 @@ function handleInvDrop(evt) {
     if(!confirm('反结账将红冲结转分录并解锁账期，确认？')) return;
     window._periodClosed = false;
     window.toast && window.toast('已反结账：结转分录红冲、账期解锁，可重新调整后再结账');
+    if(window.renderReportCompleteness) window.renderReportCompleteness();
+  };
+
+  // ════════ 结转分录页（已合并原「结账（Period Closing / 年结结转）」弹窗功能）════════
+  // 数据与财务报表统一（ABC Trading）：收入45,818.50 / 费用31,911.70 / 利得税1,147.31 / 净利12,759.49 / 期初留存136,318.20
+  var CARRY = { rev:45818.50, exp:31911.70, tax:1147.31, net:12759.49, openRE:136318.20, div:0 };
+  var carryFreq = 'annually';
+  function _amt(n){ return Number(n||0).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  window.setCarryFreq = function(el, f){
+    carryFreq = f;
+    var box = document.getElementById('carry-freq');
+    if(box) box.querySelectorAll('.mc').forEach(function(b){ b.classList.toggle('on', b===el); });
+    window.renderCarryDetail();
+  };
+  window.renderCarryDetail = function(){
+    var el = document.getElementById('carry-detail'); if(!el) return;
+    var c = CARRY, closed = window._periodClosed===true;
+    var closingRE = c.openRE + c.net - c.div;
+    var lockBtn = closed
+      ? '<button class="btn btn-xs" onclick="reopenCarry()"><i class="ti ti-lock-open" style="font-size:12px"></i>反结账（解锁账期）</button>'
+      : '<button class="btn btn-xs btn-p" onclick="confirmCarryClose()"><i class="ti ti-lock" style="font-size:12px"></i>'+(carryFreq==='annually'?'确认年结结账并锁定账期':'确认结账并锁定本期账期')+'</button>';
+    var statePill = closed ? '<span class="pill p-green" style="font-size:10px">✓ 已结账 · 账期已锁定</span>' : '<span class="pill p-amber" style="font-size:10px">未结账</span>';
+    if(carryFreq!=='annually'){
+      el.innerHTML =
+        '<div class="card"><div class="ch"><span class="ct">'+(carryFreq==='monthly'?'月结 Monthly':'季结 Quarterly')+' · 本期间不结转损益</span>'+statePill+'</div>'
+        + '<div style="padding:14px 16px;font-size:12.5px;line-height:1.8;color:var(--text2)">损益类（收入 / 费用）科目在本财政年度内<b>继续累计</b>，本期间仅<b>锁定账期 + 出具管理报表</b>，<b>不做损益结转</b>。'
+        +   '<div style="margin-top:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px 13px">'
+        +     '<div style="display:flex;justify-content:space-between;padding:3px 0"><span>本财年累计净利（截至本期）</span><span style="font-family:monospace;font-weight:700;color:var(--green-text)">'+_money(c.net)+'</span></div>'
+        +     '<div style="font-size:11px;color:var(--text3);margin-top:4px">将于<b>财政年度末（年结）</b>统一结转至「留存收益」。</div></div></div>'
+        + '<div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:6px">'+lockBtn+'</div></div>';
+      return;
+    }
+    el.innerHTML =
+      '<div class="card"><div class="ch"><span class="ct">① 结转分录 Closing Entries（年结自动生成 · 借贷自平衡）</span><span class="pill p-green" style="font-size:10.5px">✓ 借贷平衡</span></div>'
+      + '<table class="tbl" style="font-size:12px"><thead><tr><th style="width:30px">#</th><th>摘要</th><th>借方 Dr.</th><th>贷方 Cr.</th><th style="text-align:right;width:120px">金额 HKD</th></tr></thead><tbody>'
+      +   '<tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4100 / 利息 4300）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td style="text-align:right;font-weight:600">'+_amt(c.rev)+'</td></tr>'
+      +   '<tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>费用类（薪酬/租金/折旧/审计费等）</td><td style="text-align:right;font-weight:600">'+_amt(c.exp)+'</td></tr>'
+      +   '<tr><td>3</td><td>结转本期利得税</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>利得税 Profits tax (7100)</td><td style="text-align:right;font-weight:600">'+_amt(c.tax)+'</td></tr>'
+      +   '<tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>留存收益 Retained earnings (3200)</td><td style="text-align:right;font-weight:600">'+_amt(c.net)+'</td></tr>'
+      + '</tbody></table></div>'
+      + '<div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+      +   '<div class="card"><div class="ch"><span class="ct">② 「本年利润」清零 P&amp;L Summary</span></div><div style="padding:12px 16px"><table style="width:100%;font-size:12px;border-collapse:collapse">'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">贷：结转收入</td><td style="text-align:right;color:var(--green);font-weight:600">+'+_amt(c.rev)+'</td></tr>'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">借：结转费用</td><td style="text-align:right;color:var(--red)">('+_amt(c.exp)+')</td></tr>'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">借：结转利得税</td><td style="text-align:right;color:var(--red)">('+_amt(c.tax)+')</td></tr>'
+      +     '<tr style="border-top:1px solid var(--border)"><td style="padding:6px 0;font-weight:700">= 本期净利</td><td style="text-align:right;font-weight:700;color:var(--green-text)">'+_amt(c.net)+'</td></tr>'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">借：结转至留存收益</td><td style="text-align:right;color:var(--red)">('+_amt(c.net)+')</td></tr>'
+      +     '<tr style="border-top:2px solid var(--text)"><td style="padding:6px 0;font-weight:800">本年利润余额</td><td style="text-align:right;font-weight:800;color:var(--blue-text)">0.00 ✓ 已清零</td></tr>'
+      +   '</table></div></div>'
+      +   '<div class="card"><div class="ch"><span class="ct">③ 留存收益变动表 Retained Earnings</span></div><div style="padding:12px 16px"><table style="width:100%;font-size:12px;border-collapse:collapse">'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">期初留存收益 (b/f)</td><td style="text-align:right;font-family:monospace">'+_amt(c.openRE)+'</td></tr>'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">+ 本期净利润</td><td style="text-align:right;font-family:monospace;color:var(--green-text)">+'+_amt(c.net)+'</td></tr>'
+      +     '<tr><td style="padding:4px 0;color:var(--text2)">− 已派股息 Dividends</td><td style="text-align:right;font-family:monospace">'+_amt(c.div)+'</td></tr>'
+      +     '<tr style="border-top:2px solid var(--text)"><td style="padding:6px 0;font-weight:800">= 期末留存收益 (c/f)</td><td style="text-align:right;font-weight:800;color:var(--blue-text);font-family:monospace">'+_amt(closingRE)+'</td></tr>'
+      +   '</table><div style="font-size:10.5px;color:var(--text3);margin-top:6px">与资产负债表「留存收益」一致：'+_money(closingRE)+'</div></div></div>'
+      + '</div>'
+      + '<div class="card" style="margin-top:14px"><div class="ch"><span class="ct">④ 下期期初结转 Opening Balances（结转下一财政年度）</span></div>'
+      +   '<table class="tbl" style="font-size:12px"><thead><tr><th>科目类别</th><th>处理</th><th style="text-align:right">下期期初余额</th></tr></thead><tbody>'
+      +     '<tr><td>收入 (I) / 费用 (X)</td><td><span class="pill p-gray" style="font-size:9.5px">已归零</span></td><td style="text-align:right;font-family:monospace">0.00</td></tr>'
+      +     '<tr style="background:var(--bg2)"><td>资产 (A) / 负债 (L)</td><td><span class="pill p-green" style="font-size:9.5px">结转延续</span></td><td style="text-align:right;color:var(--text3)">按期末余额结转</td></tr>'
+      +     '<tr><td>权益 (E) · 留存收益</td><td><span class="pill p-blue" style="font-size:9.5px">滚存更新</span></td><td style="text-align:right;font-family:monospace">'+_amt(closingRE)+'</td></tr>'
+      +   '</tbody></table></div>'
+      + '<div class="card" style="margin-top:14px;'+(closed?'background:var(--green-bg);border-color:var(--green)':'')+'"><div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px">'
+      +   '<div style="font-size:11.5px;color:var(--text2);line-height:1.7">年结确认后：损益类<b>归零</b>、净利 <b>'+_money(c.net)+'</b> 转入<b>留存收益</b>（期末 '+_money(closingRE)+'）、期末余额成为下期期初、<b>账期锁定</b>（如需修改请先反结账）。 '+statePill+'</div>'
+      +   '<div style="flex-shrink:0">'+lockBtn+'</div></div></div>';
+  };
+  window.confirmCarryClose = function(){
+    window._periodClosed = true;
+    var closingRE = CARRY.openRE + CARRY.net - CARRY.div;
+    if(carryFreq==='annually') window.toast && window.toast('✓ 年结完成：结转损益 '+_money(CARRY.net)+' → 留存收益（期末 '+_money(closingRE)+'），损益已归零、期末余额结转下期期初，账期已锁定');
+    else window.toast && window.toast('✓ '+(carryFreq==='monthly'?'月结':'季结')+'完成：本期已锁定账期（损益不结转，年度内继续累计）');
+    window.renderCarryDetail();
+    if(window.renderReportCompleteness) window.renderReportCompleteness();
+  };
+  window.reopenCarry = function(){
+    if(!window._periodClosed){ window.toast && window.toast('当前账期未结账'); return; }
+    window._periodClosed = false;
+    window.toast && window.toast('已反结账：结转分录红冲、账期解锁，可重新调整后再结账');
+    window.renderCarryDetail();
     if(window.renderReportCompleteness) window.renderReportCompleteness();
   };
 
