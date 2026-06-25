@@ -1998,7 +1998,7 @@
                   <div>
                     <div style="font-size:10px;font-weight:600;color:var(--text3);margin-bottom:3px">取价方式 Rate Basis</div>
                     <select class="edit-input" id="init-fx-basis" style="cursor:pointer;font-size:11.5px">
-                      <option value="spot" selected>浮动（交易日即期）</option><option value="month">月初固定</option><option value="period">期初固定</option><option value="manual">手工维护</option>
+                      <option value="average" selected>平均（当月平均·默认）</option><option value="month">月初固定</option><option value="spot">即期（交易日·手工录入）</option>
                     </select>
                   </div>
                   <div>
@@ -2013,7 +2013,7 @@
                   <span>期末对货币性项目自动重估，差额计入<b>汇兑损益</b>（科目 6504 其他—汇兑损益）</span>
                 </label>
                 <div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.6;border-top:1px solid var(--border);padding-top:7px">
-                  <b>折算口径（准则固定，不可改）</b>：资产负债表用<b>期末汇率</b>、损益表用<b>平均价</b>、货币性项目期末重估入损益（HKAS 21 / SME-FRS）。汇率明细在「设置」维护。
+                  <b>折算口径（准则固定，不可改）</b>：资产负债表用<b>期末汇率</b>、损益表 / 交易入账用<b>当月平均汇率</b>、货币性项目期末重估入损益（HKAS 21 / SME-FRS）。默认走<b>月平均</b>；<b>重大交易 / 汇率剧烈波动</b>时可选「即期（手工录入交易日汇率）」。汇率明细在「设置」维护。
                 </div>
               </div>
               <button class="btn btn-xs btn-p" style="width:100%;justify-content:center;padding:8px" onclick="toast('✓ 公司资料已保存（含行业/主营/汇率政策）')">
