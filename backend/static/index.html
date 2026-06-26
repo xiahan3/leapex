@@ -1685,6 +1685,11 @@
           <div class="ch" onclick="toggleCompletenessCard()" style="cursor:pointer" title="点击收起 / 展开"><span class="ct">出表前完整性校验 · Pre-Report Checklist</span><span style="display:flex;align-items:center;gap:8px"><span id="rpt-comp-pill" class="pill p-gray">—</span><i class="ti ti-chevron-down" id="rpt-comp-chev" style="font-size:14px;color:var(--text3);transition:transform .15s" aria-hidden="true"></i></span></div>
           <div id="rpt-completeness" style="padding:4px 0"></div>
         </div>
+        <!-- 报表期间示例：月结下的 月报 / 季报 / 年报 -->
+        <div class="card" id="rpt-periods-card" style="margin-bottom:14px">
+          <div class="ch"><span class="ct">报表期间示例 · 月报 / 季报 / 年报</span><span id="rpt-period-pill" class="pill p-gray" style="font-size:10.5px">—</span></div>
+          <div id="rpt-periods" style="padding:0"></div>
+        </div>
         <!-- Reports content (P&L + BS tabs) -->
         <div id="rpt-card">
 
@@ -4286,6 +4291,43 @@ function renderAdjList() {
 }
 
 // ─── Reports tab ─────────────────────────────────────────────────
+// 报表期间示例：依初始化结账周期展示 月报/季报/年报（演示数据，内部勾稽）
+window.renderReportPeriods = function(){
+  var box = document.getElementById('rpt-periods'); if(!box) return;
+  var freq = (document.getElementById('init-close-freq')||{}).value || 'quarterly';
+  var freqZh = freq==='monthly'?'月结':(freq==='quarterly'?'季结':'年结');
+  var P = {
+    month:  {label:'月报 Jan 2026',           turn:45800.00,  other:18.50,  rev:45818.50,  opex:31911.70,  pbt:13906.80,  tax:1147.31,  net:12759.49,  kind:'管理报表'},
+    quarter:{label:'季报 Q3 (Nov25–Jan26)',   turn:142600.00, other:56.20,  rev:142656.20, opex:99480.50,  pbt:43175.70,  tax:3561.99,  net:39613.71,  kind:'管理报表'},
+    year:   {label:'年报 FY 2025/26',         turn:561300.00, other:312.80, rev:561612.80, opex:392540.00, pbt:169072.80, tax:13948.51, net:155124.29, kind:'法定财务报表'}
+  };
+  var cols = freq==='monthly' ? ['month','quarter','year'] : (freq==='quarterly' ? ['quarter','year'] : ['year']);
+  var m = function(n){ return Number(n).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+  var th = cols.map(function(k){ return '<th style="text-align:right">'+P[k].label+'<div style="font-size:9.5px;font-weight:400;color:rgba(255,255,255,.8)">'+P[k].kind+'</div></th>'; }).join('');
+  function row(lbl, field, bold){
+    var tds = cols.map(function(k){ return '<td style="text-align:right;font-family:monospace'+(bold?';font-weight:700':'')+'">'+m(P[k][field])+'</td>'; }).join('');
+    return '<tr'+(bold?' style="background:var(--bg2)"':'')+'><td'+(bold?' style="font-weight:700"':'')+'>'+lbl+'</td>'+tds+'</tr>';
+  }
+  var baseZh = freq==='monthly'?'月':(freq==='quarterly'?'季':'年');
+  box.innerHTML =
+    '<div style="padding:10px 14px;font-size:11.5px;color:var(--text2);line-height:1.7;background:var(--amber-bg);border-bottom:1px solid var(--border)">'
+    +'<b>当前结账周期：'+freqZh+'</b>（初始化设定）→ 基础出表单位为「'+baseZh+'」。即使按<b>月结</b>，系统仍可按 <b>月 / 季 / 年</b> 汇总查看：<b>季报</b> = 本季 3 个月汇总、<b>年报</b> = 本财年 12 个月汇总。'
+    +'<b>月 / 季报为管理报表</b>（未结转、未经审计、损益累计）；<b>年报为法定财务报表</b>（年结结转损益 → 留存、待 CPA 审计）。</div>'
+    +'<table class="tbl" style="font-size:12px"><thead><tr><th>损益表项目（期间累计）</th>'+th+'</tr></thead><tbody>'
+    + row('营业额 Turnover','turn')
+    + row('其他收入 Other income','other')
+    + row('收入合计 Total revenue','rev', true)
+    + row('经营费用 Operating expenses','opex')
+    + row('除税前溢利 Profit before tax','pbt', true)
+    + row('利得税 Profits tax (8.25%)','tax')
+    + row('税后净利 Net profit','net', true)
+    + '</tbody></table>'
+    +'<div style="padding:8px 14px;font-size:10.5px;color:var(--text3);line-height:1.6;border-top:1px solid var(--border)">'
+    +'注：① 损益表为<b>期间累计</b>（月/季/年）；资产负债表为<b>期末时点数</b>，权益含「本财年累计净利（未结转）」，年报年结后并入留存收益（3101）。'
+    +'② 利得税月/季为管理估算，<b>年结正式计提</b>（两级 8.25% / 16.5%）。数字为演示，内部勾稽：收入 − 费用 = 除税前溢利、除税前 − 税 = 净利。</div>';
+  var pill = document.getElementById('rpt-period-pill');
+  if(pill){ pill.className='pill p-blue'; pill.textContent = freqZh+' · 月/季/年汇总'; }
+};
 function setRptTab(el, tab) {
   el.parentElement.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
   el.classList.add('on');
@@ -10380,6 +10422,7 @@ function handleInvDrop(evt) {
         if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
       }
       if (id === 'reports' && window.renderReportCompleteness) window.renderReportCompleteness();
+      if (id === 'reports' && window.renderReportPeriods) window.renderReportPeriods();
       if (id === 'coabal' && window.renderCoaBalance) window.renderCoaBalance();
       if (id === 'gledger' && window.renderGLedger) window.renderGLedger();
       if (id === 'journal' && window.renderJournal) window.renderJournal();
