@@ -1374,10 +1374,10 @@
                 <table class="tbl" style="font-size:11.5px">
                   <thead><tr><th style="width:30px">#</th><th>摘要 Narrative</th><th>借方 Dr.</th><th>贷方 Cr.</th><th style="text-align:right;width:104px">金额 HKD</th></tr></thead>
                   <tbody>
-                    <tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4005 / 利息收入 4101）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td style="text-align:right;font-weight:600">45,818.50</td></tr>
-                    <tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>费用类（电话/差旅/折旧等 7 项）</td><td style="text-align:right;font-weight:600">2,531.70</td></tr>
-                    <tr><td>3</td><td>计提并结转利得税（8.25%）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>应交利得税 Profits tax payable (2221)</td><td style="text-align:right;font-weight:600">3,571.16</td></tr>
-                    <tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>留存收益 Retained earnings (3101)</td><td style="text-align:right;font-weight:600">39,715.64</td></tr>
+                    <tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4005 / 利息收入 4101）</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td style="text-align:right;font-weight:600">45,818.50</td></tr>
+                    <tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td>费用类（电话/差旅/折旧等 7 项）</td><td style="text-align:right;font-weight:600">2,531.70</td></tr>
+                    <tr><td>3</td><td>计提并结转利得税（8.25%）</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td>应交利得税 Profits tax payable (2221)</td><td style="text-align:right;font-weight:600">3,571.16</td></tr>
+                    <tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td>留存收益 Retained earnings (3101)</td><td style="text-align:right;font-weight:600">39,715.64</td></tr>
                   </tbody>
                 </table>
                 <!-- 本年利润 T 形账：演示清零 -->
@@ -5932,6 +5932,7 @@ const COA_DATA = [
   {c:'3001',en:'Share capital',zh:'股本',l:2,p:'3000',cat:'E',nb:'Cr',post:true},
   {c:'3100',en:'Other reserves',zh:'其他储备',l:1,p:'',cat:'E',nb:'Cr',post:false},
   {c:'3101',en:'Retained earnings (deficit)',zh:'保留盈余(亏损)',l:2,p:'3100',cat:'E',nb:'Cr',post:true},
+  {c:'3103',en:'Profit and loss account (Income summary)',zh:'本年利润（结转过渡）',l:2,p:'3100',cat:'E',nb:'Cr',post:true},
   {c:'3102',en:'Exchange reserve',zh:'外币报表折算储备',l:2,p:'3100',cat:'E',nb:'Cr',post:true},
   {c:'3190',en:'Non-controlling interests',zh:'非控制性权益',l:2,p:'3100',cat:'E',nb:'Cr',post:true},
   {c:'4000',en:'Revenue',zh:'收入',l:1,p:'',cat:'I',nb:'Cr',post:false},
@@ -11357,10 +11358,10 @@ function handleInvDrop(evt) {
     return ''
       + '<div class="card" style="margin:0"><div class="ch"><span class="ct">① 结转分录 Closing Entries（年结自动生成 · 借贷自平衡）</span><span class="pill p-green" style="font-size:10.5px">✓ 借贷平衡</span></div>'
       + '<table class="tbl" style="font-size:12px"><thead><tr><th style="width:26px">#</th><th>摘要</th><th>借方 Dr.</th><th>贷方 Cr.</th><th style="text-align:right;width:104px">金额 HKD</th></tr></thead><tbody>'
-      +   '<tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4005 / 利息 4101）</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td style="text-align:right;font-weight:600">'+_amt(c.rev)+'</td></tr>'
-      +   '<tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>费用类（薪酬/租金/折旧/审计费等）</td><td style="text-align:right;font-weight:600">'+_amt(c.exp)+'</td></tr>'
-      +   '<tr><td>3</td><td>结转本期利得税</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>利得税 Profits tax (6501)</td><td style="text-align:right;font-weight:600">'+_amt(c.tax)+'</td></tr>'
-      +   '<tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 P&amp;L Summary</td><td>留存收益 Retained earnings (3101)</td><td style="text-align:right;font-weight:600">'+_amt(c.net)+'</td></tr>'
+      +   '<tr><td>1</td><td>结转本期收入</td><td>收入类（营业额 4005 / 利息 4101）</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td style="text-align:right;font-weight:600">'+_amt(c.rev)+'</td></tr>'
+      +   '<tr style="background:var(--bg2)"><td>2</td><td>结转本期费用</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td>费用类（薪酬/租金/折旧/审计费等）</td><td style="text-align:right;font-weight:600">'+_amt(c.exp)+'</td></tr>'
+      +   '<tr><td>3</td><td>结转本期利得税</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td>利得税 Profits tax (6501)</td><td style="text-align:right;font-weight:600">'+_amt(c.tax)+'</td></tr>'
+      +   '<tr style="background:var(--bg2)"><td>4</td><td>结转本期净利至留存收益</td><td style="color:var(--blue-text)">本年利润 (3103)</td><td>留存收益 Retained earnings (3101)</td><td style="text-align:right;font-weight:600">'+_amt(c.net)+'</td></tr>'
       + '</tbody></table></div>'
       + '<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px">'
       +   '<div class="card" style="margin:0"><div class="ch"><span class="ct">② 「本年利润」清零</span></div><div style="padding:11px 14px"><table style="width:100%;font-size:12px;border-collapse:collapse">'
