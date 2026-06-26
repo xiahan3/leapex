@@ -448,9 +448,15 @@
         <div class="ni nav-company" id="ni-fareg" style="display:none" onclick="go('fareg',this)">
           <i class="ti ti-building-warehouse" aria-hidden="true"></i><span>固定资产登记簿</span><span class="nn">NEW</span>
         </div>
-        <div class="ni nav-company" id="ni-acctrpt" style="display:none" onclick="go('acctrpt',this)">
-          <i class="ti ti-file-spreadsheet" aria-hidden="true"></i><span>会计报表</span><span class="nn">NEW</span>
-        </div>
+      </div>
+
+      <!-- 会计报表（大模块）-->
+      <div class="ng nav-company" style="margin-top:6px;display:none" onclick="toggleNavGroup(this)"><span>会计报表</span><span class="nn" style="margin-left:6px">NEW</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni nav-company" id="ni-acctrpt-pl"  style="display:none" onclick="goAcctRpt('pl',this)"><i class="ti ti-report" aria-hidden="true"></i><span>损益表</span></div>
+        <div class="ni nav-company" id="ni-acctrpt-bs"  style="display:none" onclick="goAcctRpt('bs',this)"><i class="ti ti-scale" aria-hidden="true"></i><span>资产负债表</span></div>
+        <div class="ni nav-company" id="ni-acctrpt-cf"  style="display:none" onclick="goAcctRpt('cf',this)"><i class="ti ti-cash" aria-hidden="true"></i><span>现金流量表</span></div>
+        <div class="ni nav-company" id="ni-acctrpt-sce" style="display:none" onclick="goAcctRpt('sce',this)"><i class="ti ti-arrows-exchange" aria-hidden="true"></i><span>权益变动表</span></div>
       </div>
 
       <!-- AI 审计 -->
@@ -4409,8 +4415,13 @@ function renderAdjList() {
     var d=fi.list[sel.selectedIndex]||fi.list[0];
     var fp=document.getElementById('acctrpt-freq'); if(fp){ fp.textContent=fi.zh; fp.className='pill '+(fi.f==='annually'?'p-green':'p-blue'); }
     var t=window.ACCT_RPT_TYPE;
+    // 同步页内 Tab 高亮 + 左侧导航子项高亮（与报表类型联动）
+    var tabs=document.getElementById('acctrpt-tabs'); if(tabs){ var mp={pl:0,bs:1,cf:2,sce:3}; var ch=tabs.children; for(var i=0;i<ch.length;i++) ch[i].classList.toggle('on', i===mp[t]); }
+    ['pl','bs','cf','sce'].forEach(function(k){ var ni=document.getElementById('ni-acctrpt-'+k); if(ni) ni.classList.toggle('active', k===t); });
     body.innerHTML = t==='bs'?bsHTML(d):(t==='cf'?cfHTML(d):(t==='sce'?sceHTML(d):plHTML(d)));
   };
+  // 左侧「会计报表」子项点击：设报表类型 + 进入会计报表页
+  window.goAcctRpt = function(type, el){ window.ACCT_RPT_TYPE = type; if(window.go) window.go('acctrpt', el); };
 })();
 
 // ─── Reports tab ─────────────────────────────────────────────────
