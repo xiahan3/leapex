@@ -533,6 +533,11 @@
         <div class="t-meta" id="tmeta">ABC Trading Co. Ltd</div>
       </div>
       <div class="t-right">
+        <div id="cur-period-box" class="nav-company" style="display:none;align-items:center;gap:6px;margin-right:6px;padding:3px 8px;background:var(--blue-bg);border:1px solid var(--blue-text);border-radius:7px">
+          <i class="ti ti-calendar-stats" style="font-size:13px;color:var(--blue-text)" aria-hidden="true"></i>
+          <span style="font-size:10.5px;color:var(--text3)">当前账期</span>
+          <select id="cur-period-sel" onchange="setCurPeriod(this.value)" style="font-size:11.5px;font-weight:600;padding:2px 4px;border:none;background:transparent;color:var(--blue-text);cursor:pointer"></select>
+        </div>
         <button class="btn btn-xs" onclick="go('bank',document.getElementById('ni-bank'))">
           <i class="ti ti-building-bank" style="font-size:13px" aria-hidden="true"></i>上传银行流水
         </button>
@@ -1979,7 +1984,7 @@
               </div>
               <div>
                 <div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">结账周期 Closing Frequency</div>
-                <select class="edit-input" id="init-close-freq" style="cursor:pointer">
+                <select class="edit-input" id="init-close-freq" onchange="onCloseFreqChange()" style="cursor:pointer">
                   <option value="monthly">每月结账 Monthly Closing</option>
                   <option value="quarterly" selected>每季度结账 Quarterly Closing（HK 常见）</option>
                   <option value="annually">每年结账 Annual Closing</option>
@@ -2053,6 +2058,12 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- 账期日历（由结账周期 + 财政年度自动生成）-->
+        <div class="card" style="margin-bottom:14px">
+          <div class="ch"><span class="ct">账期日历 · Accounting Periods（按结账周期自动生成）</span><span id="period-cal-pill" class="pill p-gray" style="font-size:10.5px">—</span></div>
+          <div id="period-calendar" style="padding:0"></div>
         </div>
 
         <!-- 期初試算表导入 -->
@@ -4232,6 +4243,7 @@ function switchCompany(val) {
   var isAll = val === 'all';
   // Toggle nav items visibility
   document.querySelectorAll('.nav-company').forEach(function(el){ el.style.display = isAll ? 'none' : ''; });
+  if (window.renderCurPeriod) window.renderCurPeriod();
   // Toggle dashboard view
   var dashAll    = document.getElementById('dash-all');
   var dashSingle = document.getElementById('dash-single');
@@ -4422,6 +4434,58 @@ function renderAdjList() {
   };
   // 左侧「会计报表」子项点击：设报表类型 + 进入会计报表页
   window.goAcctRpt = function(type, el){ window.ACCT_RPT_TYPE = type; if(window.go) window.go('acctrpt', el); };
+})();
+
+// ─── 账期主线 Accounting Period（结账周期 → 账期日历 + 当前账期）───
+(function(){
+  function PER(freq){
+    var L;
+    if(freq==='monthly'){
+      var d=[['2025-07','Jul 2025','2025-07-31'],['2025-08','Aug 2025','2025-08-31'],['2025-09','Sep 2025','2025-09-30'],['2025-10','Oct 2025','2025-10-31'],['2025-11','Nov 2025','2025-11-30'],['2025-12','Dec 2025','2025-12-31'],['2026-01','Jan 2026','2026-01-31'],['2026-02','Feb 2026','2026-02-28'],['2026-03','Mar 2026','2026-03-31'],['2026-04','Apr 2026','2026-04-30'],['2026-05','May 2026','2026-05-31'],['2026-06','Jun 2026','2026-06-30']];
+      var cur=6;
+      L=d.map(function(x,i){ return {code:x[0],label:x[1]+'（月报）',start:x[0]+'-01',end:x[2],status:i<cur?'locked':(i===cur?'in_progress':'not_started')}; });
+    } else if(freq==='annually'){
+      L=[{code:'FY2526',label:'FY 2025/26（年报）',start:'2025-07-01',end:'2026-06-30',status:'in_progress'}];
+    } else {
+      L=[{code:'Q1-2526',label:'Q1 2025/26',start:'2025-07-01',end:'2025-09-30',status:'locked'},
+         {code:'Q2-2526',label:'Q2 2025/26',start:'2025-10-01',end:'2025-12-31',status:'locked'},
+         {code:'Q3-2526',label:'Q3 2025/26（当前季）',start:'2026-01-01',end:'2026-03-31',status:'in_progress'},
+         {code:'Q4-2526',label:'Q4 2025/26',start:'2026-04-01',end:'2026-06-30',status:'not_started'}];
+    }
+    return L;
+  }
+  function freq(){ return (document.getElementById('init-close-freq')||{}).value || 'quarterly'; }
+  var ST={locked:['已关账','p-green'], in_progress:['进行中','p-blue'], not_started:['未开始','p-gray']};
+  window.renderPeriodCalendar = function(){
+    var box=document.getElementById('period-calendar'); if(!box) return;
+    var f=freq(), L=PER(f), fzh=f==='monthly'?'月结':(f==='quarterly'?'季结':'年结');
+    box.innerHTML =
+      '<div style="padding:9px 14px;font-size:11px;color:var(--text2);line-height:1.6;background:var(--amber-bg);border-bottom:1px solid var(--border)">由<b>结账周期（'+fzh+'）+ 财政年度（2025-07 ~ 2026-06）</b>自动生成。采集 / 分录 / 调整默认归入<b>进行中</b>账期；账期须<b>按顺序结账</b>，已关账拒绝新分录（跨期走调整 / 下期 / 反结账）。</div>'
+      +'<table class="tbl" style="font-size:12px"><thead><tr><th style="width:34px">#</th><th>账期 Period</th><th>起止 Period range</th><th style="text-align:center;width:80px">状态</th></tr></thead><tbody>'
+      + L.map(function(p,i){ var s=ST[p.status]; return '<tr'+(p.status==='in_progress'?' style="background:var(--blue-bg)"':'')+'><td>'+(i+1)+'</td><td'+(p.status==='in_progress'?' style="font-weight:700"':'')+'>'+p.label+'</td><td style="font-family:monospace;font-size:11px;color:var(--text3)">'+p.start+' ~ '+p.end+'</td><td style="text-align:center"><span class="pill '+s[1]+'" style="font-size:9.5px">'+s[0]+'</span></td></tr>'; }).join('')
+      +'</tbody></table>';
+    var pill=document.getElementById('period-cal-pill'); if(pill){ pill.className='pill p-blue'; pill.textContent=fzh+' · '+L.length+' 个账期'; }
+  };
+  window.renderCurPeriod = function(){
+    var sel=document.getElementById('cur-period-sel'); if(!sel) return;
+    var f=freq(), L=PER(f);
+    if(sel.dataset.freq!==f){
+      sel.innerHTML=L.map(function(p){ var tag=p.status==='locked'?' · 已关账':(p.status==='in_progress'?' · 进行中':' · 未开始'); return '<option value="'+p.code+'">'+p.label.replace(/（[^）]*）/,'')+tag+'</option>'; }).join('');
+      sel.dataset.freq=f;
+      var cur=L.filter(function(p){return p.status==='in_progress';})[0]||L[0];
+      sel.value=cur.code; window.CUR_PERIOD=cur.code;
+    }
+  };
+  window.setCurPeriod = function(code){
+    window.CUR_PERIOD=code; var p=PER(freq()).filter(function(x){return x.code===code;})[0];
+    if(p && window.toast) window.toast('已切换当前账期：'+p.label.replace(/（[^）]*）/,'')+'（采集 / 分录默认归入此账期）');
+  };
+  window.onCloseFreqChange = function(){
+    if(window.renderPeriodCalendar) window.renderPeriodCalendar();
+    var sel=document.getElementById('cur-period-sel'); if(sel) sel.dataset.freq='';
+    if(window.renderCurPeriod) window.renderCurPeriod();
+    if(window.toast) window.toast('结账周期已更新，账期日历与当前账期已重算');
+  };
 })();
 
 // ─── Reports tab ─────────────────────────────────────────────────
@@ -10527,6 +10591,7 @@ function handleInvDrop(evt) {
       if (id === 'bankbook' && window.renderBankBook) window.renderBankBook();
       if (id === 'fareg' && window.renderFAReg) window.renderFAReg();
       if (id === 'acctrpt' && window.renderAcctRpt) window.renderAcctRpt();
+      if (id === 'init' && window.renderPeriodCalendar) window.renderPeriodCalendar();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
