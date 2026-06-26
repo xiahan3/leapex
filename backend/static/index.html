@@ -1657,18 +1657,8 @@
         <!-- 顶部工具栏 -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div style="display:flex;align-items:center;gap:10px">
-            <select id="rpt-period" onchange="setRptPeriod(this)" style="font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">
-              <optgroup label="月报 Monthly">
-                <option value="jan2026" selected>Jan 2026（当前账期 · 月报）</option>
-              </optgroup>
-              <optgroup label="季报 Quarterly（历史）">
-                <option value="q1">Q1 2025/26（Jul–Sep 2025）</option>
-                <option value="q2">Q2 2025/26（Oct–Dec 2025）</option>
-                <option value="q3">Q3 2025/26（Jan–Mar 2026 · 当前季）</option>
-              </optgroup>
-              <optgroup label="年报 Annual">
-                <option value="fy">FY 2025/26（当前账期 · 年报）</option>
-              </optgroup>
+            <select id="rpt-period" style="font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">
+              <option>Jan 2026（当前账期）</option><option>Dec 2025</option><option>Nov 2025</option>
             </select>
             <div class="tab-bar">
               <div class="tab-btn on" onclick="setRptTab(this,'pl')">利润表 P&amp;L</div>
@@ -1694,11 +1684,6 @@
         <div class="card" id="rpt-completeness-card" style="margin-bottom:14px">
           <div class="ch" onclick="toggleCompletenessCard()" style="cursor:pointer" title="点击收起 / 展开"><span class="ct">出表前完整性校验 · Pre-Report Checklist</span><span style="display:flex;align-items:center;gap:8px"><span id="rpt-comp-pill" class="pill p-gray">—</span><i class="ti ti-chevron-down" id="rpt-comp-chev" style="font-size:14px;color:var(--text3);transition:transform .15s" aria-hidden="true"></i></span></div>
           <div id="rpt-completeness" style="padding:4px 0"></div>
-        </div>
-        <!-- 报表期间示例：月结下的 月报 / 季报 / 年报 -->
-        <div class="card" id="rpt-periods-card" style="margin-bottom:14px">
-          <div class="ch"><span class="ct">选定期间报表 · 历史季报 / 当前账期年报（左上角日期筛选）</span><span id="rpt-period-pill" class="pill p-gray" style="font-size:10.5px">—</span></div>
-          <div id="rpt-periods" style="padding:0"></div>
         </div>
         <!-- Reports content (P&L + BS tabs) -->
         <div id="rpt-card">
@@ -4301,39 +4286,6 @@ function renderAdjList() {
 }
 
 // ─── Reports tab ─────────────────────────────────────────────────
-// 报表期间筛选：左上角日期下拉选「历史季报 / 当前账期年报」→ 展示该期间损益（演示数据，内部勾稽）
-var RPT_PERIODS = {
-  jan2026:{label:'月报 · Jan 2026（当前账期）',                span:'2026-01-01 ~ 2026-01-31', kind:'管理报表',                 km:'p-amber', turn:45800.00,  other:18.50,  rev:45818.50,  opex:31911.70,  pbt:13906.80,  tax:1147.31,  net:12759.49},
-  q1:     {label:'季报 · Q1 2025/26（Jul–Sep 2025）',         span:'2025-07-01 ~ 2025-09-30', kind:'管理报表 · 历史季报',       km:'p-amber', turn:128400.20, other:0,      rev:128400.20, opex:92150.00,  pbt:36250.20,  tax:2990.64,  net:33259.56},
-  q2:     {label:'季报 · Q2 2025/26（Oct–Dec 2025）',         span:'2025-10-01 ~ 2025-12-31', kind:'管理报表 · 历史季报',       km:'p-amber', turn:151720.60, other:0,      rev:151720.60, opex:104300.00, pbt:47420.60,  tax:3912.20,  net:43508.40},
-  q3:     {label:'季报 · Q3 2025/26（Jan–Mar 2026 · 当前季）',  span:'2026-01-01 ~ 2026-03-31', kind:'管理报表 · 本季累计',       km:'p-blue',  turn:142656.20, other:0,      rev:142656.20, opex:99480.50,  pbt:43175.70,  tax:3561.99,  net:39613.71},
-  fy:     {label:'年报 · FY 2025/26（当前账期年报）',          span:'2025-07-01 ~ 2026-06-30', kind:'法定财务报表 · 年结结转 · 待审计', km:'p-green', turn:561300.00, other:312.80, rev:561612.80, opex:392540.00, pbt:169072.80, tax:13948.51, net:155124.29}
-};
-window.setRptPeriod = function(){ window.renderReportPeriods(); };
-window.renderReportPeriods = function(){
-  var box = document.getElementById('rpt-periods'); if(!box) return;
-  var key = (document.getElementById('rpt-period')||{}).value || 'jan2026';
-  var d = RPT_PERIODS[key] || RPT_PERIODS.jan2026;
-  var m = function(n){ return Number(n).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2}); };
-  function r(lbl, v, bold, red){ return '<tr'+(bold?' style="background:var(--bg2)"':'')+'><td'+(bold?' style="font-weight:700"':'')+'>'+lbl+'</td><td style="text-align:right;font-family:monospace'+(bold?';font-weight:700':'')+(red?';color:var(--red)':'')+'">'+v+'</td></tr>'; }
-  box.innerHTML =
-    '<div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border)">'
-    +'<div><div style="font-size:13px;font-weight:700">'+d.label+'</div><div style="font-size:11px;color:var(--text3);margin-top:1px">期间 '+d.span+' · 币种 HKD</div></div>'
-    +'<span class="pill '+d.km+'" style="font-size:10.5px;flex-shrink:0">'+d.kind+'</span></div>'
-    +'<table class="tbl" style="font-size:12.5px"><thead><tr><th>损益表项目（期间累计）</th><th style="text-align:right;width:170px">金额 HKD</th></tr></thead><tbody>'
-    + r('营业额 Turnover', m(d.turn))
-    + r('其他收入 Other income', d.other?m(d.other):'—')
-    + r('收入合计 Total revenue', m(d.rev), true)
-    + r('经营费用 Operating expenses', '('+m(d.opex)+')', false, true)
-    + r('除税前溢利 Profit before tax', m(d.pbt), true)
-    + r('利得税 Profits tax (8.25%)', '('+m(d.tax)+')', false, true)
-    + r('税后净利 Net profit', m(d.net), true)
-    +'</tbody></table>'
-    +'<div style="padding:8px 14px;font-size:10.5px;color:var(--text3);line-height:1.6;border-top:1px solid var(--border)">'
-    +'注：损益表为<b>期间累计</b>，资产负债表为<b>期末时点数</b>。<b>月 / 季报 = 管理报表</b>（未结转、未经审计）；<b>年报 = 法定财务报表</b>（年结经 3103 本年利润结转入 3101 留存收益、待 CPA 审计）。利得税月 / 季为管理估算，年结正式计提（两级 8.25% / 16.5%）。数字为演示，内部勾稽：收入 − 费用 = 除税前溢利、除税前 − 税 = 净利。</div>';
-  var pill = document.getElementById('rpt-period-pill');
-  if(pill){ pill.className = 'pill ' + d.km; pill.textContent = d.kind.split(' · ')[0]; }
-};
 function setRptTab(el, tab) {
   el.parentElement.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
   el.classList.add('on');
@@ -10428,7 +10380,6 @@ function handleInvDrop(evt) {
         if (typeof renderReconJournalEntries === 'function') renderReconJournalEntries();
       }
       if (id === 'reports' && window.renderReportCompleteness) window.renderReportCompleteness();
-      if (id === 'reports' && window.renderReportPeriods) window.renderReportPeriods();
       if (id === 'coabal' && window.renderCoaBalance) window.renderCoaBalance();
       if (id === 'gledger' && window.renderGLedger) window.renderGLedger();
       if (id === 'journal' && window.renderJournal) window.renderJournal();
