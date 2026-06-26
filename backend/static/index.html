@@ -448,6 +448,9 @@
         <div class="ni nav-company" id="ni-fareg" style="display:none" onclick="go('fareg',this)">
           <i class="ti ti-building-warehouse" aria-hidden="true"></i><span>固定资产登记簿</span><span class="nn">NEW</span>
         </div>
+        <div class="ni nav-company" id="ni-acctrpt" style="display:none" onclick="go('acctrpt',this)">
+          <i class="ti ti-file-spreadsheet" aria-hidden="true"></i><span>会计报表</span><span class="nn">NEW</span>
+        </div>
       </div>
 
       <!-- AI 审计 -->
@@ -2590,6 +2593,32 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════ 会计报表 Accounting Reports ═══════════════════════ -->
+      <div class="page" id="page-acctrpt">
+        <!-- 工具栏：结账周期 + 报表期间 + 导出 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:11.5px;color:var(--text3)">结账周期</span>
+            <span id="acctrpt-freq" class="pill p-gray" style="font-size:11px">—</span>
+            <span style="font-size:11.5px;color:var(--text3);margin-left:6px">报表期间</span>
+            <select id="acctrpt-period" onchange="renderAcctRpt()" class="edit-input" style="font-size:12px;width:auto;min-width:230px;cursor:pointer"></select>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="btn btn-xs" onclick="toast('正在导出 Excel…')"><i class="ti ti-download" style="font-size:11px" aria-hidden="true"></i>导出 Excel</button>
+            <button class="btn btn-xs" onclick="toast('正在导出 PDF…')"><i class="ti ti-file-text" style="font-size:11px" aria-hidden="true"></i>导出 PDF</button>
+          </div>
+        </div>
+        <!-- 报表类型 -->
+        <div class="tab-bar" id="acctrpt-tabs" style="margin-bottom:14px">
+          <div class="tab-btn on" onclick="setAcctRptType(this,'pl')">损益表 P&amp;L</div>
+          <div class="tab-btn" onclick="setAcctRptType(this,'bs')">资产负债表 B/S</div>
+          <div class="tab-btn" onclick="setAcctRptType(this,'cf')">现金流量表</div>
+          <div class="tab-btn" onclick="setAcctRptType(this,'sce')">权益变动表</div>
+        </div>
+        <!-- 报表主体 -->
+        <div class="card"><div id="acctrpt-body" style="padding:0"></div></div>
+      </div>
+
       <!-- ═══════════════════════ 日记账（序时账）═══════════════════════ -->
       <div class="page" id="page-journal">
         <div class="card" style="margin-bottom:14px">
@@ -4285,6 +4314,105 @@ function renderAdjList() {
   var tot = document.getElementById('adj-total'); if (tot) tot.textContent = 'HKD ' + items.reduce(function(s,e){return s+e.amt;},0).toFixed(2);
 }
 
+// ─── 会计报表 Accounting Reports（按结账周期出具 · 四表）───
+(function(){
+  var SC=10000.00, REBF=136318.20;
+  function r2(n){ return Math.round(n*100)/100; }
+  function P(o){
+    var rev=r2(o.turn+(o.oth||0)), pbt=r2(rev-o.opex), tax=r2(pbt*0.0825), net=r2(pbt-tax);
+    var rebf=(o.rebf!=null?o.rebf:REBF), recf=r2(rebf+net-(o.div||0)), te=r2(SC+recf), ta=r2(o.tl+te), ca=r2(ta-o.nca);
+    var ncf=r2((o.op||0)+(o.inv||0)+(o.fin||0)), cc=r2((o.oc||0)+ncf);
+    return Object.assign({rev:rev,pbt:pbt,tax:tax,net:net,sc:SC,rebf:rebf,recf:recf,te:te,ta:ta,ca:ca,ncf:ncf,cc:cc}, o);
+  }
+  var ACCT = {
+    monthly: [
+      P({key:'m1',label:'Jan 2026（当前账期·月报）',span:'2026-01-01 ~ 2026-01-31',kind:'管理报表',km:'p-amber',status:'草稿·未审计', turn:45800,oth:18.50,opex:31911.70,tl:19672.31,nca:121800,oc:31811.80,op:13200,inv:-2000,fin:-1500,div:0}),
+      P({key:'m2',label:'Dec 2025（月报）',span:'2025-12-01 ~ 2025-12-31',kind:'管理报表',km:'p-amber',status:'已出具·未审计', turn:52100,oth:22,opex:38400,tl:21500,nca:122800,oc:25600,op:9800,inv:0,fin:-3000,div:0}),
+      P({key:'m3',label:'Nov 2025（月报）',span:'2025-11-01 ~ 2025-11-30',kind:'管理报表',km:'p-amber',status:'已出具·未审计', turn:48700,oth:15,opex:35900,tl:20100,nca:123800,oc:22300,op:8100,inv:-1200,fin:0,div:0})
+    ],
+    quarterly: [
+      P({key:'q3',label:'Q3 2025/26（Jan–Mar 2026·当前季）',span:'2026-01-01 ~ 2026-03-31',kind:'管理报表',km:'p-blue',status:'草稿·未审计', turn:142600,oth:56.20,opex:99480.50,tl:22100,nca:120300,oc:30000,op:35000,inv:-3000,fin:-2000,div:0}),
+      P({key:'q2',label:'Q2 2025/26（Oct–Dec 2025）',span:'2025-10-01 ~ 2025-12-31',kind:'管理报表',km:'p-amber',status:'已出具·未审计', turn:151720.60,oth:0,opex:104300,tl:24500,nca:121300,oc:26000,op:40000,inv:0,fin:-5000,div:0}),
+      P({key:'q1',label:'Q1 2025/26（Jul–Sep 2025）',span:'2025-07-01 ~ 2025-09-30',kind:'管理报表',km:'p-amber',status:'已出具·未审计', turn:128400.20,oth:0,opex:92150,tl:20800,nca:122300,oc:20000,op:30000,inv:-1500,fin:0,div:0})
+    ],
+    annually: [
+      P({key:'fy26',label:'FY 2025/26（当前账期·年报）',span:'2025-07-01 ~ 2026-06-30',kind:'法定财务报表',km:'p-green',status:'草稿·待审计', turn:561300,oth:312.80,opex:392540,tl:26800,nca:119000,oc:18000,op:150000,inv:-12000,fin:-8000,div:0}),
+      P({key:'fy25',label:'FY 2024/25（上一财年·年报）',span:'2024-07-01 ~ 2025-06-30',kind:'法定财务报表',km:'p-green',status:'已出具·已审计', rebf:38117.70, turn:470000,oth:200,opex:363169.48,tl:24000,nca:124000,oc:9000,op:96000,inv:-9000,fin:-6000,div:0})
+    ]
+  };
+  function freqInfo(){
+    var f=(document.getElementById('init-close-freq')||{}).value||'quarterly';
+    return {f:f, zh:f==='monthly'?'月结':(f==='quarterly'?'季结':'年结'), list:ACCT[f]||ACCT.quarterly};
+  }
+  function _m(n){ return Number(n).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function hdr(d, name){
+    return '<div style="text-align:center;padding:14px 16px 10px;border-bottom:2px solid var(--text)">'
+      +'<div style="font-size:14px;font-weight:800;letter-spacing:.5px">ABC Trading Co. Ltd</div>'
+      +'<div style="font-size:13px;font-weight:700;margin-top:3px">'+name+'</div>'
+      +'<div style="font-size:11px;color:var(--text3);margin-top:2px">'+d.span+' · 币种 HKD</div>'
+      +'<div style="margin-top:6px"><span class="pill '+d.km+'" style="font-size:10px">'+d.kind+'</span> <span class="pill p-gray" style="font-size:10px">'+d.status+'</span></div></div>';
+  }
+  function row(lbl,v,o){ o=o||{}; return '<tr'+(o.bg?' style="background:var(--bg2)"':'')+'><td style="padding:6px 14px'+(o.ind?';padding-left:30px':'')+(o.b?';font-weight:700':'')+'">'+lbl+'</td><td style="padding:6px 14px;text-align:right;font-family:monospace'+(o.b?';font-weight:700':'')+(o.red?';color:var(--red)':'')+'">'+v+'</td></tr>'; }
+  function tbl(rows){ return '<table style="width:100%;border-collapse:collapse;font-size:12.5px"><tbody>'+rows+'</tbody></table>'; }
+  function note(html){ return '<div style="padding:9px 14px;font-size:10.5px;color:var(--text3);line-height:1.7;border-top:1px solid var(--border)">注：'+html+' 数字为演示，内部勾稽。详见《财务报告生成规则与说明》§6。</div>'; }
+  function plHTML(d){
+    return hdr(d,'损益表 Income Statement')+tbl(
+      row('营业额 Turnover', _m(d.turn))
+      +row('其他收入 Other income', d.oth?_m(d.oth):'—',{ind:1})
+      +row('收入合计 Total revenue', _m(d.rev),{b:1,bg:1})
+      +row('经营费用 Operating expenses', '('+_m(d.opex)+')',{red:1,ind:1})
+      +row('除税前溢利 Profit before tax', _m(d.pbt),{b:1})
+      +row('利得税 Profits tax (8.25%)', '('+_m(d.tax)+')',{red:1,ind:1})
+      +row('本期净溢利 Net profit', _m(d.net),{b:1,bg:1})
+    )+note('损益表为<b>期间累计</b>。'+(d.kind==='法定财务报表'?'年报已年结结转（损益→3103本年利润→3101留存）、为法定财务报表（待/已审计）。':'月/季报为管理报表，损益未结转、未经审计。'));
+  }
+  function bsHTML(d){
+    return hdr(d,'资产负债表 Statement of Financial Position')+tbl(
+      row('非流动资产 Non-current assets', _m(d.nca))
+      +row('流动资产 Current assets', _m(d.ca))
+      +row('资产总计 Total assets', _m(d.ta),{b:1,bg:1})
+      +row('流动负债 Current liabilities', _m(d.tl))
+      +row('非流动负债 Non-current liabilities', '—')
+      +row('负债合计 Total liabilities', _m(d.tl),{b:1})
+      +row('股本 Share capital', _m(d.sc),{ind:1})
+      +row('期初留存收益 Retained earnings (b/f)', _m(d.rebf),{ind:1})
+      +row((d.kind==='法定财务报表'?'本年利润转入留存 Profit to RE':'本期溢利（未结转）'), _m(d.net),{ind:1})
+      +row('权益合计 Total equity', _m(d.te),{b:1,bg:1})
+      +row('校验 资产 = 负债 + 权益', _m(d.ta)+' = '+_m(d.tl)+' + '+_m(d.te)+' ✓',{b:1})
+    )+note('资产负债表为<b>期末时点数</b>。'+(d.kind==='法定财务报表'?'年结后本期利润已并入留存收益 '+_m(d.recf)+'。':'月/季结损益未结转，权益按 股本 + 期初留存 + 本财年累计净利 列示。'));
+  }
+  function cfHTML(d){
+    return hdr(d,'现金流量表 Statement of Cash Flows（间接法·简表）')+tbl(
+      row('经营活动现金流量 Operating', _m(d.op))
+      +row('投资活动现金流量 Investing', (d.inv<0?'('+_m(-d.inv)+')':_m(d.inv)),{ind:1,red:d.inv<0})
+      +row('筹资活动现金流量 Financing', (d.fin<0?'('+_m(-d.fin)+')':_m(d.fin)),{ind:1,red:d.fin<0})
+      +row('现金净增减 Net change in cash', (d.ncf<0?'('+_m(-d.ncf)+')':_m(d.ncf)),{b:1})
+      +row('期初现金 Cash b/f', _m(d.oc),{ind:1})
+      +row('期末现金 Cash c/f', _m(d.cc),{b:1,bg:1})
+    )+note('<b>SME-FRS 下小型私人公司可豁免现金流量表</b>；此处为管理用简表（间接法）。期末现金应与 银行/现金日记账 余额勾稽。');
+  }
+  function sceHTML(d){
+    return hdr(d,'权益变动表 Statement of Changes in Equity')+'<table style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr>'
+      +'<th style="text-align:left;padding:7px 14px;background:var(--bg2)">项目</th><th style="text-align:right;padding:7px 14px;background:var(--bg2)">股本</th><th style="text-align:right;padding:7px 14px;background:var(--bg2)">留存收益</th><th style="text-align:right;padding:7px 14px;background:var(--bg2)">权益合计</th></tr></thead><tbody>'
+      +'<tr><td style="padding:6px 14px">期初余额 b/f</td><td style="padding:6px 14px;text-align:right;font-family:monospace">'+_m(d.sc)+'</td><td style="padding:6px 14px;text-align:right;font-family:monospace">'+_m(d.rebf)+'</td><td style="padding:6px 14px;text-align:right;font-family:monospace">'+_m(r2(d.sc+d.rebf))+'</td></tr>'
+      +'<tr><td style="padding:6px 14px">本期净溢利</td><td style="padding:6px 14px;text-align:right">—</td><td style="padding:6px 14px;text-align:right;font-family:monospace;color:var(--green-text)">'+_m(d.net)+'</td><td style="padding:6px 14px;text-align:right;font-family:monospace;color:var(--green-text)">'+_m(d.net)+'</td></tr>'
+      +'<tr><td style="padding:6px 14px">已派股息 Dividends</td><td style="padding:6px 14px;text-align:right">—</td><td style="padding:6px 14px;text-align:right;font-family:monospace">'+(d.div?'('+_m(d.div)+')':'—')+'</td><td style="padding:6px 14px;text-align:right;font-family:monospace">'+(d.div?'('+_m(d.div)+')':'—')+'</td></tr>'
+      +'<tr style="background:var(--bg2);font-weight:700"><td style="padding:7px 14px">期末余额 c/f</td><td style="padding:7px 14px;text-align:right;font-family:monospace">'+_m(d.sc)+'</td><td style="padding:7px 14px;text-align:right;font-family:monospace">'+_m(d.recf)+'</td><td style="padding:7px 14px;text-align:right;font-family:monospace">'+_m(d.te)+'</td></tr>'
+      +'</tbody></table>'+note('期末留存 = 期初留存 + 本期净利 − 股息 = '+_m(d.recf)+'。'+(d.kind==='法定财务报表'?'年结经 3103 本年利润结转入 3101 留存收益。':'月/季为管理口径累计。'));
+  }
+  window.ACCT_RPT_TYPE = window.ACCT_RPT_TYPE || 'pl';
+  window.setAcctRptType = function(el,t){ var tabs=document.getElementById('acctrpt-tabs'); if(tabs) tabs.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on');}); if(el) el.classList.add('on'); window.ACCT_RPT_TYPE=t; window.renderAcctRpt(); };
+  window.renderAcctRpt = function(){
+    var fi=freqInfo(), sel=document.getElementById('acctrpt-period'), body=document.getElementById('acctrpt-body');
+    if(!sel||!body) return;
+    if(sel.dataset.freq!==fi.f){ sel.innerHTML=fi.list.map(function(p,i){return '<option value="'+i+'">'+p.label+'</option>';}).join(''); sel.dataset.freq=fi.f; sel.selectedIndex=0; }
+    var d=fi.list[sel.selectedIndex]||fi.list[0];
+    var fp=document.getElementById('acctrpt-freq'); if(fp){ fp.textContent=fi.zh; fp.className='pill '+(fi.f==='annually'?'p-green':'p-blue'); }
+    var t=window.ACCT_RPT_TYPE;
+    body.innerHTML = t==='bs'?bsHTML(d):(t==='cf'?cfHTML(d):(t==='sce'?sceHTML(d):plHTML(d)));
+  };
+})();
+
 // ─── Reports tab ─────────────────────────────────────────────────
 function setRptTab(el, tab) {
   el.parentElement.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
@@ -4316,6 +4444,7 @@ const PAGE_META = {
   arap:     ['往来明细账','应收/应付按客户·供应商 · 账龄分析 · 核销 · 与总账勾稽'],
   bankbook: ['银行/现金日记账','按账户序时 + 滚动余额 · 银行余额调节表'],
   fareg:    ['固定资产登记簿','会计折旧 + 香港税务免税额 IA/AA · 累计折旧/净值'],
+  acctrpt:  ['会计报表','按结账周期出具 · 损益/资产负债/现金流量/权益变动 · 历史期间可查'],
   tenants:  ['租户管理','超级管理员控制台 · 多租户 SaaS 运营'],
   plans:    ['套餐与计费','订阅套餐 + Token 用量计费'],
   usage:    ['用量监控','Token / OCR / 存储 · 按租户分组'],
@@ -10386,6 +10515,7 @@ function handleInvDrop(evt) {
       if (id === 'arap' && window.renderArAp) window.renderArAp();
       if (id === 'bankbook' && window.renderBankBook) window.renderBankBook();
       if (id === 'fareg' && window.renderFAReg) window.renderFAReg();
+      if (id === 'acctrpt' && window.renderAcctRpt) window.renderAcctRpt();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
         document.getElementById('ledger-detail-view').style.display = 'none';
