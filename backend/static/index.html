@@ -1993,12 +1993,21 @@
               </div>
               <!-- 业务画像（喂给 AI，提升票据→科目匹配准确度）-->
               <div>
-                <div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">所属行业 Industry</div>
+                <div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">所属行业 · 香港标准行业分类码 HSIC</div>
                 <select class="edit-input" id="init-industry" style="cursor:pointer">
-                  <option>餐饮 Catering</option><option>零售 Retail</option><option selected>贸易（进出口）Trading</option>
-                  <option>跨境电商 Cross-border E-commerce</option><option>专业服务（咨询/设计/IT）Professional Services</option>
-                  <option>车行 Motor Dealer</option><option>地产代理 Property Agency</option><option>物流 Logistics</option><option>其他 Other</option>
+                  <option value="46" selected>HSIC 46 · 批发及进出口贸易 Wholesale &amp; import/export</option>
+                  <option value="47">HSIC 47 · 零售 Retail trade</option>
+                  <option value="56">HSIC 56 · 餐饮服务 Food &amp; beverage service</option>
+                  <option value="4791">HSIC 4791 · 互联网/邮购零售（跨境电商）Internet retail</option>
+                  <option value="45">HSIC 45 · 汽车销售及维修 Motor vehicle trade</option>
+                  <option value="62">HSIC 62 · 资讯科技服务 IT &amp; computer services</option>
+                  <option value="69-70">HSIC 69–70 · 专业服务（会计/法律/咨询）Professional services</option>
+                  <option value="68">HSIC 68 · 地产代理 Real estate</option>
+                  <option value="49-53">HSIC 49–53 · 运输物流 Transport &amp; logistics</option>
+                  <option value="41-43">HSIC 41–43 · 建造 Construction</option>
+                  <option value="other">其他 Other（自定义代码）</option>
                 </select>
+                <div style="font-size:10.5px;color:var(--text3);margin-top:3px">采用<b>香港标准行业分类 HSIC Version 2.0</b>（政府统计处，基于 ISIC Rev.4）；与<b>利得税报表 BIR51 / iXBRL 电子报税</b>的业务行业代码一致。以官方 HSIC / IRD 代码为准。</div>
               </div>
               <div>
                 <div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">主营业务说明 Business Description</div>
