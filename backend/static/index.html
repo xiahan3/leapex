@@ -459,6 +459,15 @@
         <div class="ni nav-company" id="ni-acctrpt-sce" style="display:none" onclick="goAcctRpt('sce',this)"><i class="ti ti-arrows-exchange" aria-hidden="true"></i><span>权益变动表</span></div>
       </div>
 
+      <!-- 员工工资（大模块 · 与账簿管理同级）-->
+      <div class="ng nav-company" style="margin-top:6px;display:none" onclick="toggleNavGroup(this)"><span>员工工资</span><span class="nn" style="margin-left:6px">NEW</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
+      <div class="nav-sub">
+        <div class="ni nav-company" id="ni-payroll-run" style="display:none" onclick="goPayroll('run',this)"><i class="ti ti-cash-banknote" aria-hidden="true"></i><span>月度工资表</span></div>
+        <div class="ni nav-company" id="ni-payroll-emp" style="display:none" onclick="goPayroll('emp',this)"><i class="ti ti-users" aria-hidden="true"></i><span>员工档案</span></div>
+        <div class="ni nav-company" id="ni-payroll-mpf" style="display:none" onclick="goPayroll('mpf',this)"><i class="ti ti-shield-check" aria-hidden="true"></i><span>强积金 MPF</span></div>
+        <div class="ni nav-company" id="ni-payroll-tax" style="display:none" onclick="goPayroll('tax',this)"><i class="ti ti-file-text" aria-hidden="true"></i><span>雇主报税 IR56</span></div>
+      </div>
+
       <!-- AI 审计 -->
       <div class="ng" style="margin-top:6px" onclick="toggleNavGroup(this)"><span>AI 审计</span><i class="ti ti-chevron-down ng-chev" aria-hidden="true"></i></div>
       <div class="nav-sub">
@@ -2441,16 +2450,16 @@
                 <div style="display:flex;gap:9px;align-items:center"><i class="ti ti-receipt" style="font-size:18px;color:var(--green)"></i><span style="font-weight:700">AR Ledger · 应收账款</span></div>
                 <span class="pill p-blue">L6</span>
               </div>
-              <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px">按客户挂账 · 账龄分析</div>
-              <div style="font-size:11.5px"><span style="color:var(--green-text);font-weight:600">应收 HKD 18,500</span> · <span style="color:var(--red-text)">90 天以上 1 笔</span></div>
+              <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px">按客户逐户挂账 · 核销未结</div>
+              <div style="font-size:11.5px"><span style="color:var(--green-text);font-weight:600">应收 HKD 18,500</span> · 未结 1 户</div>
             </div>
             <div class="bank-card" onclick="openLedger('AP')">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
                 <div style="display:flex;gap:9px;align-items:center"><i class="ti ti-file-invoice" style="font-size:18px;color:var(--blue)"></i><span style="font-weight:700">AP Ledger · 应付账款</span></div>
                 <span class="pill p-blue">L7</span>
               </div>
-              <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px">按供应商挂账</div>
-              <div style="font-size:11.5px;color:var(--text2)">应付 HKD 4,200 · 全部在 30 天内</div>
+              <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px">按供应商逐户挂账 · 核销未结</div>
+              <div style="font-size:11.5px;color:var(--text2)">应付 HKD 4,200 · 未结 3 张</div>
             </div>
             <div class="bank-card" onclick="openLedger('DCA')" style="border-color:var(--blue)">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
@@ -2521,7 +2530,7 @@
             <div style="width:42px;height:42px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-users-group" style="color:white;font-size:22px"></i></div>
             <div style="flex:1">
               <div style="font-size:14px;font-weight:700;margin-bottom:2px">往来明细账 · AR / AP Subsidiary Ledger</div>
-              <div style="font-size:11.5px;color:var(--text2)">按客户/供应商逐户登记 · 账龄分析 · 核销与未结余额 · 与总账「应收/应付」科目勾稽（账龄基准日 2026-01-31）</div>
+              <div style="font-size:11.5px;color:var(--text2)">按客户/供应商逐户登记 · 核销与未结余额 · 与总账「应收/应付」科目勾稽（香港中小企代账不做账龄分析）</div>
             </div>
             <div style="display:flex;gap:4px" id="arap-tab">
               <div class="mc on" onclick="setArApTab(this,'ar')">应收 AR</div>
@@ -2534,19 +2543,15 @@
           <div class="ch"><span class="ct" id="arap-title">应收账款明细</span><span id="arap-recpill" class="pill p-gray">—</span></div>
           <table class="tbl">
             <thead><tr>
-              <th>往来对象</th><th style="width:100px">商业登记号</th>
-              <th style="width:96px;text-align:right">未到期</th>
-              <th style="width:88px;text-align:right">1–30</th>
-              <th style="width:88px;text-align:right">31–60</th>
-              <th style="width:88px;text-align:right">61–90</th>
-              <th style="width:96px;text-align:right">90+ 天</th>
-              <th style="width:104px;text-align:right">未结合计</th>
-              <th style="width:70px;text-align:center">操作</th>
+              <th>往来对象</th><th style="width:120px">商业登记号</th>
+              <th style="width:120px;text-align:right">单据数</th>
+              <th style="width:160px;text-align:right">未结余额</th>
+              <th style="width:80px;text-align:center">操作</th>
             </tr></thead>
             <tbody id="arap-tbody"></tbody>
             <tfoot id="arap-tfoot"></tfoot>
           </table>
-          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">账龄按到期日起算；未结 = 应收/应付原额 − 已核销。90+ 天为坏账/逾期重点。点「明细」查看该对象逐笔单据与核销。</div>
+          <div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">未结 = 应收/应付原额 − 已核销；与总账「应收账款 / 应付账款」勾稽。点「明细」查看该对象逐笔单据与核销。（香港中小企代账不做账龄分析）</div>
         </div>
       </div>
 
@@ -2643,6 +2648,36 @@
         </div>
         <!-- 报表主体 -->
         <div class="card"><div id="acctrpt-body" style="padding:0"></div></div>
+      </div>
+
+      <!-- ═══════════════════════ 员工工资 Payroll ═══════════════════════ -->
+      <div class="page" id="page-payroll">
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 18px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#ECFDF5 0%,#F7F7F5 100%)">
+            <div style="width:42px;height:42px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-cash-banknote" style="color:white;font-size:22px"></i></div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;margin-bottom:2px">员工工资 · Payroll</div>
+              <div style="font-size:11.5px;color:var(--text2)">香港中小企薪酬 · 强积金 MPF 自动计算 · 一键生成工资分录 · 雇主 IR56 报税（香港：薪俸税由雇员自行报缴，雇主无须逐月代扣）</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:11.5px;color:var(--text3)">薪资月份</span>
+              <select id="payroll-month" onchange="renderPayroll()" class="edit-input" style="font-size:12px;width:auto;min-width:128px;cursor:pointer">
+                <option value="2026-01">2026 年 1 月</option>
+                <option value="2025-12">2025 年 12 月</option>
+                <option value="2025-11">2025 年 11 月</option>
+              </select>
+              <button class="btn" onclick="toast('工资已按当前档案重新计算（演示）'); if(window.renderPayroll)window.renderPayroll();"><i class="ti ti-calculator" style="font-size:13px"></i>计算工资</button>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar" id="payroll-tabs" style="margin-bottom:14px">
+          <div class="tab-btn on" onclick="setPayrollTab(this,'run')">月度工资表</div>
+          <div class="tab-btn" onclick="setPayrollTab(this,'emp')">员工档案</div>
+          <div class="tab-btn" onclick="setPayrollTab(this,'mpf')">强积金 MPF</div>
+          <div class="tab-btn" onclick="setPayrollTab(this,'tax')">雇主报税 IR56</div>
+        </div>
+        <div class="stats-grid" id="payroll-stats" style="margin-bottom:14px"></div>
+        <div id="payroll-body"></div>
       </div>
 
       <!-- ═══════════════════════ 日记账（序时账）═══════════════════════ -->
@@ -4445,6 +4480,170 @@ function renderAdjList() {
   window.goAcctRpt = function(type, el){ window.ACCT_RPT_TYPE = type; if(window.go) window.go('acctrpt', el); };
 })();
 
+// ─── 员工工资 Payroll（香港薪酬 · 强积金 MPF · 工资分录 · 雇主 IR56 报税）───
+(function(){
+  // 员工档案（演示数据 · 香港中小企 5 人）
+  var PAY = [
+    {name:'陳大文 Chan Tai Man',    hkid:'A123***(4)', title:'会计经理 Accounting Mgr',  join:'2019-03-01', basic:32000, allow:0,    scheme:'滙豐 HSBC MPF', status:'全职'},
+    {name:'李美娟 Lee Mei Kuen',    hkid:'B456***(8)', title:'行政主任 Admin Officer',   join:'2021-07-15', basic:18000, allow:1000, scheme:'滙豐 HSBC MPF', status:'全职'},
+    {name:'王志強 Wong Chi Keung',  hkid:'C789***(1)', title:'销售代表 Sales Rep',       join:'2022-11-01', basic:15000, allow:2000, scheme:'恒生 Hang Seng MPF', status:'全职'},
+    {name:'張家輝 Cheung Ka Fai',   hkid:'D234***(5)', title:'仓务文员 Warehouse Clerk', join:'2023-05-20', basic:13500, allow:0,    scheme:'恒生 Hang Seng MPF', status:'全职'},
+    {name:'陳小芳 Chan Siu Fong',   hkid:'E567***(2)', title:'兼职助理 P/T Assistant',   join:'2024-09-02', basic:6800,  allow:0,    scheme:'BCT MPF', status:'兼职'}
+  ];
+  // 香港强积金 MPF：雇主/雇员各 5%；有关入息下限 7,100/月、上限 30,000/月（供款上限 1,500）
+  var MPF_MIN = 7100, MPF_MAX = 30000, MPF_RATE = 0.05;
+  function mpf(ri){
+    var base = Math.min(ri, MPF_MAX);
+    var er = Math.round(base * MPF_RATE * 100) / 100;         // 雇主：无下限豁免，始终供 5%
+    var ee = ri < MPF_MIN ? 0 : Math.round(base * MPF_RATE * 100) / 100; // 雇员：入息 < 7,100 免供
+    return {ri:ri, ee:ee, er:er};
+  }
+  function pm(n){ return (n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function sc(label,val,sub,color){ return '<div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">'+label+'</div><div style="font-size:22px;font-weight:700'+(color?';color:'+color:'')+'">'+val+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">'+sub+'</div></div>'; }
+  function compute(){
+    var rows = PAY.map(function(p){ var ri=p.basic+p.allow; var m=mpf(ri); return {p:p, ri:ri, gross:ri, ee:m.ee, er:m.er, net:ri-m.ee}; });
+    var T={gross:0,allow:0,basic:0,ee:0,er:0,net:0}; rows.forEach(function(r){ T.gross+=r.gross; T.basic+=r.p.basic; T.allow+=r.p.allow; T.ee+=r.ee; T.er+=r.er; T.net+=r.net; });
+    T.mpf = T.ee + T.er; T.cost = T.gross + T.er;
+    return {rows:rows, T:T};
+  }
+
+  window.PAYROLL_TAB = 'run';
+  window.setPayrollTab = function(el, tab){
+    window.PAYROLL_TAB = tab;
+    var tabs=document.getElementById('payroll-tabs'); if(tabs) tabs.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on');});
+    if(el) el.classList.add('on');
+    window.renderPayroll();
+  };
+  window.goPayroll = function(tab, el){ window.PAYROLL_TAB = tab||'run'; if(window.go) window.go('payroll', el); };
+
+  function runHTML(c){
+    var T=c.T;
+    var body = c.rows.map(function(r){
+      return '<tr><td><div style="font-size:12px;font-weight:600">'+r.p.name+'</div><div style="font-size:10.5px;color:var(--text3)">'+r.p.title+'</div></td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(r.p.basic)+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+(r.p.allow?pm(r.p.allow):'—')+'</td>'
+        +'<td style="text-align:right;font-family:monospace;font-weight:600">'+pm(r.gross)+'</td>'
+        +'<td style="text-align:right;font-family:monospace;color:var(--red-text)">'+(r.ee?('−'+pm(r.ee)):'0.00')+'</td>'
+        +'<td style="text-align:right;font-family:monospace;font-weight:700">'+pm(r.net)+'</td>'
+        +'<td style="text-align:right;font-family:monospace;color:var(--text2)">'+pm(r.er)+'</td></tr>';
+    }).join('');
+    var tbl = '<div class="card" style="margin-bottom:14px"><div class="ch"><span class="ct">月度工资表 · '+ (document.getElementById('payroll-month')||{}).value +'</span>'
+      +'<span class="pill p-gray">'+c.rows.length+' 名员工</span>'
+      +'<button class="btn btn-xs" style="margin-left:auto" onclick="toast(\'工资分录已生成并计入当前账期（演示）\')"><i class="ti ti-file-plus" style="font-size:11px"></i>生成工资分录</button>'
+      +'<button class="btn btn-xs" onclick="toast(\'正在导出工资表 Excel（演示）\')"><i class="ti ti-download" style="font-size:11px"></i>导出</button></div>'
+      +'<table class="tbl"><thead><tr><th>员工 / 职位</th><th style="text-align:right;width:110px">基本工资</th><th style="text-align:right;width:90px">津贴</th><th style="text-align:right;width:110px">应发工资</th><th style="text-align:right;width:110px">强积金(雇员)</th><th style="text-align:right;width:110px">实发工资</th><th style="text-align:right;width:110px">雇主 MPF</th></tr></thead>'
+      +'<tbody>'+body+'</tbody>'
+      +'<tfoot><tr style="font-weight:700;border-top:2px solid var(--border)"><td style="text-align:right">合计</td><td style="text-align:right;font-family:monospace">'+pm(T.basic)+'</td><td style="text-align:right;font-family:monospace">'+pm(T.allow)+'</td><td style="text-align:right;font-family:monospace">'+pm(T.gross)+'</td><td style="text-align:right;font-family:monospace;color:var(--red-text)">−'+pm(T.ee)+'</td><td style="text-align:right;font-family:monospace">'+pm(T.net)+'</td><td style="text-align:right;font-family:monospace">'+pm(T.er)+'</td></tr></tfoot></table>'
+      +'<div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">应发工资 = 基本工资 + 津贴；实发工资 = 应发 − 雇员强积金供款。强积金雇主供款是<b>雇主额外成本</b>，不从工资中扣。</div></div>';
+
+    // 工资分录（复式记账）
+    var je = '<div class="card" style="margin-bottom:14px"><div class="ch"><span class="ct">工资计提分录 · Payroll Journal</span><span class="pill p-green">借贷平衡 ✓</span></div>'
+      +'<table class="tbl"><thead><tr><th style="width:120px">方向</th><th>科目</th><th style="text-align:right;width:140px">金额 HKD</th></tr></thead><tbody>'
+      +'<tr><td><span class="pill p-blue" style="font-size:9px">借 Dr</span></td><td>6226 工资和薪金 Wages &amp; salaries</td><td style="text-align:right;font-family:monospace">'+pm(T.gross)+'</td></tr>'
+      +'<tr><td><span class="pill p-blue" style="font-size:9px">借 Dr</span></td><td>6217 强积金供款 MPF（雇主部分）</td><td style="text-align:right;font-family:monospace">'+pm(T.er)+'</td></tr>'
+      +'<tr><td><span class="pill p-amber" style="font-size:9px">贷 Cr</span></td><td>2211 应付薪酬 Salaries payable（实发净额）</td><td style="text-align:right;font-family:monospace">'+pm(T.net)+'</td></tr>'
+      +'<tr><td><span class="pill p-amber" style="font-size:9px">贷 Cr</span></td><td>2244 应付强積金 MPF payable（雇员+雇主）</td><td style="text-align:right;font-family:monospace">'+pm(T.mpf)+'</td></tr>'
+      +'</tbody><tfoot><tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="2" style="text-align:right">借 / 贷合计</td><td style="text-align:right;font-family:monospace">'+pm(T.cost)+'</td></tr></tfoot></table>'
+      +'<div style="padding:9px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3);line-height:1.7">'
+      +'<div><b>① 计提</b>（上表，本月）：Dr 工资 '+pm(T.gross)+' + Dr 雇主MPF '+pm(T.er)+' ／ Cr 应付薪酬 '+pm(T.net)+' + Cr 应付强積金 '+pm(T.mpf)+'</div>'
+      +'<div><b>② 发薪</b>（发薪日）：Dr 2211 应付薪酬 '+pm(T.net)+' ／ Cr 银行存款 '+pm(T.net)+'</div>'
+      +'<div><b>③ 缴强积金</b>（次月 10 日供款日前）：Dr 2244 应付强積金 '+pm(T.mpf)+' ／ Cr 银行存款 '+pm(T.mpf)+'</div>'
+      +'</div></div>';
+
+    var note = '<div class="card"><div class="ch"><span class="ct">香港薪酬 · 强积金与税务要点</span></div><div style="padding:12px 16px;font-size:11.5px;color:var(--text2);line-height:1.85">'
+      +'<div>• <b>强积金 MPF</b>：雇主、雇员各供 <b>5%</b>；有关入息月<b>下限 HKD 7,100</b>（低于此雇员免供、<u>雇主仍须供</u>）、<b>上限 HKD 30,000</b>（每方月供上限 <b>1,500</b>）。须于<b>次月 10 日</b>前缴付受托人。</div>'
+      +'<div>• <b>薪俸税 Salaries Tax</b>：香港<b>无逐月预扣（无 PAYE）</b>——雇员自行凭 <b>BIR60</b> 报税缴付；雇主<b>不代扣代缴</b>工资中的薪俸税。</div>'
+      +'<div>• <b>雇主报税</b>：每年就<b>截至 3 月 31 日</b>课税年度填报 <b>BIR56A + IR56B</b>（雇员薪酬申报表），一般 4 月初发出、1 个月内交回；新聘 <b>IR56E</b>、离职 <b>IR56F</b>、离港 <b>IR56G</b>。</div>'
+      +'<div>• <b>其他法定</b>：遵《雇佣条例》(Cap.57) 支薪周期、假期薪酬、<b>强制性劳工保险</b>；解雇 / 遣散费 / 长期服务金按条例计算（本模块暂不含）。</div>'
+      +'</div></div>';
+    return tbl + je + note;
+  }
+
+  function empHTML(){
+    var body = PAY.map(function(p){
+      return '<tr><td><div style="font-size:12px;font-weight:600">'+p.name+'</div></td>'
+        +'<td style="font-family:monospace;font-size:11px;color:var(--text2)">'+p.hkid+'</td>'
+        +'<td style="font-size:11.5px">'+p.title+'</td>'
+        +'<td style="font-family:monospace;font-size:11px">'+p.join+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(p.basic)+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+(p.allow?pm(p.allow):'—')+'</td>'
+        +'<td style="font-size:11px">'+p.scheme+'</td>'
+        +'<td style="text-align:center"><span class="pill '+(p.status==='全职'?'p-green':'p-blue')+'" style="font-size:9px">'+p.status+'</span></td></tr>';
+    }).join('');
+    return '<div class="card"><div class="ch"><span class="ct">员工档案 · Employee Master</span><span class="pill p-gray">'+PAY.length+' 人</span>'
+      +'<button class="btn btn-xs" style="margin-left:auto" onclick="toast(\'新增员工（演示）\')"><i class="ti ti-user-plus" style="font-size:11px"></i>新增员工</button></div>'
+      +'<table class="tbl"><thead><tr><th>姓名</th><th style="width:110px">身份证号</th><th>职位</th><th style="width:100px">入职日</th><th style="text-align:right;width:100px">月薪</th><th style="text-align:right;width:90px">津贴</th><th style="width:150px">强积金计划</th><th style="text-align:center;width:70px">状态</th></tr></thead><tbody>'+body+'</tbody></table>'
+      +'<div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">身份证号仅显示首字母 + 末位校验码（个人资料私隐条例 PDPO）。月薪 / 津贴用于工资表与强积金计算；强积金计划为受托人（信托）安排。</div></div>';
+  }
+
+  function mpfHTML(c){
+    var body = c.rows.map(function(r){
+      var flag = r.ri<MPF_MIN ? '<span class="pill p-amber" style="font-size:9px">低于下限 · 雇员免供</span>' : (r.ri>MPF_MAX ? '<span class="pill p-blue" style="font-size:9px">高于上限 · 封顶 1,500</span>' : '<span class="pill p-green" style="font-size:9px">常规 5%</span>');
+      return '<tr><td><div style="font-size:12px;font-weight:600">'+r.p.name+'</div></td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(r.ri)+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(r.ee)+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(r.er)+'</td>'
+        +'<td style="text-align:center">'+flag+'</td></tr>';
+    }).join('');
+    var T=c.T;
+    var rules = '<div class="card" style="margin-bottom:14px"><div class="ch"><span class="ct">强积金 MPF 计算规则</span><span class="pill p-blue">强积金条例 Cap.485</span></div>'
+      +'<div style="padding:12px 16px;font-size:11.5px;color:var(--text2);line-height:1.85">'
+      +'<div>• 供款比例：雇主 <b>5%</b> + 雇员 <b>5%</b>（强制性供款）。</div>'
+      +'<div>• 有关入息<b>下限 HKD 7,100/月</b>：入息低于下限，<b>雇员无须供款</b>，但<b>雇主仍须按 5% 供款</b>。</div>'
+      +'<div>• 有关入息<b>上限 HKD 30,000/月</b>：超过上限部分不计供款，每方每月供款<b>封顶 HKD 1,500</b>。</div>'
+      +'<div>• 缴付期限：每月供款须于<b>下月 10 日</b>（供款日）或之前缴付强积金受托人。</div>'
+      +'<div>• 新员工<b>首 60 日</b>雇主须为其登记；自雇及部分行业（如临时雇员）另有安排。</div>'
+      +'</div></div>';
+    var tbl = '<div class="card"><div class="ch"><span class="ct">本月强积金供款计算 · '+ (document.getElementById('payroll-month')||{}).value +'</span></div>'
+      +'<table class="tbl"><thead><tr><th>员工</th><th style="text-align:right;width:130px">有关入息 RI</th><th style="text-align:right;width:130px">雇员供款 5%</th><th style="text-align:right;width:130px">雇主供款 5%</th><th style="text-align:center;width:180px">说明</th></tr></thead>'
+      +'<tbody>'+body+'</tbody>'
+      +'<tfoot><tr style="font-weight:700;border-top:2px solid var(--border)"><td style="text-align:right">合计</td><td style="text-align:right;font-family:monospace">'+pm(T.gross)+'</td><td style="text-align:right;font-family:monospace">'+pm(T.ee)+'</td><td style="text-align:right;font-family:monospace">'+pm(T.er)+'</td><td style="text-align:center;font-family:monospace">MPF '+pm(T.mpf)+'</td></tr></tfoot></table>'
+      +'<div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">应缴受托人合计 = 雇员 '+pm(T.ee)+' + 雇主 '+pm(T.er)+' = <b>HKD '+pm(T.mpf)+'</b>；入账见「月度工资表」工资分录（贷 2244 应付强積金）。</div></div>';
+    return rules + tbl;
+  }
+
+  function taxHTML(c){
+    var body = c.rows.map(function(r){
+      var annualPay = r.gross*12, annualEE = r.ee*12;
+      return '<tr><td><div style="font-size:12px;font-weight:600">'+r.p.name+'</div><div style="font-size:10.5px;color:var(--text3)">'+r.p.title+'</div></td>'
+        +'<td style="font-family:monospace;font-size:11px;color:var(--text2)">'+r.p.hkid+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(annualPay)+'</td>'
+        +'<td style="text-align:right;font-family:monospace">'+pm(annualEE)+'</td>'
+        +'<td style="text-align:center"><span class="pill p-teal" style="font-size:9px">IR56B</span></td></tr>';
+    }).join('');
+    var totPay=0, totEE=0; c.rows.forEach(function(r){ totPay+=r.gross*12; totEE+=r.ee*12; });
+    var tbl = '<div class="card" style="margin-bottom:14px"><div class="ch"><span class="ct">雇主薪酬申报 · BIR56A / IR56B（课税年度 2025/26 · 截至 2026-03-31）</span>'
+      +'<button class="btn btn-xs" style="margin-left:auto" onclick="toast(\'正在生成 IR56B 电子档（演示）\')"><i class="ti ti-file-export" style="font-size:11px"></i>生成 IR56B</button></div>'
+      +'<table class="tbl"><thead><tr><th>员工 / 职位</th><th style="width:110px">身份证号</th><th style="text-align:right;width:150px">全年薪酬</th><th style="text-align:right;width:170px">雇员强积金供款</th><th style="text-align:center;width:90px">申报表</th></tr></thead>'
+      +'<tbody>'+body+'</tbody>'
+      +'<tfoot><tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="2" style="text-align:right">合计（BIR56A 汇总）</td><td style="text-align:right;font-family:monospace">'+pm(totPay)+'</td><td style="text-align:right;font-family:monospace">'+pm(totEE)+'</td><td></td></tr></tfoot></table>'
+      +'<div style="padding:8px 14px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3)">全年薪酬按当前月薪 × 12 估算（实际以年内累计发放为准，含双糧 / 花红 / 佣金等）。</div></div>';
+    var note = '<div class="card"><div class="ch"><span class="ct">香港雇主报税流程</span></div><div style="padding:12px 16px;font-size:11.5px;color:var(--text2);line-height:1.85">'
+      +'<div>• <b>无逐月预扣</b>：香港薪俸税不设 PAYE，雇主每月<b>不代扣</b>雇员薪俸税；雇员年终凭 <b>BIR60</b> 个人报税、自行缴付。</div>'
+      +'<div>• <b>年度申报</b>：税务局一般于每年 <b>4 月初</b>发出 <b>BIR56A</b>（雇主报税表），连同每名雇员 <b>IR56B</b>，须于发出日起 <b>1 个月内</b>交回。</div>'
+      +'<div>• <b>事件性表格</b>：新聘用 <b>IR56E</b>（入职后 3 个月内）、停止雇用 <b>IR56F</b>（离职前 1 个月）、雇员离港 <b>IR56G</b>（离港前 1 个月，并暂扣其款项）。</div>'
+      +'<div>• <b>雇员扣减</b>：雇员强积金<b>强制性供款</b>可在其薪俸税下扣除，每年上限 <b>HKD 18,000</b>（由雇员在 BIR60 申报，非雇主代办）。</div>'
+      +'<div>• 记录须按 <b>IRO S.51C</b> 保存 <b>7 年</b>。</div>'
+      +'</div></div>';
+    return tbl + note;
+  }
+
+  window.renderPayroll = function(){
+    var body=document.getElementById('payroll-body'); if(!body) return;
+    var c = compute(), T=c.T, tab=window.PAYROLL_TAB||'run';
+    // 同步页内 Tab + 左侧导航子项高亮
+    var tabs=document.getElementById('payroll-tabs'); if(tabs){ var mp={run:0,emp:1,mpf:2,tax:3}; var ch=tabs.children; for(var i=0;i<ch.length;i++) ch[i].classList.toggle('on', i===mp[tab]); }
+    ['run','emp','mpf','tax'].forEach(function(k){ var ni=document.getElementById('ni-payroll-'+k); if(ni) ni.classList.toggle('active', k===tab); });
+    // 统计条
+    var st=document.getElementById('payroll-stats');
+    if(st) st.innerHTML = sc('应发工资 Gross','HKD '+pm(T.gross), c.rows.length+' 名员工')
+      + sc('实发工资 Net','HKD '+pm(T.net),'已扣雇员 MPF '+pm(T.ee))
+      + sc('强积金 MPF','HKD '+pm(T.mpf),'雇员 '+pm(T.ee)+' + 雇主 '+pm(T.er))
+      + sc('用工总成本','HKD '+pm(T.cost),'工资 + 雇主 MPF', 'var(--text)');
+    body.innerHTML = tab==='emp'?empHTML():(tab==='mpf'?mpfHTML(c):(tab==='tax'?taxHTML(c):runHTML(c)));
+  };
+})();
+
 // ─── 账期主线 Accounting Period（结账周期 → 账期日历 + 当前账期）───
 (function(){
   function PER(freq){
@@ -4525,10 +4724,11 @@ const PAGE_META = {
   coabal:   ['科目余额表','期初 · 本期借贷发生 · 期末余额 · 按账期 / 类别'],
   gledger:  ['总账 General Ledger','按科目逐笔分录 · 借贷 · 滚动余额'],
   journal:  ['日记账（序时账）','General Journal · 按日期/凭证序时 · 借贷分录 · 钻取来源'],
-  arap:     ['往来明细账','应收/应付按客户·供应商 · 账龄分析 · 核销 · 与总账勾稽'],
+  arap:     ['往来明细账','应收/应付按客户·供应商 · 核销未结 · 与总账勾稽'],
   bankbook: ['银行/现金日记账','按账户序时 + 滚动余额 · 银行余额调节表'],
   fareg:    ['固定资产登记簿','会计折旧 + 香港税务免税额 IA/AA · 累计折旧/净值'],
   acctrpt:  ['会计报表','按结账周期出具 · 损益/资产负债/现金流量/权益变动 · 历史期间可查'],
+  payroll:  ['员工工资','香港薪酬 · 强积金 MPF 自动计算 · 一键生成工资分录 · 雇主 IR56 报税'],
   tenants:  ['租户管理','超级管理员控制台 · 多租户 SaaS 运营'],
   plans:    ['套餐与计费','订阅套餐 + Token 用量计费'],
   usage:    ['用量监控','Token / OCR / 存储 · 按租户分组'],
@@ -6625,35 +6825,36 @@ function deleteCoaAccount() {
 
 
 var ENTRIES = [
+  // 摘要三要素：party 对方名称 · sum 费用内容概要 · doc 单据号（票据核心信息）
   // ── 支出类（银行付款） ───────────────────────────────────────────
-  { id:'JV-2026-001', date:'2026-01-15', desc:'Motor vehicle expenses — Sinopec Fuel Station', status:'confirmed', conf:null,
+  { id:'JV-2026-001', date:'2026-01-15', desc:'Motor vehicle expenses — Sinopec Fuel Station', party:'中石化 Sinopec', sum:'1月车辆加油', doc:'SNP-260115', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Motor vehicle expenses',amount:321.50},{type:'Cr',account:'Bank — HSBC Current Account',amount:321.50}] },
-  { id:'JV-2026-002', date:'2026-01-08', desc:'Telephone and internet — PCCW monthly autopay Jan 2026', status:'confirmed', conf:null,
+  { id:'JV-2026-002', date:'2026-01-08', desc:'Telephone and internet — PCCW monthly autopay Jan 2026', party:'電訊盈科 PCCW', sum:'1月电话及上网月费', doc:'PCCW-2601', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Telephone and internet',amount:488.00},{type:'Cr',account:'Bank — HSBC Current Account',amount:488.00}] },
-  { id:'JV-2026-003', date:'2026-01-05', desc:'Postage and courier — UPS Express International shipment', status:'confirmed', conf:null,
+  { id:'JV-2026-003', date:'2026-01-05', desc:'Postage and courier — UPS Express International shipment', party:'UPS 快递', sum:'国际快递运费', doc:'UPS-8834', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Postage and courier',amount:611.20},{type:'Cr',account:'Bank — HSBC Current Account',amount:611.20}] },
-  { id:'JV-2026-004', date:'2026-01-22', desc:'Office supplies — Commercial Press 商務印書館 stationery', status:'confirmed', conf:null,
+  { id:'JV-2026-004', date:'2026-01-22', desc:'Office supplies — Commercial Press 商務印書館 stationery', party:'商務印書館', sum:'办公文具采购', doc:'CP-2601', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Office supplies',amount:236.00},{type:'Cr',account:'Bank — HSBC Current Account',amount:236.00}] },
-  { id:'JV-2026-005', date:'2026-01-31', desc:'Bank charges — HSBC current account monthly service fee', status:'confirmed', conf:null,
+  { id:'JV-2026-005', date:'2026-01-31', desc:'Bank charges — HSBC current account monthly service fee', party:'滙豐銀行 HSBC', sum:'1月账户服务月费', doc:'HSBC-FEE01', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Bank charges',amount:150.00},{type:'Cr',account:'Bank — HSBC Current Account',amount:150.00}] },
-  { id:'JV-2026-006', date:'2026-01-20', desc:'Travelling expenses — Taxi fares Jan 2026 (2 receipts merged)', status:'confirmed', conf:null,
+  { id:'JV-2026-006', date:'2026-01-20', desc:'Travelling expenses — Taxi fares Jan 2026 (2 receipts merged)', party:'的士车费', sum:'1月差旅的士（2张合并）', doc:'EXP-260120', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Travelling expenses',amount:500.00},{type:'Cr',account:'Bank — HSBC Current Account',amount:500.00}] },
   // ── 收入类（客户付款） ───────────────────────────────────────────
-  { id:'JV-2026-007', date:'2026-01-03', desc:'Revenue — Professional services, Peak View Properties Ltd', status:'confirmed', conf:null,
+  { id:'JV-2026-007', date:'2026-01-03', desc:'Revenue — Professional services, Peak View Properties Ltd', party:'Peak View Properties', sum:'专业服务费收入', doc:'SI-2601-001', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Bank — HSBC Current Account',amount:8500.00},{type:'Cr',account:'Revenue from rendering of services',amount:8500.00}] },
-  { id:'JV-2026-008', date:'2026-01-10', desc:'Revenue — Professional services, HK Ventures Ltd', status:'confirmed', conf:null,
+  { id:'JV-2026-008', date:'2026-01-10', desc:'Revenue — Professional services, HK Ventures Ltd', party:'HK Ventures Ltd', sum:'专业服务费收入', doc:'SI-2601-002', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Bank — HSBC Current Account',amount:15200.00},{type:'Cr',account:'Revenue from rendering of services',amount:15200.00}] },
-  { id:'JV-2026-009', date:'2026-01-25', desc:'Revenue — Professional services, Fortune International Ltd', status:'confirmed', conf:null,
+  { id:'JV-2026-009', date:'2026-01-25', desc:'Revenue — Professional services, Fortune International Ltd', party:'Fortune International', sum:'专业服务费收入', doc:'SI-2601-003', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Bank — HSBC Current Account',amount:22100.00},{type:'Cr',account:'Revenue from rendering of services',amount:22100.00}] },
-  { id:'JV-2026-010', date:'2026-01-31', desc:'Interest income — HSBC current account interest Jan 2026', status:'confirmed', conf:null,
+  { id:'JV-2026-010', date:'2026-01-31', desc:'Interest income — HSBC current account interest Jan 2026', party:'滙豐銀行 HSBC', sum:'1月账户利息收入', doc:'HSBC-INT01', status:'confirmed', conf:null,
     lines:[{type:'Dr',account:'Bank — HSBC Current Account',amount:18.50},{type:'Cr',account:'Interest income',amount:18.50}] },
   // ── 未匹配票据（手工补录，待确认） ───────────────────────────────
-  { id:'JV-2026-011', date:'2026-01-12', desc:"Meals and entertainment — Business lunch, director's advance", status:'pending', conf:62,
+  { id:'JV-2026-011', date:'2026-01-12', desc:"Meals and entertainment — Business lunch, director's advance", party:'董事垫付', sum:'业务午餐招待', doc:'EXP-260112', status:'pending', conf:62,
     lines:[{type:'Dr',account:'Meals and entertainment',amount:145.00},{type:'Cr',account:"Director's Current Account",amount:145.00}] },
-  { id:'JV-2026-012', date:'2026-01-20', desc:'Travelling expenses — Parking fee, petty cash reimbursement', status:'pending', conf:75,
+  { id:'JV-2026-012', date:'2026-01-20', desc:'Travelling expenses — Parking fee, petty cash reimbursement', party:'停车场', sum:'停车费（备用金报销）', doc:'PC-260120', status:'pending', conf:75,
     lines:[{type:'Dr',account:'Travelling expenses',amount:80.00},{type:'Cr',account:'Petty Cash — Office',amount:80.00}] },
   // ── 期末调整（Step 3 折旧）────────────────────────────────────────
-  { id:'JV-2026-013', date:'2026-01-31', desc:'Depreciation — Office equipment Jan 2026 (Step 3 period-end adjustment)', status:'pending', conf:99,
+  { id:'JV-2026-013', date:'2026-01-31', desc:'Depreciation — Office equipment Jan 2026 (Step 3 period-end adjustment)', party:'期末调整', sum:'办公设备折旧（1月）', doc:'ADJ-DEP01', status:'pending', conf:99,
     lines:[{type:'Dr',account:'Depreciation and amortisation',amount:400.00},{type:'Cr',account:'Accumulated depreciation — Property and equipment',amount:400.00}] },
 ];
 
@@ -9823,14 +10024,14 @@ function handleInvDrop(evt) {
     },
     AR: {
       title: 'AR Ledger · 应收账款明细账', code: 'L6',
-      cols: ['客户','发票号','开票日','金额','已收','余额','账龄'],
-      summary: '总应收 HKD 18,500 · 30天内 0 · 30-60 0 · 60-90 0 · 90+ 18,500 ⚠',
+      cols: ['客户','发票号','开票日','金额','已收','未结余额','状态'],
+      summary: '总应收 HKD 18,500 · 未结 1 户 · 与总账「应收账款」勾稽',
       rowsBuilder: 'buildARRows'
     },
     AP: {
       title: 'AP Ledger · 应付账款明细账', code: 'L7',
-      cols: ['供应商','票据号','票据日','金额','已付','余额','账龄'],
-      summary: '总应付 HKD 4,200 · 30天内 4,200 · 无逾期',
+      cols: ['供应商','票据号','票据日','金额','已付','未结余额','状态'],
+      summary: '总应付 HKD 4,200 · 未结 3 张 · 与总账「应付账款」勾稽',
       rowsBuilder: 'buildAPRows'
     },
     DCA: {
@@ -9972,16 +10173,16 @@ function handleInvDrop(evt) {
   }
   function buildARRows() {
     return [
-      ['Sunrise Holdings Ltd','SI-2601-005','2026-01-28','18,500.00','0.00','<b style="color:var(--red-text)">18,500.00</b>','<span class="pill p-red">90+ 天</span>'],
+      ['Sunrise Holdings Ltd','SI-2601-005','2026-01-28','18,500.00','0.00','<b>18,500.00</b>','<span class="pill p-amber">未结</span>'],
       ['Peak View Properties','SI-2601-001','2026-01-03','8,500.00','8,500.00','0.00','<span class="pill p-green">已结清</span>'],
       ['HK Ventures Ltd','SI-2601-002','2026-01-10','15,200.00','15,200.00','0.00','<span class="pill p-green">已结清</span>'],
     ];
   }
   function buildAPRows() {
     return [
-      ['PCCW 電訊盈科','INV-2602-018','2026-02-08','488.00','0.00','488.00','<span class="pill p-green">30 天内</span>'],
-      ['Sinopec HK','RCP-0205-003','2026-02-05','298.00','0.00','298.00','<span class="pill p-green">30 天内</span>'],
-      ['中环办公租赁','INV-2602-RENT','2026-02-01','3,414.00','0.00','3,414.00','<span class="pill p-green">30 天内</span>'],
+      ['PCCW 電訊盈科','INV-2602-018','2026-02-08','488.00','0.00','488.00','<span class="pill p-amber">未结</span>'],
+      ['Sinopec HK','RCP-0205-003','2026-02-05','298.00','0.00','298.00','<span class="pill p-amber">未结</span>'],
+      ['中环办公租赁','INV-2602-RENT','2026-02-01','3,414.00','0.00','3,414.00','<span class="pill p-amber">未结</span>'],
     ];
   }
   function buildDCARows() {
@@ -10600,6 +10801,7 @@ function handleInvDrop(evt) {
       if (id === 'bankbook' && window.renderBankBook) window.renderBankBook();
       if (id === 'fareg' && window.renderFAReg) window.renderFAReg();
       if (id === 'acctrpt' && window.renderAcctRpt) window.renderAcctRpt();
+      if (id === 'payroll' && window.renderPayroll) window.renderPayroll();
       if (id === 'init' && window.renderPeriodCalendar) window.renderPeriodCalendar();
       if (id === 'ledger') {
         document.getElementById('ledger-list-view').style.display = '';
@@ -11695,7 +11897,7 @@ function handleInvDrop(evt) {
       var a = l.account; if(!a) return; if(!map[a]) map[a] = { account:a, dr:0, cr:0, lines:[] };
       var amt = typeof l.amount==='number'? l.amount : (parseFloat(l.amount)||0);
       if(l.type==='Dr') map[a].dr += amt; else map[a].cr += amt;
-      map[a].lines.push({ date:e.date, jv:e.id, desc:e.desc, type:l.type, amt:amt });
+      map[a].lines.push({ date:e.date, jv:e.id, desc:e.desc, party:e.party, sum:e.sum, doc:e.doc, type:l.type, amt:amt });
     }); });
     return map;
   }
@@ -11739,7 +11941,7 @@ function handleInvDrop(evt) {
     var rows = '<tr style="color:var(--text3)"><td>2026-01-01</td><td>—</td><td>期初余额 B/F</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-family:monospace">0.00 '+(nbDr?'Dr':'Cr')+'</td></tr>';
     m.lines.slice().sort(function(a,b){ return String(a.date).localeCompare(String(b.date)); }).forEach(function(l){
       if(l.type==='Dr'){ bal += nbDr? l.amt : -l.amt; sDr+=l.amt; } else { bal += nbDr? -l.amt : l.amt; sCr+=l.amt; }
-      rows += '<tr><td style="font-size:11.5px">'+(l.date||'')+'</td><td style="font-family:monospace;font-size:11px">'+l.jv+'</td><td style="font-size:11.5px">'+l.desc+'</td>'
+      rows += '<tr><td style="font-size:11.5px">'+(l.date||'')+'</td><td style="font-family:monospace;font-size:11px">'+l.jv+'</td><td style="font-size:11.5px">'+_bkSum(l,_bkDoc(l.jv,l.date))+'</td>'
         + '<td style="text-align:right;font-family:monospace">'+(l.type==='Dr'?_amtTxt(l.amt):'—')+'</td>'
         + '<td style="text-align:right;font-family:monospace">'+(l.type==='Cr'?_amtTxt(l.amt):'—')+'</td>'
         + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(Math.abs(bal))+' '+(bal>=0?(nbDr?'Dr':'Cr'):(nbDr?'Cr':'Dr'))+'</td></tr>';
@@ -11758,6 +11960,21 @@ function handleInvDrop(evt) {
     document.querySelectorAll('#journal-filter .mc').forEach(function(c){ c.classList.remove('on'); });
     el.classList.add('on'); journalFilter = v; window.renderJournal();
   };
+  // 账簿摘要：对方名称｜费用内容概要｜单据号#号码（票据核心信息）
+  // 优先用结构化字段 party/sum/doc；缺失时回退解析 desc（「内容 — 对方」）
+  function _bkDoc(id, date){ var dd=String(date||'').replace(/-/g,'').slice(2); var n=String(id||'').replace(/\D/g,'').slice(-3); return (dd||'')+(n||''); }
+  function _bkFmt(party, sum, doc){ return (party?'<b>'+party+'</b>｜':'') + (sum||'') + (doc?'<span style="color:var(--text3)">｜单据号#'+doc+'</span>':''); }
+  function _bkParse(desc){ var d=String(desc||''); var i=d.indexOf('—'); if(i<0){ i=d.indexOf(' - '); }
+    if(i>=0) return {party:d.slice(i+1).replace(/^[\s\-—]+/,'').trim(), sum:d.slice(0,i).trim()};
+    return {party:'', sum:d.trim()}; }
+  function _bkSum(o, docFallback){
+    docFallback = docFallback||'';
+    if(o && typeof o==='object'){
+      if(o.party||o.sum) return _bkFmt(o.party, o.sum, o.doc||docFallback);
+      var p=_bkParse(o.desc); return _bkFmt(p.party, p.sum, o.doc||docFallback);
+    }
+    var q=_bkParse(o); return _bkFmt(q.party, q.sum, docFallback);
+  }
   window.renderJournal = function(){
     var tb = document.getElementById('journal-tbody'); if(!tb) return;
     var EN = _g('ENTRIES') || window.ENTRIES || [];
@@ -11776,7 +11993,7 @@ function handleInvDrop(evt) {
       var multi=(e.lines||[]).length>2?'<span class="pill p-gray" style="font-size:8.5px;margin-left:4px">多行</span>':'';
       var s=stMap[e.status]||['—','p-gray'];
       return '<tr><td style="font-size:11.5px">'+(e.date||'')+'</td><td style="font-family:monospace;font-size:11px">'+e.id+'</td>'
-        + '<td style="font-size:11.5px">'+(e.desc||'')+multi+'</td>'
+        + '<td style="font-size:11.5px">'+_bkSum(e,_bkDoc(e.id,e.date))+multi+'</td>'
         + '<td style="font-size:11px;color:var(--blue-text)">'+acctName(dr)+'</td>'
         + '<td style="font-size:11px;color:var(--green-text)">'+acctName(cr)+'</td>'
         + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(amt)+'</td>'
@@ -11786,9 +12003,6 @@ function handleInvDrop(evt) {
   };
 
   // ════════════════ 往来明细账 AR / AP ════════════════
-  var AGING_BASE = '2026-01-31';
-  function _dateNum(s){ var m=String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/); return m? (Date.UTC(+m[1],+m[2]-1,+m[3])) : 0; }
-  function _daysOver(due){ return Math.round((_dateNum(AGING_BASE) - _dateNum(due)) / 86400000); }
   var AR_LEDGER = [
     { party:'遠東貿易有限公司 Far East Trading', br:'62004471', invs:[{no:'SI-2025-0301', date:'2025-09-15', due:'2025-10-15', amt:12000, paid:0}] },
     { party:'Sunrise Holdings Ltd 旭日集团', br:'51002871', invs:[{no:'SI-2601-005', date:'2025-10-28', due:'2025-11-27', amt:18500, paid:0}] },
@@ -11805,82 +12019,66 @@ function handleInvDrop(evt) {
   ];
   var arapTab = 'ar';
   window.setArApTab = function(el, v){ document.querySelectorAll('#arap-tab .mc').forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); arapTab=v; renderArAp(); };
-  function _aging(party){
-    var b={cur:0,b30:0,b60:0,b90:0,b90p:0,total:0};
-    party.invs.forEach(function(iv){ var un=(iv.amt||0)-(iv.paid||0); if(un<=0.005) return; b.total+=un;
-      var d=_daysOver(iv.due);
-      if(d<=0) b.cur+=un; else if(d<=30) b.b30+=un; else if(d<=60) b.b60+=un; else if(d<=90) b.b90+=un; else b.b90p+=un;
-    });
-    return b;
-  }
   window.renderArAp = function(){
     var tb=document.getElementById('arap-tbody'); if(!tb) return;
     var isAR = arapTab==='ar';
     var src = isAR?AR_LEDGER:AP_LEDGER;
-    var data = src.map(function(p,idx){ return {idx:idx, party:p.party, br:p.br, ag:_aging(p)}; }).filter(function(p){ return p.ag.total>0.005; });
-    var T={cur:0,b30:0,b60:0,b90:0,b90p:0,total:0};
-    data.forEach(function(p){ var a=p.ag; T.cur+=a.cur;T.b30+=a.b30;T.b60+=a.b60;T.b90+=a.b90;T.b90p+=a.b90p;T.total+=a.total; });
-    function c(n){ return n? _amtTxt(n) : '—'; }
-    tb.innerHTML = data.map(function(p){ var a=p.ag; var overdue=a.b30+a.b60+a.b90+a.b90p;
-      var stat = a.b90p>0 ? '<span class="pill p-red" style="font-size:9px">90+ 逾期</span>' : (overdue>0 ? '<span class="pill p-amber" style="font-size:9px">逾期</span>' : '<span class="pill p-green" style="font-size:9px">正常</span>');
-      return '<tr><td><div style="font-size:12px;font-weight:500">'+p.party+'</div>'+stat+'</td>'
+    var data = src.map(function(p,idx){
+      var un=0, cnt=0; (p.invs||[]).forEach(function(iv){ var u=(iv.amt||0)-(iv.paid||0); if(u>0.005){ un+=u; cnt++; } });
+      return {idx:idx, party:p.party, br:p.br, un:un, cnt:cnt};
+    }).filter(function(p){ return p.un>0.005; });
+    var T=0, N=0; data.forEach(function(p){ T+=p.un; N+=p.cnt; });
+    tb.innerHTML = data.map(function(p){
+      return '<tr><td><div style="font-size:12px;font-weight:500">'+p.party+'</div></td>'
         + '<td style="font-family:monospace;font-size:11px;color:var(--text2)">'+(p.br||'—')+'</td>'
-        + '<td style="text-align:right;font-family:monospace">'+c(a.cur)+'</td>'
-        + '<td style="text-align:right;font-family:monospace">'+c(a.b30)+'</td>'
-        + '<td style="text-align:right;font-family:monospace">'+c(a.b60)+'</td>'
-        + '<td style="text-align:right;font-family:monospace">'+c(a.b90)+'</td>'
-        + '<td style="text-align:right;font-family:monospace;color:'+(a.b90p>0?'var(--red-text)':'inherit')+'">'+c(a.b90p)+'</td>'
-        + '<td style="text-align:right;font-family:monospace;font-weight:700">'+_amtTxt(a.total)+'</td>'
+        + '<td style="text-align:right;font-family:monospace">'+p.cnt+' 张</td>'
+        + '<td style="text-align:right;font-family:monospace;font-weight:700">'+_amtTxt(p.un)+'</td>'
         + '<td style="text-align:center"><button class="btn btn-xs" style="font-size:10px" onclick="arapDetail('+p.idx+',\''+arapTab+'\')">明细</button></td></tr>';
-    }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:18px">无未结往来</td></tr>';
+    }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:18px">无未结往来</td></tr>';
     var tf=document.getElementById('arap-tfoot');
     if(tf) tf.innerHTML='<tr style="font-weight:700;border-top:2px solid var(--border)"><td colspan="2" style="text-align:right">合计</td>'
-      +'<td style="text-align:right;font-family:monospace">'+c(T.cur)+'</td><td style="text-align:right;font-family:monospace">'+c(T.b30)+'</td>'
-      +'<td style="text-align:right;font-family:monospace">'+c(T.b60)+'</td><td style="text-align:right;font-family:monospace">'+c(T.b90)+'</td>'
-      +'<td style="text-align:right;font-family:monospace;color:var(--red-text)">'+c(T.b90p)+'</td>'
-      +'<td style="text-align:right;font-family:monospace">'+_amtTxt(T.total)+'</td><td></td></tr>';
+      +'<td style="text-align:right;font-family:monospace">'+N+' 张</td>'
+      +'<td style="text-align:right;font-family:monospace">'+_amtTxt(T)+'</td><td></td></tr>';
     document.getElementById('arap-title').textContent = isAR? '应收账款明细（按客户）':'应付账款明细（按供应商）';
     var sc=document.getElementById('arap-stats');
-    if(sc){ var glName=isAR?'1200 应收账款':'2100 应付账款';
-      sc.innerHTML = _sc(isAR?'应收总额':'应付总额', _money(T.total), data.length+' 个'+(isAR?'客户':'供应商'))
-        + _sc('未到期', _money(T.cur), '信用期内')
-        + _sc('逾期合计', _money(T.b30+T.b60+T.b90+T.b90p), '其中 90+ '+_money(T.b90p))
+    if(sc){ var glName=isAR?'1122 应收账款':'2202 应付账款';
+      sc.innerHTML = _sc(isAR?'应收总额':'应付总额', _money(T), data.length+' 个'+(isAR?'客户':'供应商'))
+        + _sc('未结单据', N+' 张', '逐笔可核销')
         + _sc('与总账勾稽', '✓ 一致', glName+' 余额 = 明细合计'); }
-    var rp=document.getElementById('arap-recpill'); if(rp){ rp.className='pill p-green'; rp.textContent='明细合计 = 总账'+(isAR?'应收':'应付')+' '+_money(T.total); }
+    var rp=document.getElementById('arap-recpill'); if(rp){ rp.className='pill p-green'; rp.textContent='明细合计 = 总账'+(isAR?'应收':'应付')+' '+_money(T); }
   };
   function _sc(label,val,sub){ return '<div class="stat-card"><div style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:5px">'+label+'</div><div style="font-size:18px;font-weight:700">'+val+'</div><div style="font-size:11px;color:var(--text3);margin-top:3px">'+sub+'</div></div>'; }
   window.arapDetail = function(i, tab){
     var p = (tab==='ar'?AR_LEDGER:AP_LEDGER)[i]; if(!p || typeof window.gxOpen!=='function') return;
-    var rows = p.invs.map(function(iv){ var un=(iv.amt||0)-(iv.paid||0); var d=_daysOver(iv.due);
-      var ageTxt = d<=0?'未到期':(d+' 天');
+    var rows = p.invs.map(function(iv){ var un=(iv.amt||0)-(iv.paid||0);
       return '<tr><td style="font-family:monospace;font-size:11px">'+iv.no+'</td><td>'+iv.date+'</td><td>'+iv.due+'</td>'
         + '<td style="text-align:right;font-family:monospace">'+_amtTxt(iv.amt)+'</td><td style="text-align:right;font-family:monospace">'+_amtTxt(iv.paid)+'</td>'
-        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(un)+'</td><td style="text-align:center">'+(un>0.005?'<span class="pill '+(d>90?'p-red':d>0?'p-amber':'p-gray')+'" style="font-size:9px">'+ageTxt+'</span>':'<span class="pill p-green" style="font-size:9px">已结清</span>')+'</td></tr>';
+        + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(un)+'</td><td style="text-align:center">'+(un>0.005?'<span class="pill p-amber" style="font-size:9px">未结</span>':'<span class="pill p-green" style="font-size:9px">已结清</span>')+'</td></tr>';
     }).join('');
-    window.gxOpen((tab==='ar'?'应收':'应付')+'明细 · '+p.party, 'BR '+(p.br||'—')+' · 账龄基准 '+AGING_BASE,
-      '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>单据号</th><th>开票日</th><th>到期日</th><th style="text-align:right">原额</th><th style="text-align:right">已核销</th><th style="text-align:right">未结</th><th style="text-align:center">账龄</th></tr></thead><tbody>'+rows+'</tbody></table>'
-      + '<div style="font-size:11px;color:var(--text3);margin-top:10px">核销采用 FIFO（先到期先核销）；逾期 90+ 天建议计提坏账：Dr 坏账及呆账 / Cr 应收账款（或拨备）。</div>', null, 720);
+    window.gxOpen((tab==='ar'?'应收':'应付')+'明细 · '+p.party, 'BR '+(p.br||'—'),
+      '<table class="tbl" style="border:1px solid var(--border);border-radius:8px"><thead><tr><th>单据号</th><th>开票日</th><th>到期日</th><th style="text-align:right">原额</th><th style="text-align:right">已核销</th><th style="text-align:right">未结</th><th style="text-align:center">状态</th></tr></thead><tbody>'+rows+'</tbody></table>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:10px">核销采用 FIFO（先到期先核销）；未结 = 原额 − 已核销，逐笔与总账应收/应付勾稽。香港中小企代账按未结余额管理，不做账龄分析。</div>', null, 720);
   };
 
   // ════════════════ 银行 / 现金日记账 + 银行调节 ════════════════
   var BANKBOOK = [
     { id:'hsbc-cur', label:'HSBC 港元往来 012-345678-001', type:'bank', open:6812.10,
       txns:[
-        {date:'01-03', desc:'客户收款 — HK Ventures Ltd', inc:15200, out:0},
-        {date:'01-08', desc:'PCCW 电讯费 AUTOPAY', inc:0, out:488},
-        {date:'01-10', desc:'中石化 加油 AUTOPAY', inc:0, out:312},
-        {date:'01-15', desc:'强积金 MPF 雇主供款', inc:0, out:1500},
-        {date:'01-24', desc:'客户收款 — Fortune Intl Ltd', inc:22100, out:0},
-        {date:'01-31', desc:'银行结余利息', inc:28.40, out:0},
-        {date:'01-31', desc:'银行月费 SERVICE CHARGE', inc:0, out:150},
+        {date:'01-03', desc:'客户收款 — HK Ventures Ltd', party:'HK Ventures Ltd', sum:'客户收款（服务费）', inc:15200, out:0},
+        {date:'01-08', desc:'PCCW 电讯费 AUTOPAY', party:'電訊盈科 PCCW', sum:'电话及上网费（自动转账）', inc:0, out:488},
+        {date:'01-10', desc:'中石化 加油 AUTOPAY', party:'中石化 Sinopec', sum:'车辆加油（自动转账）', inc:0, out:312},
+        {date:'01-15', desc:'强积金 MPF 雇主供款', party:'强积金受托人 MPF', sum:'雇主强积金供款', inc:0, out:1500},
+        {date:'01-24', desc:'客户收款 — Fortune Intl Ltd', party:'Fortune Intl Ltd', sum:'客户收款（服务费）', inc:22100, out:0},
+        {date:'01-31', desc:'银行结余利息', party:'滙豐銀行 HSBC', sum:'账户结余利息', inc:28.40, out:0},
+        {date:'01-31', desc:'银行月费 SERVICE CHARGE', party:'滙豐銀行 HSBC', sum:'账户服务月费', inc:0, out:150},
       ],
       recon:{ inTransit:13422.00, unpresented:9994.00 } },  // 在途存款 / 未兑现支票
     { id:'petty', label:'备用金 Petty Cash', type:'cash', open:0,
       txns:[
-        {date:'01-05', desc:'ATM 提现（备用金充值）', inc:63500, out:0},
-        {date:'01-05', desc:'美心餐饮（现金）', inc:0, out:850},
-        {date:'01-15', desc:'停车场月费（现金）', inc:0, out:2200},
-        {date:'01-28', desc:'HKICPA 年费（现金/董事垫付）', inc:0, out:1800},
+        {date:'01-05', desc:'ATM 提现（备用金充值）', party:'滙豐銀行 HSBC', sum:'ATM 提现（备用金充值）', inc:63500, out:0},
+        {date:'01-05', desc:'美心餐饮（现金）', party:"美心 Maxim's", sum:'员工餐饮（现金）', inc:0, out:850},
+        {date:'01-15', desc:'停车场月费（现金）', party:'停车场', sum:'停车场月费（现金）', inc:0, out:2200},
+        {date:'01-28', desc:'HKICPA 年费（现金/董事垫付）', party:'香港會計師公會 HKICPA', sum:'会计师公会年费（董事垫付）', inc:0, out:1800},
       ], recon:null },
   ];
   window.renderBankBook = function(){
@@ -11891,7 +12089,7 @@ function handleInvDrop(evt) {
     var bal=acc.open, sIn=0, sOut=0;
     var rows='<tr style="color:var(--text3)"><td>—</td><td>期初余额 B/F</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-family:monospace">'+_amtTxt(acc.open)+'</td></tr>';
     acc.txns.forEach(function(t){ bal += (t.inc||0)-(t.out||0); sIn+=t.inc||0; sOut+=t.out||0;
-      rows += '<tr><td style="font-size:11.5px">2026-'+t.date+'</td><td style="font-size:11.5px">'+t.desc+'</td>'
+      rows += '<tr><td style="font-size:11.5px">2026-'+t.date+'</td><td style="font-size:11.5px">'+_bkSum(t,'')+'</td>'
         + '<td style="text-align:right;font-family:monospace;color:var(--green-text)">'+(t.inc?_amtTxt(t.inc):'—')+'</td>'
         + '<td style="text-align:right;font-family:monospace;color:var(--red-text)">'+(t.out?_amtTxt(t.out):'—')+'</td>'
         + '<td style="text-align:right;font-family:monospace;font-weight:600">'+_amtTxt(bal)+'</td></tr>';
